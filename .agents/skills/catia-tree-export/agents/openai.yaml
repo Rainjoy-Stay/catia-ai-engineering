@@ -1,0 +1,4 @@
+interface:
+  display_name: "结构树与BOM清单导出"
+  short_description: "导出装配结构、实例路径和BOM清单，保留字段来源与读取覆盖率。"
+  default_prompt: "使用 $catia-tree-export 按本次指定模型和范围完成结构树与BOM清单导出，保留证据并明确未评价项。"

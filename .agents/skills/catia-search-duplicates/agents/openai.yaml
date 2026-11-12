@@ -1,0 +1,4 @@
+interface:
+  display_name: "特征搜索与相同件候选"
+  short_description: "按名称特征查找对象，用可追溯几何签名筛查相同件和近似件候选。"
+  default_prompt: "使用 $catia-search-duplicates 按本次指定模型和范围完成特征搜索与相同件候选，保留证据并明确未评价项。"

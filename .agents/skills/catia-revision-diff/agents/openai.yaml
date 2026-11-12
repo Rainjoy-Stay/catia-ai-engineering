@@ -1,0 +1,4 @@
+interface:
+  display_name: "版本差异清单"
+  short_description: "对比两版结构与属性位姿，区分几何修改、移动和匹配不确定项。"
+  default_prompt: "使用 $catia-revision-diff 按本次指定模型和范围完成版本差异清单，保留证据并明确未评价项。"

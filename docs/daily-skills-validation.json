@@ -1,0 +1,50 @@
+{
+  "scope": "skill format, links, metadata, mirrored files; no CATIA execution",
+  "skills": [
+    {
+      "skill": "catia-tree-export",
+      "validator_pass": true,
+      "detail": "Skill is valid!"
+    },
+    {
+      "skill": "catia-revision-diff",
+      "validator_pass": true,
+      "detail": "Skill is valid!"
+    },
+    {
+      "skill": "catia-model-provenance",
+      "validator_pass": true,
+      "detail": "Skill is valid!"
+    },
+    {
+      "skill": "catia-search-duplicates",
+      "validator_pass": true,
+      "detail": "Skill is valid!"
+    },
+    {
+      "skill": "catia-measurement-summary",
+      "validator_pass": true,
+      "detail": "Skill is valid!"
+    },
+    {
+      "skill": "catia-display-review",
+      "validator_pass": true,
+      "detail": "Skill is valid!"
+    },
+    {
+      "skill": "catia-batch-export",
+      "validator_pass": true,
+      "detail": "Skill is valid!"
+    },
+    {
+      "skill": "catia-metadata-audit",
+      "validator_pass": true,
+      "detail": "Skill is valid!"
+    }
+  ],
+  "errors": [],
+  "manual_behavior_review_cases": 10,
+  "manual_review_only": true,
+  "live_catia_test": "NOT_RUN",
+  "new_mcp_endpoints": 0
+}
