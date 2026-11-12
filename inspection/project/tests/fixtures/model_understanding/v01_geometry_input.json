@@ -1,0 +1,20 @@
+{
+  "Root/PartBody": {
+    "geometry_kind": "SOLID",
+    "closure_state": "CLOSED",
+    "capabilities": ["EXACT_BREP"],
+    "volume_mm3": 7853.982,
+    "surface_area_mm2": 6597.345,
+    "centroid_mm": [50.0, 0.0, 0.0],
+    "bounding_box_mm": [0.0, -5.0, -5.0, 100.0, 5.0, 5.0],
+    "principal_axis": [1.0, 0.0, 0.0],
+    "measurement_method": "CATIA_SPA_AND_EXACT_TOPOLOGY",
+    "measurement_quality": "EXACT",
+    "tolerance_mm": 0.001,
+    "faces": [
+      {"surface_type": "CYLINDER", "area_mm2": 3141.593},
+      {"surface_type": "PLANE", "area_mm2": 78.54},
+      {"surface_type": "PLANE", "area_mm2": 78.54}
+    ]
+  }
+}

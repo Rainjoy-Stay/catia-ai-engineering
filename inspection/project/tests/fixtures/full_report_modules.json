@@ -1,0 +1,177 @@
+{
+  "schema_version": "1.1.0",
+  "run_id": "REPORT-FULL-MODULE-COVERAGE",
+  "generated_at": "2026-09-21T09:00:00+08:00",
+  "document": "全模块报告验证模型.CATProduct",
+  "ruleset_id": "local-active-rules-v1",
+  "applied_rules": {
+    "scope": "CATIA V5 装配与中性格式几何检查",
+    "source": {"title": "报告体系验证规则", "document_id": "QA-REPORT-001", "revision": "2.0"},
+    "routing": {
+      "threshold_status": "APPROVED",
+      "minimum_general_clearance_mm": 10.0,
+      "minimum_hot_zone_clearance_mm": 25.0,
+      "bend_radius_mode": "ratio_r_over_d",
+      "minimum_bend_radius_ratio_r_over_d": 3.0
+    },
+    "dmu_clash": {"clearance_mm": 10.0, "clash_is_failure": true, "contact_is_failure": false},
+    "opening_interface": {
+      "coaxial_tolerance_mm": 0.5,
+      "angle_tolerance_deg": 1.0,
+      "radial_clearance_min_mm": 0.0,
+      "radial_clearance_max_mm": 1.0,
+      "axial_tolerance_mm": 0.5
+    },
+    "exemptions": {"allowed_contact_pairs": []}
+  },
+  "source": {
+    "catia_release": "32",
+    "method": "CATIA_MCP_AND_OCCT_EXACT_BREP",
+    "computation_type": "BETWEEN_ALL",
+    "root_product": "REPORT-QA",
+    "top_level_component_count": 8,
+    "scope_component_count": 8,
+    "clearance_mm": 10.0,
+    "raw_conflict_count": 4,
+    "returned_conflict_count": 4,
+    "truncated": false,
+    "temporary_product_used": true,
+    "cleanup_verified": true,
+    "source_saved_by_tool": false,
+    "source_document_saved_before": true,
+    "source_document_saved_after": true
+  },
+  "counts": {"PASS": 8, "WARN": 2, "FAIL": 1, "NOT_EVALUATED": 1, "EXEMPTED": 0, "ERROR": 0},
+  "model_precheck": {
+    "schema_version": "geometry-precheck.v1.0",
+    "source_format": "STEP",
+    "model_health_score": 82,
+    "model_reliability": "MEDIUM",
+    "entity_count": 24,
+    "included_entity_count": 21,
+    "geometry_type_counts": {"SOLID": 18, "SHELL": 4, "SURFACE": 2},
+    "surface_geometry_participates": true,
+    "issues": [
+      {"object_id": "BODY-07", "code": "OPEN_SHELL", "severity": "REVIEW"},
+      {"object_id": "BODY-11", "code": "SUSPECTED_HOLLOW_TO_SOLID", "severity": "REVIEW"}
+    ],
+    "conversion_signals": [
+      {"source_id": "BODY-11", "conversion_issue": "HOLLOW_TO_SOLID", "confidence": "HIGH", "reasons": ["INNER_CAVITY_MISSING", "CLOSED_SOLID_AFTER_CONVERSION"]}
+    ]
+  },
+  "large_single_part_analysis": {
+    "batch_plan": {"shape_count": 24, "broad_phase": {"total_possible_pairs": 276, "candidate_pair_count": 36}},
+    "body_traceability": {"mapped_solid_count": 22, "is_complete": false}
+  },
+  "resume_status": {
+    "total_candidate_pairs": 36,
+    "completed_pairs": 34,
+    "newly_completed_pairs": 12,
+    "resumed_pairs": 22,
+    "timeout_pairs": 1,
+    "deferred_by_budget_pairs": 1,
+    "failed_pairs": 0,
+    "pending_pairs": 2,
+    "completion_percent": 94.44,
+    "needs_resume": true
+  },
+  "logical_components": {
+    "schema_version": "logical-components.v1.0",
+    "face_count": 96,
+    "component_count": 12,
+    "typed_candidate_count": 9,
+    "unresolved_contact_count": 2,
+    "components": [
+      {"logical_component_id": "LGC-001", "face_count": 6, "semantic_status": "CANDIDATE", "engineering_hypothesis": {"engineering_object_type": "TUBULAR_COMPONENT_CANDIDATE", "confidence": 0.88}},
+      {"logical_component_id": "LGC-002", "face_count": 4, "semantic_status": "CANDIDATE", "engineering_hypothesis": {"engineering_object_type": "PIPE_BEND_CANDIDATE", "confidence": 0.91}},
+      {"logical_component_id": "LGC-003", "face_count": 8, "semantic_status": "UNRESOLVED", "engineering_hypothesis": {"engineering_object_type": "UNRESOLVED", "confidence": 0.0}}
+    ]
+  },
+  "pipe_logical_components": {
+    "schema_version": "pipe-logical-components.v1.0",
+    "pipe_candidate_count": 3,
+    "joined_edge_count": 5,
+    "rejected_connection_count": 2,
+    "pipe_candidates": [{"logical_pipe_id": "PIPE-LGC-001", "status": "CANDIDATE", "confidence": 0.88, "component_count": 3, "has_bend": true}]
+  },
+  "engineering_roles": {
+    "schema_version": "engineering-roles.v1.0",
+    "candidate_count": 3,
+    "role_counts": {"PIPE": 1, "NOZZLE": 1, "VESSEL_SHELL": 1},
+    "candidates": [
+      {"logical_component_id": "LGC-001", "engineering_role": "PIPE", "status": "CANDIDATE", "confidence": 0.91, "basis": ["SLENDER_TUBULAR_GEOMETRY", "AXIS_CONTINUITY"]},
+      {"logical_component_id": "LGC-002", "engineering_role": "NOZZLE", "status": "REVIEW", "confidence": 0.73, "basis": ["INTERSECTS_LARGER_HOST"]}
+    ]
+  },
+  "semantic_intersection_events": {
+    "schema_version": "semantic-intersection-events.v1.0",
+    "event_count": 2,
+    "disposition_counts": {"FAIL": 1, "REVIEW": 1, "PASS": 0}
+  },
+  "solid_interaction_assessments": {
+    "schema_version": "solid-interaction-assessments.v1.0",
+    "assessment_count": 3,
+    "disposition_counts": {"FAIL": 1, "REVIEW": 1, "PASS": 1}
+  },
+  "opening_interface_analysis": {
+    "schema_version": "opening-interface-analysis.v1.0",
+    "assessment_count": 2,
+    "disposition_counts": {"FAIL": 0, "REVIEW": 1, "PASS": 1},
+    "rule_approval": {"formal_adjudication_allowed": true}
+  },
+  "opening_interface_auto_discovery": {
+    "analysis_executed": true,
+    "coverage": {"reason_labels": []}
+  },
+  "pipe_candidate_review": {
+    "candidates": [
+      {"body_index": 4, "name": "PipeCandidate01", "evidence_tier": "EXACT_BREP", "outer_diameter_mm": 20.0, "centerline_bend_radius_mm": 65.0, "radius_ratio_r_over_d": 3.25, "status": "PASS"},
+      {"body_index": 7, "name": "PipeCandidate02", "evidence_tier": "GEOMETRY_ONLY", "outer_diameter_mm": 18.0, "centerline_bend_radius_mm": null, "radius_ratio_r_over_d": null, "status": "NOT_EVALUATED"}
+    ],
+    "excluded_straight_cylinder_count": 5
+  },
+  "findings": [
+    {
+      "issue_id": "GEOM-001",
+      "status": "FAIL",
+      "severity": "HIGH",
+      "rule_id": "SOLID_INTERFERENCE",
+      "object_a": "LGC-001",
+      "object_b": "LGC-003",
+      "measured_value": 3.2,
+      "limit_value": 0.0,
+      "unit": "mm3",
+      "title": "确认存在实体穿透",
+      "message": "精确 BREP 计算确认两个逻辑组件存在实体交叠。",
+      "recommendation": "复核安装位置和零件尺寸。",
+      "standard_reference": "QA-REPORT-001",
+      "evidence": []
+    },
+    {
+      "issue_id": "MODEL-002",
+      "status": "WARN",
+      "severity": "MEDIUM",
+      "rule_id": "MODEL_HEALTH",
+      "object_a": "BODY-11",
+      "object_b": null,
+      "title": "疑似空心结构在转换后变为实体",
+      "message": "转换可靠性模块检测到两个独立证据。",
+      "recommendation": "对照源模型复核内部流道和壳体闭合状态。",
+      "evidence": []
+    }
+  ],
+  "baseline_comparison": {"summary": {"added": 1, "resolved": 0, "persistent": 1, "changed": 1, "regressions": 1, "improvements": 0}},
+  "confidence_budget": {
+    "checked": ["几何预检", "逻辑组件恢复", "精确交互", "开孔接口"],
+    "not_checked": ["剩余两个候选对"],
+    "assumptions": ["报告样例用于覆盖验证"],
+    "degraded": []
+  },
+  "audit": {
+    "geometry_authority": "CATIA V5 与 OCCT 精确 BREP",
+    "llm_role": "规划 检查路由与结构化结果解释",
+    "relationship_judge": "deterministic-semantic-layer",
+    "source_model_modified": false,
+    "exceptions": []
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "_说明": "当前生效规则。可手动编辑；投入正式判定前必须填写来源和审批状态。",
+  "schema_version": "1.1.0",
+  "ruleset_id": "local-active-rules-v1",
+  "units": "mm",
+  "scope": "当前活动CATProduct；热区、运动包络和维护空间仅在相应语义数据存在时评价",
+  "source": {"title": "用户当前配置", "document_id": "", "revision": "", "approved_by": "", "effective_date": ""},
+  "dmu_clash": {
+    "clearance_mm": 10.0,
+    "contact_is_failure": false,
+    "clash_is_failure": true,
+    "max_conflicts": 10000
+  },
+  "component_relationship": {
+    "minimum_pass_confidence": 0.85,
+    "step_minimum_pass_confidence": 0.92,
+    "clash_requires_review": true,
+    "_说明": "AI只判断设计关系；CATIA距离仍为权威。穿透不能由AI自动放行，证据不足进入REVIEW_REQUIRED。"
+  },
+  "opening_interface": {
+    "_说明": "接管—开孔候选粗筛和精确判定阈值；当前为待项目批准的工程默认值。",
+    "candidate_search_margin_mm": 5.0,
+    "candidate_angle_limit_deg": 5.0,
+    "candidate_offset_limit_mm": 5.0,
+    "candidate_radius_limit_mm": 5.0,
+    "candidate_axial_margin_mm": 5.0,
+    "ambiguity_score_delta": 0.05,
+    "coaxial_tolerance_mm": 0.5,
+    "angle_tolerance_deg": 1.0,
+    "radial_clearance_min_mm": 0.0,
+    "radial_clearance_max_mm": 2.0,
+    "axial_tolerance_mm": 0.1
+  },
+  "large_single_part": {
+    "_说明": "大型多Body单CATPart的OCCT精确内部相交设置。",
+    "broad_phase_margin_mm": 0.0,
+    "contact_tolerance_mm": 0.00001,
+    "interference_volume_tolerance_mm3": 0.000001,
+    "clearance_review_mm": 0.0,
+    "max_exact_pairs": 10000,
+    "progress_interval_pairs": 100,
+    "lightweight_manifest": true,
+    "body_batch_size": 40,
+    "pair_timeout_seconds": 30,
+    "pair_retry_timeout_seconds": 90,
+    "max_pair_retries": 20,
+    "max_pair_workers": 2,
+    "persistent_pair_workers": true,
+    "checkpoint_interval_pairs": 25,
+    "checkpoint_interval_seconds": 10.0,
+    "max_runtime_seconds": 600
+  },
+  "routing": {
+    "minimum_general_clearance_mm": 10.0,
+    "minimum_hot_zone_clearance_mm": 25.0,
+    "bend_radius_mode": "standard_profile",
+    "bend_radius_profile_file": "standards/HB_4-55-2002_bend_radius.json",
+    "bend_radius_overrides": {
+      "minimum_ratio_r_over_d": null
+    },
+    "minimum_bend_radius_mm": null,
+    "maximum_direction_change_deg": 90.0,
+    "threshold_status": "ASSUMED_PENDING_APPROVAL",
+    "bend_radius_standard_status": "APPROVED",
+    "standard_reference": "HB 4-55-2002"
+  },
+  "exemptions": {"allowed_contact_pairs": []},
+  "required_context": {
+    "hot_zone_classification": false,
+    "pressure_and_temperature_metadata": false,
+    "motion_envelopes": false,
+    "support_and_clamp_metadata": false,
+    "maintenance_removal_envelopes": false
+  }
+}

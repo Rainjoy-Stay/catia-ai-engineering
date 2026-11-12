@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "standard_id": "HB 4-55-2002",
+  "title": "导管弯曲半径",
+  "scope": {
+    "forming_process": "机械弯曲成形",
+    "excluded_processes": ["手工弯曲", "热加工弯曲"],
+    "radius_definition": "从弯曲中心到导管中心线的距离",
+    "diameter_definition": "公称外径 DN",
+    "units": {"diameter": "mm", "radius": "mm", "pressure": "MPa"}
+  },
+  "minimum_bend_radius_ratio_r_over_d": 2.0,
+  "standard_radius_ratios_r_over_d": [2.5, 3.0, 3.5, 4.0, 5.0, 6.0],
+  "preferred_bend_radius_ratios_r_over_d": [3.0, 4.0],
+  "high_pressure_recommendation": {
+    "pressure_above_mpa": 15.0,
+    "recommended_minimum_ratio_r_over_d": 4.0,
+    "mandatory": false
+  },
+  "nominal_diameters_mm": [
+    4, 6, 8, 10, 12, 14, 15, 16, 18, 20, 22, 24, 25, 26, 27, 28,
+    30, 32, 33, 34, 35, 36, 38, 40, 42, 45, 48, 50, 52, 55, 56, 58,
+    60, 63, 65, 70, 75, 80
+  ],
+  "radius_table_formula": "R = ratio * DN",
+  "editable_parameters": {
+    "minimum_bend_radius_ratio_r_over_d": "最低允许中心线弯曲半径比",
+    "standard_radius_ratios_r_over_d": "标准系列半径比",
+    "preferred_bend_radius_ratios_r_over_d": "推荐优选半径比",
+    "high_pressure_recommendation.pressure_above_mpa": "高压建议触发压力",
+    "high_pressure_recommendation.recommended_minimum_ratio_r_over_d": "高压建议半径比",
+    "nominal_diameters_mm": "适用的公称外径系列"
+  },
+  "source": {
+    "document": "HB_4-55-2002_导管弯曲半径_标准技术分析报告.docx",
+    "document_sha256": "2CD857E7AFAD5AEB0F330D3C87BD44A9D027862531FD78991DD02901079BFDFE",
+    "standard_publication_date": "2003-02-24",
+    "provided_by": "user",
+    "project_status": "ACTIVE_BY_USER_REQUEST"
+  },
+  "notes": [
+    "几何检查使用导管中心线半径 R，不使用内弯半径或外弯半径。",
+    "压力超过15 MPa时的4DN为建议性要求，默认输出WARN而不是强制FAIL。",
+    "理论STEP只能评价设计几何；制造后的皱纹、减薄、划伤、压痕和鹅头不由本规则强判。"
+  ]
+}

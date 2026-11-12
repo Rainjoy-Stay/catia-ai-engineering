@@ -1,0 +1,56 @@
+{
+  "_说明": "规则库 v1.1 示例。所有阈值均可由公司标准或项目规范覆盖；未获批准的假定值只能产生 WARN 或 NOT_EVALUATED。",
+  "schema_version": "1.1.0",
+  "ruleset_id": "nacelle-tubing-baseline-v1.1",
+  "units": "mm",
+  "scope": "示例范围；生产使用前必须替换",
+  "dmu_clash": {
+    "_说明": "使用 CATIA DMU 原生 Between All，一次计算整个检查范围。",
+    "clearance_mm": 10.0,
+    "contact_is_failure": false,
+    "clash_is_failure": true,
+    "max_conflicts": 10000
+  },
+  "component_relationship": {
+    "minimum_pass_confidence": 0.85,
+    "step_minimum_pass_confidence": 0.92,
+    "clash_requires_review": true
+  },
+  "opening_interface": {
+    "_说明": "候选阈值只用于减少精确计算；判定阈值决定接口PASS/FAIL，生产使用前必须审批。",
+    "candidate_search_margin_mm": 5.0,
+    "candidate_angle_limit_deg": 5.0,
+    "candidate_offset_limit_mm": 5.0,
+    "candidate_radius_limit_mm": 5.0,
+    "candidate_axial_margin_mm": 5.0,
+    "ambiguity_score_delta": 0.05,
+    "coaxial_tolerance_mm": 0.5,
+    "angle_tolerance_deg": 1.0,
+    "radial_clearance_min_mm": 0.0,
+    "radial_clearance_max_mm": 2.0,
+    "axial_tolerance_mm": 0.1
+  },
+  "routing": {
+    "_说明": "以下为项目批准前的占位范围，不作为适航符合性结论。",
+    "minimum_general_clearance_mm": 10.0,
+    "minimum_hot_zone_clearance_mm": 25.0,
+    "minimum_bend_radius_ratio_r_over_d": 3.0,
+    "minimum_bend_radius_mm": null,
+    "bend_radius_mode": "ratio_r_over_d",
+    "maximum_direction_change_deg": 90.0,
+    "threshold_status": "ASSUMED_PENDING_APPROVAL"
+  },
+  "exemptions": {
+    "_说明": "允许接触必须按成对组件显式登记；禁止用名称通配符静默放过冲突。",
+    "allowed_contact_pairs": [],
+    "_禁止": "允许接触只豁免CONTACT；实体CLASH不会由此豁免"
+  },
+  "required_context": {
+    "_说明": "缺少这些语义时，相应规则输出 NOT_EVALUATED。",
+    "hot_zone_classification": false,
+    "pressure_and_temperature_metadata": false,
+    "motion_envelopes": false,
+    "support_and_clamp_metadata": false,
+    "maintenance_removal_envelopes": false
+  }
+}

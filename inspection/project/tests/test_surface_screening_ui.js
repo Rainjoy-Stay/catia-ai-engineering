@@ -1,0 +1,17 @@
+'use strict';
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const source=fs.readFileSync(require('path').join(__dirname,'../tools/dashboard.js'),'utf8');
+const start=source.indexOf('function surfaceVerdict('),end=source.indexOf("\n$('policy')",start);
+const context={};vm.createContext(context);vm.runInContext(source.slice(start,end),context);
+const verdict=(surface,gap=0)=>context.surfaceVerdict({distance:{exact_brep:true,minimum_distance_mm:gap},surface:{exact_brep:true,...surface}});
+assert.equal(verdict({boundary_contact:true}),'pass');
+assert.equal(verdict({coincident_surface_overlap:true}),'pass');
+assert.equal(verdict({continuous_surface_contact:true}),'pass');
+assert.equal(verdict({surface_intersection:true}),'unknown');
+assert.equal(verdict({surface_intersection:true,penetration_evidence_available:true,penetration_confirmed:true}),'fail');
+assert.equal(verdict({crosses_surface_normal_sides:true,penetration_evidence_available:true}),'fail');
+assert.equal(verdict({penetration_confirmed:true,penetration_evidence_available:false}),'unknown');
+assert.equal(verdict({},0.1),'pass');
+assert.equal(context.surfaceVerdict(null),'unknown');
+assert.equal(verdict({exact_brep:false,boundary_contact:true}),'unknown');
+console.log('10 surface screening cases passed');

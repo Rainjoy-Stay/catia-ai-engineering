@@ -1,0 +1,6 @@
+interface:
+  display_name: "CATIA 原生等大双视图"
+  short_description: "制作等大的整体与局部原生截图，核对透明隐藏、定位框及显示恢复"
+  default_prompt: "使用 $catia-native-dual-view，为本次CATIA检查生成两图等大的整体与局部截图，按完整模型及干涉对分别全部适应并验收。"
+policy:
+  allow_implicit_invocation: true

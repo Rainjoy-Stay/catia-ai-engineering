@@ -1,0 +1,31 @@
+{
+  "start": {
+    "point": [0, 0, 0],
+    "direction": [1, 0, 0],
+    "exit_length_mm": 20
+  },
+  "goal": {
+    "point": [200, 0, 0],
+    "direction": [-1, 0, 0],
+    "exit_length_mm": 20
+  },
+  "obstacles": [
+    {
+      "name": "Equipment-1",
+      "minimum": [80, -25, -25],
+      "maximum": [120, 25, 25]
+    }
+  ],
+  "grid_size_mm": 10,
+  "pipe_outer_diameter_mm": 20,
+  "clearance_mm": 5,
+  "minimum_straight_mm": 20,
+  "bend_radius_mm": 20,
+  "bend_penalty": 50,
+  "vertical_penalty_per_mm": 0.15,
+  "heuristic_weight": 1.15,
+  "search_margin_mm": 80,
+  "max_expanded_states": 200000,
+  "candidate_count": 3,
+  "candidate_overlap_penalty": 30
+}
