@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-12",
+  "retired_directories_archived": 4,
+  "files_verified": 34023,
+  "original_bytes": 3899597588,
+  "archive_bytes": 3908489250,
+  "archive_format": "ZIP_STORED",
+  "expanded_copies_deleted": 4,
+  "existing_zip_packages_relocated": 6,
+  "unique_old_content_deleted": false,
+  "active_mcp_preserved": true,
+  "source_models_and_reports_preserved": true,
+  "live_catia_validated": false,
+  "offline_validation_passed": true,
+  "archive_location": "_archive/cleanup_20261112/",
+  "restore_index": "_archive/cleanup_20261112/restore-index.json"
+}

@@ -1,0 +1,125 @@
+{
+  "date": "2026-11-12",
+  "package": "CATIA_Offline_20261012",
+  "offline_regression": {
+    "tests": 550,
+    "skipped": 4,
+    "status": "PASS"
+  },
+  "dependency_mcp_and_hash_checks": [
+    {
+      "check": "离线 Python 3.12 x64",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 pythoncom",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 win32com.client",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 mcp",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 OCP",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 numpy",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 PIL",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 docx",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 reportlab",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 pymupdf",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 yaml",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 catia_checker",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "依赖 catia_mcp",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "规则配置",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "check": "MCP 工具注册",
+      "status": "PASS",
+      "detail": "{'tool_count': 149, 'mode': 'full'}"
+    },
+    {
+      "check": "内网 CATIA R30 与许可现场验收",
+      "status": "NOT_TESTED",
+      "detail": null
+    },
+    {
+      "check": "发布文件哈希",
+      "status": "PASS",
+      "detail": "6035"
+    }
+  ],
+  "understanding": {
+    "scope": "OFFLINE_SYNTHETIC_AND_FAKE_COM_ONLY",
+    "tests_run": 32,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "protocol": {
+      "status": "PASS",
+      "tool_names": [
+        "catia_understanding_capture",
+        "catia_understanding_query_snapshot",
+        "catia_understanding_describe_snapshot",
+        "catia_understanding_point_snapshot"
+      ],
+      "missing_snapshot_is_error": true,
+      "live_capture_attempted": false
+    },
+    "live_model_validated": false,
+    "status": "PASS"
+  },
+  "ui": {
+    "status": "PASS",
+    "http_status": 200,
+    "html_bytes": 7636,
+    "started_geometry_check": false,
+    "live_catia_test": false
+  },
+  "live_catia_attachment": "UNAVAILABLE_NO_ACTIVE_COM_OBJECT",
+  "cleanup_scope": "Only retired versions with verified ZIP backups; active/referenced releases preserved"
+}
