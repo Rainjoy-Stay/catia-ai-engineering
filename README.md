@@ -65,7 +65,7 @@ Follow the root `AGENTS.md` and current screenshot skill for paired views. Use e
 
 `docs/source-manifest.json` records the source and pre-curation checksums for the inspection baseline and case code. See the curation notes for subsequent documentation and configuration changes. Third-party CATIA MCP derivatives retain the upstream MIT license. [Third-party notices](THIRD_PARTY_NOTICES.md)
 
-The remaining project code has no additional open-source license grant. Confirm ownership and licensing before public distribution.
+Project-owned code and documentation are available under the [MIT License](LICENSE). Third-party components retain their own licenses and notices.
 
 ## Everyday natural-language workflows
 

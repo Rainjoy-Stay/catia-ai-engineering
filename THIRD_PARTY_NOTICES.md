@@ -4,4 +4,4 @@
 
 Agent skills retain their source metadata and license files where present. Third-party libraries, CATIA software, offline Python runtimes and model data are not bundled. Their respective licenses remain applicable.
 
-No blanket open-source license is granted for the remaining project code by this preparation step.
+Project-owned material is licensed under the [MIT License](LICENSE). Third-party material remains subject to its applicable licenses and attribution requirements.

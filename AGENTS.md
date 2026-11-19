@@ -14,4 +14,4 @@ Follow `docs/CATIA_DAILY_OPERATIONS.md` to select the relevant `.agents/skills/c
 
 # Automatic GitHub synchronization
 
-After completing and verifying code, skill, or documentation changes, automatically synchronize them to the private repository at `https://github.com/Rainjoy-Stay/catia-ai-engineering`. The user has authorized this without further confirmation. Exclude models, receipt records, actual case data, runtimes, caches, and secrets before uploading. Preserve third-party license notices and the documented validation limits. If a push is blocked, report the blocker and the actual upload status.
+After completing and verifying code, skill, or documentation changes, automatically synchronize them to the repository at `https://github.com/Rainjoy-Stay/catia-ai-engineering`. The user has authorized this without further confirmation. Exclude models, receipt records, actual case data, runtimes, caches, and secrets before uploading. Preserve third-party license notices and the documented validation limits. If a push is blocked, report the blocker and the actual upload status.
