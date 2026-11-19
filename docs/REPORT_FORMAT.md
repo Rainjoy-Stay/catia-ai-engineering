@@ -1,93 +1,93 @@
-# CATIA 自动检查报告统一格式
+# Standard format for CATIA automated inspection reports
 
-## 当前截图规则 2026-10-13
+## Current screenshot requirements (2026-10-13)
 
-截图及配图使用项目技能 [CATIA原生等大双视图](.agents/skills/catia-native-dual-view/SKILL.md)：**两图等大；整体图显示完整模型后全部适应；局部图隐藏干涉对以外的对象后对干涉对全部适应；默认保持同一观察方向。** 该用户确认规则优先于下文旧版相关邻域取景、大局部小整体或强制不同方向要求。身份、标注、恢复及报告验收要求继续保留。
-
-
-## 报告截图代码说明（2026-10-10）
-
-本节为当前截图代码说明；本文旧黄/红配色、全图像素扫描或中央默认框的描述，在新报告创建中以本节修订为准。其他业务要求、历史事实和既有报告结果保持原义。
-
-涉及当前模型配图或报告创建时，先读[原始代码与修订入口](CATIA管路智能检查系统_内网移植包_4.8.0_20260924/project/tools/report_capture_reference_20260920/README.md)。三段原始代码解释相关邻域整体取景、双方隔离局部取景及高亮标注；正式通用截图和罗盘排除修订代码也保存在同目录，可随本项目使用。
-
-先读`01_原始局部截图.py`、`02_原始整体截图.py`、`03_原始红框与索引.py`，理解选择双方后沿用已有视角调用Reframe的行为。正式任务采用配套`capture_generic_dual_view_20261010.py`、`report_highlight_bounds.py`与`annotate_report_highlights.py`；按本次对象适配，记录原图、相机、ROI、掩膜与状态恢复。
-
-对象A/B采用UI橙色RGB(255,161,56)与青色RGB(31,214,224)，背景约20%不透明、取景目的与既有布局不变。明确排除罗盘、树、工具栏和坐标轴，只检测目标屏幕ROI；缺可靠像素或掩膜影响目标则待复核，不补中央框。高亮框不是精确干涉边界，原始脚本固定Body编号、旧颜色阈值与统一黄色恢复不可直接沿用。
-
-## 输出原则
-
-- 同一份 schema `1.1.0` 检查 JSON 只生成一份 PDF 正式报告。
-- 报告正文只写有问题、需复核、未完成裁决或执行异常的区域；明确 PASS 且无风险的组合只计入统计，不逐项占页。
-- 每个问题使用“整体定位图 + 局部细节图”两级证据，不再只提供隔离视图。
-- 整体定位图保留必要的集合体上下文；非问题零件统一设为半透明灰色，推荐约 15%～25% 不透明度，问题双方保持不透明，采用与UI一致的橙色/青色高亮（A：RGB 255,161,56；B：RGB 31,214,224）。
-- 局部细节图只保留问题双方，缩放到公共体积、接触区或最近点附近。
-- 红框必须覆盖真实问题区域并留出识别余量，不能固定画在画面中央，也不能只框住整个大零件。
-- 优先使用 CATIA V5 原生截图。若使用 OCCT/Matplotlib 等分析渲染图，必须明确标为“分析渲染图”，不得冒充 CATIA 原生界面证据。
-- 几何结论只来自 CATIA 原生测量和规则引擎；图片及 AI 文字不改变判定。
-- 默认采用 A4 横向、微软雅黑、深蓝/灰工程报告风格。
-
-## CATIA 截图操作规范
-
-每个问题按以下顺序执行并记录：
-
-1. 确认活动文档、问题双方的完整对象路径和当前检查结果。
-2. 恢复本批次需要的集合体上下文，避免只截一小块而失去位置参照。
-3. 将非问题对象统一调为半透明灰色；复杂装配默认约 20% 不透明度。
-4. 将问题双方设为不透明，并按UI中A/B顺序分别使用橙色（255,161,56）和青色（31,214,224）高亮。
-5. 调整视角和缩放，生成整体定位图；整体图应同时看见集合体轮廓、问题双方和问题所在区域。
-6. 优先根据公共体积、接触区或最近点定位；使用高亮像素时必须先排除罗盘、树、工具栏和坐标轴，仅在目标投影ROI内筛选。高亮框只能称对象定位框，不能称精确干涉边界。
-7. 隐藏其余对象，仅保留问题双方，生成局部隔离图并放大问题位置。
-8. 图下注明对象原名、完整路径、分类、实测值、单位、判定和证据来源。
-9. 截图完成后恢复显示状态；不得将透明度、颜色或临时选择误当作模型结构变更。
-10. 报告生成后导出 PDF 并逐页渲染检查，确认图片无裁切、标题不掉页、红框清晰、文字可读。
-
-管路候选截图沿用同一规则：目标管路保持清晰，周围零件透明化，并同时保留整体位置图和隔离放大图。无法确认中心线、空腔或工程语义时，报告状态保持 `NOT_EVALUATED`。
-
-## 报告创建重点：双视图取景与标注验收
-
-### 必须先读原始代码
-
-报告创建Agent在规划截图前，先读[历史代码与修订用法](CATIA管路智能检查系统_内网移植包_4.8.0_20260924/project/tools/report_capture_reference_20260920/README.md)，然后依次读其中的原始局部截图、原始整体截图、原始红框与索引三个文件。原代码已随项目保存，不依赖历史会话日志或临时目录。按说明采用UI配色修订、显示状态恢复和罗盘排除实现；不得直接运行含固定Body编号、旧像素阈值及中央兜底框的原始代码。
+Follow the [native CATIA paired-view skill](../.agents/skills/catia-native-dual-view/SKILL.md). **Use equal-size images and the same orientation by default. For the overview, show the complete model and use Fit All In. For the detail, isolate the interference pair and use Fit All In on both objects.** This user-approved rule takes precedence over older guidance about neighborhood framing, unequal image sizes, and different orientations. Preserve object identity, annotation, display restoration, and report acceptance requirements.
 
 
+## Report screenshot code reference (2026-10-10)
 
-此流程必须在组装报告前完成，按历史问题20的取景方法执行；保持整体定位＋局部细节的布局，干涉双方配色改为当前UI配色，红框和报告状态颜色不变。
+This section records the screenshot code used at the time and supersedes older yellow/red coloring, full-image scanning, and central fallback box rules for new reports. Other business requirements, historical facts, and confirmed results still apply.
 
-1. **记录身份和初始状态。** 保存对象A/B真实路径、相关邻域清单、显示/颜色/透明度/继承属性、相机原点/视线/up/投影/缩放及选择状态。不得硬编码历史Body编号。
-2. **整体图限定相关邻域。** 历史案例是22个对象；新模型依据实际问题选邻域，不默认让全部对象参加取景。背景沿用灰色与约20%不透明度，A/B为不透明橙色/青色。选择对象后Reframe；核对对象身份、方向和遮挡再截图。Reframe沿用当前方向，不保证独自得到合适视角。
-3. **局部图隔离问题双方。** 隐藏无关对象，保持同一A/B颜色，Reframe后检查双方完整入镜、占画面比例及接口是否清晰；必要时调整方向再记录相机。整体定位图和局部细节图各有用途，不能以同一张重复截图代替。
-4. **保存原图后再标注。** 使用 tools/annotate_report_highlights.py；为每张原图记录实际视口矩形、罗盘矩形、目标屏幕ROI及树/工具栏/坐标轴等排除矩形。随窗口尺寸变化重新确定这些区域，不能复用固定的300～1780像素扫描范围，也不能假定罗盘永远位于固定角落。罗盘排除必须显式提供，缺少配置停止处理。
-5. **只筛选目标高亮。** 像素检测同步识别UI的橙/青色；先应用视口、目标ROI和界面排除，再去除小像素碎片。目标ROI由对象屏幕投影或人工核对获得，不由全图颜色自行猜测。找不到可靠像素，或高亮触碰ROI/排除区边界，标为NEEDS_REVIEW；禁止在中央补默认框，禁止以无框图冒充已标注合格图。
-6. **核对红框含义。** 像素包围框只表示高亮对象位置；只有结构化交区/最近点证据才能定位实际几何问题范围。红框不得覆盖罗盘或把整机包围当作局部证据。
-7. **恢复并验收后组装报告。** 精确恢复截图前显示和相机状态，不保存供应商原模型；逐张检查可见性、配色、遮挡、定位框和标签，再按既有模板排版，导出PDF逐页复核。审计索引记录颜色、视口、排除区、目标ROI、原图、标注图和复核状态。未完成截图或NEEDS_REVIEW项保留待处理状态。
+Before creating images or reports for the current model, read the [original code and revision notes](../inspection/project/tools/report_capture_reference_20260920/README.md). Three original scripts describe neighborhood overviews, isolated pair details, and locator annotations. The generic capture and compass exclusion revisions are in the same directory.
 
-历史完整命令保存在 output/旧截图流程追溯_20261010；原文只作追溯。两份UI配色修订脚本保持历史取景和透明度，但仍有历史状态恢复局限；正式任务优先用保存并恢复显示状态的capture_generic_dual_view.py。旧报告和旧视频图片不因这次流程修改而重着色。
+Read `01_原始局部截图.py`, `02_原始整体截图.py`, and `03_原始红框与索引.py`. For production captures, use the applicable revisions from `capture_generic_dual_view_20261010.py`, `report_highlight_bounds.py`, and `annotate_report_highlights.py`. Preserve the raw image, camera, ROI, mask, and display restoration records for each object.
 
-## 固定章节
+Use UI colors for A and B: orange RGB(255, 161, 56) and cyan RGB(31, 214, 224). Surrounding geometry uses about 20% opacity. Exclude the compass, tree, toolbars, and axes from the target screen ROI. Route items without reliable target pixels or masks to review. A locator box does not indicate the exact interference boundary. Original scripts contain fixed Body numbers, obsolete color thresholds, and a unified yellow color.
 
-1. 封面：模型、总体结论、报告编号、规则集、检查方法和生成时间。
-2. 执行摘要：PASS/WARN/FAIL/NOT_EVALUATED/EXEMPTED/ERROR 数量。
-3. 检查范围与方法：组件范围、扫描阈值、结果截断、临时产品和源模型保存状态。
-4. 问题总览：Issue ID、状态、严重度、规则、组件对、实测值和问题类型。
-5. 基线变化：新增、已解决、持续、变化、回归和改善。
-6. 检查边界与可信度：已检查、未检查、假设和降级项。
-7. 问题明细：每项的参数、判定说明、整改建议和证据图片。
+## Output Principles
 
-问题明细页推荐布局：上半页为整体半透明定位图，下半页为局部隔离细节图；一个问题一页。复杂集合体可适当放大截图范围，但不得牺牲问题区域的可辨识度。
+- The same schema `1.1.0` check JSON produces only one official PDF report.
+- Only problematic, subject to review, non-completion or unusual implementation areas are written in the body of the report; a clear PASS, risk-free combination, is included in the statistics only and not on a page-by-page basis.
+- Each problem is supported by two levels of evidence, “overall positioning + local details”, and no longer provides only a quarantine view.
+- The overall positioning map retains the necessary aggregate context; the non-problem parts are consolidated in semi-transparent grey, with approximately 15-25 per cent recommended non-transparent, and the problem is transparent, using orange/cyan brightness consistent with UI (A: RGB 255, 161, 56; B: RGB 31,214,224).
+- Only the parties to the question are retained in the local detail maps, which are scaled to the common volume, the area of contact or the nearest point.
+- The red box must cover the real problem area and leave a margin for identification, and cannot be fixed in the middle of the picture or simply frame the whole large part.
+- Priority is given to CATIA V5 original screenshots. If you use analytical renderings such as OCCT/Matplotlib, you must clearly label them as "analytical renderings" and not pretend to be evidence of CATIA original interfaces.
+- Geometric findings are derived only from CATIA's primary measurement and rule engine; the picture and AI text do not change the decision.
+- Default to use A4 horizontal, ", deep blue/grey project reporting style.
 
-## 状态颜色
+## CATIA Interception Operational Guidelines
 
-| 状态 | 颜色 | 用途 |
+Each issue is implemented and recorded in the following order:
+
+1. Confirms the active document, the complete object path of the question parties and the results of the current inspection.
+2. Restores the collective context required for this batch and avoids the loss of location references by cutting only a small fraction.
+3. Align non-issue objects to semi-transparent grey; complex assembly defaults about 20 per cent.
+4. The parties to the question are not transparent, and orange (255,161,56) and cyan (31,214,224) are used in the order A/B of UI.
+5. (b) Overview should see both the contours of the assembly, the parties to the problem and the area in which the problem is located.
+6. Prioritizes positioning according to the common volume, area of contact or nearest point; when using high-light pixels, the compass, tree, toolbar and coordinate axis must be excluded and screened only within the target projection ROI. High-light boxes can only be called object locator frames and cannot be called precise interference with the boundary.
+7. Hide the remaining objects, preserve only the parties to the problem, generate partial isolation maps and expand the position of the problem.
+8. The original name of the object, complete path, classification, measured values, units, determinations and sources of evidence are shown below.
+9. Revert the display after completion of the screenshot; transparency, colour or temporary selection shall not be misconstrued as a model structural change.
+10. The report is generated by exporting PDF and page-by-page examination to confirm that the picture is uncut, the title is unlearnable, the red box is clear and the text is readable.
+
+The same rule is applied to the road screenshot: the target route is clear, the surrounding parts are transparent, and the overall position chart and the quarantine magnification map are maintained. If the central line, cavity or engineering syntax cannot be confirmed, the reporting status remains `NOT_EVALUATED`.
+
+## Report creation focus: double viewing and comment acceptance
+
+### We have to read the original code first.
+
+Before planning captures, consult the [historical code and revised workflow](../inspection/project/tools/report_capture_reference_20260920/README.md), then inspect the original local view, overview, and locator and index scripts. The source is retained with the project. Follow the UI color, display restoration, and compass exclusion revisions. Adapt hard-coded Body numbers and pixel thresholds, and remove central fallback boxes before executing original code.
+
+
+
+This process must be completed before the assembly report is assembled and carried out according to the historical question 20 viewing method; the layout of the overall positioning + local details is maintained, the color of the interferant pair is changed to the current UI colour, and the colour of the red box and reporting state is unchanged.
+
+1. ** Records identity and initial state.** Save object A/B real path, list of relevant adjacent areas, display/colour/transparency/inheritance properties, camera origin/view/up/ project/scaling and selection status. No hard-coding history Body number is allowed.
+2. ** Overview defines the relevant neighbourhood.** Historical cases are 22 objects; the new model selects the neighbourhood based on the actual problem, without defaulting the entire object. The background follows grey and about 20 per cent opacity, and A/B is non-transparent orange/cyan. After selecting the object, Reframe; check the identity, direction and mask of the object. Refame follows the current direction and does not guarantee a suitable perspective on its own.
+3. ** Detail view parties.** Hide unrelated objects, maintain the same A/B colour, reframe check the parties ' complete lenses, proportional images and clear interfaces; re-directe the camera as necessary. The overall positioning and local detail diagrams are useful and cannot be replaced by the same duplicate screenshot.
+4. ** Remark the original map after saving it. ** Use tools/annotate_report_highlights.py; exclude rectangles such as the actual visual rectangle, the compass rectangle, the target screen ROI and the tree/toolbar/coordinate axis for each original map. Re-defining these areas with changes in the size of the window does not allow the replicating of the fixed 300-1780 pixel scanning range, nor does it assume that the compass is permanently located in a fixed corner. The compass must be visible and there is a lack of configuration to stop processing.
+5. ** The target is highlighted only.** The pixel detection of the orange/cyan identification of UI is synchronized; the view, target ROI and interface are removed and the small pixel fragments are removed. Target ROI is obtained from the object screen projection or manual check, not from the full image colour. No reliable pixels, or high-light touch ROI/ exclusion area boundary, marked NEEDS_REVIEW, is found; no central patching of the default box is allowed, and it is prohibited to fill the eligible image with a non-boxed image.
+6. ** Checks the meaning of the red box. ** The pixel surrounding frame only indicates the location of the highlighted object; only structured intersection/recent evidence can locate the actual geometry range. The red box should not cover the compass or use the whole machine encirclement as local evidence.
+7. ** Reactivate post-acceptance assembly reports.** Exact restoration of the pre-interception display and camera state without preserving the original model of the supplier; check the visibility, colour, mask, locator frame and label on a piece-by-piece basis, and release the PDF page-by-page review using the existing template. Audit index record colours, visuals, exclusion areas, target ROI, original diagrams, illustrations and review status are not completed. NEEDS_REVIEW Retains the item to be processed.
+
+Historic integrity commands are kept in the output/old cut-off process retroactively_20261010; the original text is only retroactive. Two UI revised scripts maintain historical view and transparency, but still have historical restoration limits; official tasks prioritize the preservation and restoration of the displayed status of capture_generic_dual_view.py. Old reports and old video pictures do not overlap because of this process modification.
+
+## Fixed Chapter
+
+1. Cover: Models, general conclusions, report number, rule set, inspection method and timing.
+2. Executive summary: PASS/WARN/FAIL/ NOT_EVALUATED / EXEMPTED/ERROOR number.
+3. Scope and methodology of inspection: Component range, scanning threshold, cut-off of results, temporary product and source model retention.
+4. Problem overview: Issue ID, state, severity, rules, component pairs, measured values and type of problem.
+5. Baseline change: new, addressed, ongoing, changing, regression and improvement.
+6. Checking borders and credibility: checked, uninspected, hypothetical and downgrade items.
+7. Detailed questions: Parameters for each individual, statement of determination, rectification recommendations and photographic evidence.
+
+Question breakdown page recommends layout: the first half is an overall semi-transparent map, the second half is a detailed map of local isolation; a single issue page. Complex clusters can appropriately expand the cut-off range, but not at the expense of the visibility of the problem area.
+
+## Status Colour
+
+| Status | Colours | Purpose |
 |---|---|---|
-| PASS | 绿色 | 完成检查并满足规则 |
-| WARN | 橙色 | 需要工程复核或接近限值 |
-| FAIL | 红色 | 违反明确规则 |
-| NOT_EVALUATED | 灰色 | 缺少上下文或算法不适用 |
-| EXEMPTED | 蓝色 | 已由明确规则批准豁免 |
-| ERROR | 深红色 | 检查执行或数据异常 |
+| PASS | Green | Complete inspection and meet rules |
+| WARN | Orange | Need for engineering review or close to limit |
+| FAIL | Red | Violating clear rules |
+| NOT_EVALUATED | Grey | Lack of context or algorithm not applicable |
+| EXEMPTED | Blue | Exemptions granted by explicit rules |
+| ERROR | Dark red. | Check execution or data anomaly |
 
-## 自动生成
+## Auto Generate
 
 ```powershell
 python .\tools\generate_visual_pdf_report.py `
@@ -96,8 +96,8 @@ python .\tools\generate_visual_pdf_report.py `
   --output .\output\pdf\Model_可视化检查报告.pdf
 ```
 
-输出：
+Output:
 
 - `output/pdf/Model_可视化检查报告.pdf`
 
-DMU 数值来自 CATIA 原生几何计算；红框仅用于可视化定位，不用于反推三维干涉边界。
+DMU values are derived from the original CATIA geometry; the red box is used only for visual positioning and not for inverse 3D interference with borders.

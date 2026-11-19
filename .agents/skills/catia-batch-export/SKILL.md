@@ -1,26 +1,26 @@
 ---
 name: catia-batch-export
-description: 将明确 CATIA 文档批量导出 STEP、IGES、STL 或受支持图纸格式，生成成功失败和文件校验清单；不将导出与 SaveAs 打包混为一谈。
+description: Export selected CATIA documents as STEP, IGES, STL, or a supported drawing format. Verify output files, report failures, and preserve the source documents.
 ---
 
-# 批量格式导出与交付清单
+# Batch format export
 
-先读 [日常操作约定](../../../docs/CATIA_DAILY_OPERATIONS.md) 的“共同执行约定”，再执行本技能。优先发现当前已注册的结构化 CATIA 工具；工具源码存在不等于已注册。模型操作遵循当前可用的 catia-model-understanding；缺少该技能时使用共同约定中的最小只读流程。只在用户要求图片时读取现行双视图技能。
+Read the shared operating rules in [Everyday CATIA operations](../../../docs/CATIA_DAILY_OPERATIONS.md). Discover the structured CATIA tools registered in the current session and verify their contracts. Follow the available `catia-model-understanding` skill for model operations, or use the documented minimum read-only workflow if it is unavailable. Consult the current paired-view skill when the user requests images.
 
-## 自然语言入口
+## Natural Language Entry
 
-- “把当前打开的这些零件导成 STEP，生成文件清单。”
-- “导出选定部件的 STL，每个文件带件号和版本，别覆盖旧文件。”
-- “检查这套装配交付文件是否齐全，缺失引用单独列出。”
+- “The parts that are currently open are directed to STEP to generate a list of documents.”
+- "Exports the STL of the selected widgets, each file with a part number and version, and does not overwrite the old file."
+- “Checks whether the assembly delivery documents are complete and the missing references are separately listed.”
 
-## 执行
+## Implementation
 
-1. 明确源文档/子树、格式、输出目录、命名和装配/单件口径；默认新输出目录、禁止覆盖。未保存文档允许按用户指定范围导出当前内存，但标明磁盘源与内存状态不同。不要为导出而自动保存原件。
-2. 根据已注册导出工具检查格式与文档类型、许可、转换选项；不能假定 3D 文档可直接导出图纸 PDF。记录单位、STL 离散精度/选项及源实例是否保留装配位姿，无法指定的选项明确披露。
-3. 对每个目标绑定精确文档再导出，避免循环使用错误活动文档。如切换了活动文档，按可用结构化操作恢复原活动文档。文件名消除路径分隔、保留名和大小写碰撞；碰撞时加可追溯短标识，不重命名源模型。
-4. 独立零件按定义去重导出时保留所有实例到文件映射；实例导出须保留位姿或明确局部坐标，不将二者混用。每件记录结果、大小和 SHA-256；检查文件存在且非空，格式/重导入验证仅在工具支持且范围授权时进行。非空文件不等于转换保真已验证。
-5. 引用完整性检查只读列缺失与外部依赖，不重链接。catia_send_to_directory 实际使用 SaveAs，可能改变文档路径和引用，绝不作为默认无副作用导出；需要交付打包时先形成目标与影响清单，再在明确授权范围执行。
+1. Specify the source document/stree, format, output directory, name and assembly/single calibre; default new output directory, ban overwrite. Unsaved document allows the export of the current memory according to the range specified by the user, but indicates that the disk source is different from the memory state. Do not automatically save the original for export.
+2. Checks format and document type, license, conversion options according to the registered export tool; it cannot be assumed that 3D documents can directly export the drawing PDF. The recording unit, STL discrete precision/options, and the source example retain assembly pose and cannot be clearly disclosed.
+3. Re-exports the precise document that binds each target to avoid the recycling of the wrong active document. If you switch the active document, restore the original active document with the available structured operation. The file name removes the path separation, retention and case-crash; in case of collision, a short and traceable identifier is added, without renaming the source model.
+4. Independent parts retain all instances to the file map when they are re-exported by definition; examples are exported to keep a pose or to specify local coordinates, and are not mixed. Each record result, size and SHA-256 is recorded; checking that the file exists and is not empty, and format/re-import authentication is performed only when the tool is supported and the scope is authorized. Non-empty files are not equal to conversion authentication.
+5. catia_send_to_directory actually uses SaveAs, which may change document paths and references and not be exported as default no side effects; a target and impact list needs to be formed when packaged and then implemented within a clear delegation of authority.
 
-## 验收与交付
+## Acceptance and delivery
 
-输出 exports.csv、source-to-export.json 和失败/跳过清单。披露只验证字节输出还是已重导入核验、实体/壳数量与单位。保留用户原工作文档，取消不宣称已回滚正在执行的 COM 操作。
+Deliver `exports.csv`, `source-to-export.json`, and a list of failed or skipped exports. State whether verification covered file bytes only or included reimport, and report solid and shell counts and units. Preserve the original working documents. Cancellation does not establish rollback of an in-flight COM operation.

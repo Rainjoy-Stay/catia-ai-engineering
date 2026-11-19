@@ -1,29 +1,29 @@
-# 报告双视图截图：原始代码与2026-10-10修订入口
+# Report double view screenshot: original code and revised 2026-10-10
 
-创建或复核带截图的报告前，先读本说明，再读相关代码。原始代码来自2026-09-20实际执行记录，已原样保存；本目录的修订版可随本项目复制，不依赖工作区output或其他发布目录。
+Before creating or reviewing a report with a screenshot, read the present note before reading the relevant code. The original code is from the actual execution record of 2026-09-20, saved as it is; a revised version of this directory can be copied with this item, without reliance on the workspace output or other published directories.
 
-## 原始代码与执行顺序
+## Original code and order of execution
 
-| 文件 | 原始行为 | 新任务需要注意 |
+| Documentation | Original acts | New missions need to be noticed. |
 | --- | --- | --- |
-| [01_原始局部截图.py](01_原始局部截图.py) | 隐藏框选22个Body及Shapes，只显示问题双方；选择双方，Reframe后等待0.2秒，CaptureToFile生成JPEG与索引 | 固定Body编号必须替换，结尾统一黄色不是精确状态恢复 |
-| [02_原始整体截图.py](02_原始整体截图.py) | 显示相关22对象；背景RGB185,190,198、不透明度52；目标不透明度255；Reframe后等待0.12秒截图 | 邻域由本次模型决定，不默认显示整机 |
-| [03_原始红框与索引.py](03_原始红框与索引.py) | 扫描红黄像素；外扩28像素、最小框90像素、红线10像素；生成双视图索引 | 固定300～1780扫描范围会误扫界面，中央兜底框禁止沿用 |
+| [01_original local screenshot.py](01_原始局部截图.py) | Hide box selections of 22 Body and Shapes, showing only the parties to the problem; select both sides, and wait 0.2 seconds after Refame, CaptureToFile to generate JPEG and index | Fixed Body number must be replaced, and a single yellow ending is not an accurate recovery. |
+| [02_original whole screenshot.py](02_原始整体截图.py) | Show the 22 objects concerned; background RGB185,190,198, opacity 52; target opacity 255; reframe waiting for 0.12 seconds | The neighbourhood is determined by this model and the whole machine is not shown by default |
+| [03_original red box and index.py](03_原始红框与索引.py) | Scan red yellow pixels; extension 28 pixels, minimum box 90 pixels, red line 10 pixels; generation of double view index | Set a 300-1780 scanning range, bugging the interface, and the central bottom box is off limits. |
 
-历史问题20是Body833与Body841：整体定位＋双方隔离放大。仅用它理解取景，不复用历史Body编号、图像、统计或结论。原始脚本只沿用已有视角并调用Reframe，没有保存当时初始相机方向数值。
+History question 20 is the separation of Body 833 from Body 841: Position +. Use it only to understand the view, and not to use the historical Body number, image, statistics or conclusions. The original script only follows the existing perspective and calls Refame, without saving the value of the direction of the initial camera at the time.
 
-## 配色与正式修订代码
+## Colouring and Official Revision Codes
 
-- 对象A：[255,161,56]橙色；对象B：[31,214,224]青色，与当前UI的[1,.63,.22]和[.12,.84,.88]换算一致。保持A/B顺序，颜色不表示PASS/FAIL。背景灰色、约20%不透明度及既有报告布局保持不变。
-- [01_UI配色修订局部截图.py](01_UI配色修订局部截图.py)和[02_UI配色修订整体截图.py](02_UI配色修订整体截图.py)：仅调整历史目标颜色，供对照；保留了历史固定编号和状态恢复局限，不作为新模型的通用入口。
-- [capture_generic_dual_view_20261010.py](capture_generic_dual_view_20261010.py)：正式通用显示/截图入口；解析当前对象，保存并恢复显示和相机，默认橙/青配色。先用--help核对对象、邻域、观察方向、输出参数；没有自动设置实测交区的能力不可假定存在。
-- [report_highlight_bounds.py](report_highlight_bounds.py)：识别当前UI橙/青高亮；限定真实视口和目标ROI，显式排除罗盘及其他界面，过滤小碎片；高亮触碰掩膜边缘或扩展框与排除区相交时返回NEEDS_REVIEW，无默认框。
-- [annotate_report_highlights.py](annotate_report_highlights.py)：批量标注入口。输入--jobs JSON和--output目录，写审核索引；NEEDS_REVIEW不生成伪合格标注图。
+- Object A: [255,161,56] Orange; Object B: [31,214,224] Cyan, consistent with current UI conversions [1,63,22] and [12,84,88]. Maintain A/B order, colour does not mean PASS/FAIL. Background grey, approximately 20% opacity and existing reporting layouts remain unchanged.
+- [01_UI colour revision local screenshot.py](01_UI配色修订局部截图.py) and [02_UI colour revision overall screenshot.py](02_UI配色修订整体截图.py): Only historical target colours are adjusted for comparison; historical fixed numbering and state restoration limits are maintained and are not used as common access to the new model.
+- [capture_generic_dual_view_20261010.py](capture_generic_dual_view_20261010.py): Formal generic display/interception portal; interpret the current object, save and restore the display and camera, and default orange/green colour. Check objects, neighbourhoods, observation direction, output parameters with --help; no automatic capacity to set a contact area is assumed to exist.
+- [report_highlight_bounds.py](report_highlight_bounds.py): Identify the current UIO/Cyan light; define the real view and target ROI, explicitly exclude compasses and other interfaces and filter small fragments; return to NEEDS_REVIEW when the outer edge or extension frame intersects with the exclusion area, without default.
+- [annotate_report_highlights.py](annotate_report_highlights.py): Batch labels are injected into mouths. Enter -- jobs JSON and --output directories, with an index of audit; NEEDS_REVIEW does not generate false conformity maps.
 
-## 输入与验收
+## Enter and accept
 
-每个jobs项包括source原图路径、label、viewport视口矩形、compass实际罗盘矩形、target_roi目标投影范围、excluded其他界面矩形列表。矩形为[left,top,right,bottom]，后两项是排他边界；按实际窗口测定并随缩放和罗盘移动更新。ROI来自对象投影或人工核对，不由全图颜色猜测。缺配置或越界停止处理。
+Each jobs item includes the original source chart path, label, viewport rectangular, the actual compass rectangle of Compass, the target projection range of target_roi, the list of excluded other interface rectangles. The rectangle is [left, top, right, bottom], the latter two are exclusive boundaries; measured by the actual window and updated with zoom and compass movement. ROI comes from the object projection or manual check, not guessed by full image colour.
 
-执行顺序：核对活动文档与双方身份 → 保存显示/相机/选择状态 → 相关邻域淡化、双方橙/青显示，整体取景 → 隔离双方，局部取景 → 保存原图与相机记录 → 提供视口/罗盘/目标ROI并标注 → 逐图核对 → 精确恢复 → 按既有报告模板排版及PDF逐页验收。
+The order of execution: Check the active document with the identity of both parties Save the display/camera/selection status Desalinize the area concerned Orange/Cyan displays the overall view of both sides, take the partial view of the parties, save the original map and camera records → Provide the visual/program/target ROI and mark the map-by-graph check → Precise restoration of the layout of the existing reporting template and PDF page-by-page acceptance.
 
-像素框仅为对象定位框，不是精确干涉边界；实际交区/最近点必须来自结构化几何测量。报告审计记录脚本版本、A/B路径与颜色、相关邻域、相机前后、界面排除区、ROI、原图/标注图及复核/恢复状态。需要复核的图保留待处理状态，不改变几何判定。
+The pixel frame is an object positioning box and is not an accurate interference with the boundary; the actual intersection/recent point must come from structured geometric measurements. The report audit records script version, A/B path and colour, relevant neighbourhood, camera front and rear, interface exclusion, ROI, original graphs/placards and review/restoration status.

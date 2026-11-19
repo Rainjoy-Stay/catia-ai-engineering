@@ -1,23 +1,23 @@
-# 双视图及 AI 复核
+# Double View and AI Review
 
-2026-10-13：截图执行以 [catia-native-dual-view](../../catia-native-dual-view/SKILL.md) 为准：两图等大，整体完整模型全部适应，局部仅干涉对全部适应，默认同方向。以下历史约定与其冲突时采用新技能。AI复核要求仍保留。
+2026-10-13: The screenshot execution is based on [catia-native-dual-view](../../catia-native-dual-view/SKILL.md): two large maps, the whole model Fit All In, part of which is only agreed upon in the same direction. The following historical engagements apply new skills in conflict with them.
 
-## 本项目截图约定
+## Interception of this project
 
-- 两张图使用相同画幅与大小；保留红色定位框，框只辅助定位，不冒充精确交区。
-- 整体图适配完整模型，所有零件入画；除目标干涉对外其余实体透明，目标橙/青区分。若零面积辅助曲线遮挡，单独记录其隐藏，不遗漏实际有限实体和面壳。
-- 局部图隐藏所有非目标实体及几何图形集元素，仅显示本对象对；候选管路单对象图仅保留候选对象。
-- 默认等轴侧；目标被遮挡或退化为端面圆点时换清晰视角，并保存相机审计。不同对象对不能复用同一图而仅换编号；哈希重复时检查是否确为同一几何位置，必要时换视角。
-- 排除罗盘、模型树、工具栏和坐标轴。可裁去 UI 边缘，不能伪造模型内容或漏掉完整模型。
-- 显示采用清晰着色，避免透明壳体背面边线淹没目标。报告保留名称、来源、测量、状态和建议；不要重复“透明比例、适配视野、隐藏壳体”等截图操作说明。
-- 截图前记录颜色、显示、透明度继承、相机及渲染模式，结束或异常均恢复。CATIA GetRealOpacity 状态未定义不能假定已定义统一值；零面积辅助对象需记录实际状态。关闭刷新/选择同步仅作为可恢复的性能优化，不能省略恢复审计。
+- The two maps use the same painting and size; the red locator box is maintained, and the frame is only intended to assist in positioning, and not to pretend to be an exact intersection.
+- Overview Fit Complete Model, all parts are painted; the entities are transparent and target oranges/greens are distinguished except for the target, and if the zero-area auxiliary curve is blocked, its hidden is recorded separately and the actual limited entities and surface shells are not omitted.
+- Decail view hides all non-target entities and geometric graphics elements, showing only the pair of objects; the single object chart of the candidate line is reserved only for candidates.
+- Defaults, for example, on a axis side; uses a clear perspective when the target is blocked or degraded to the end of the dot and saves a camera audit. Different objects change numbers instead of using the same image; and check whether the same geometric location is actually the same when hash repeats.
+- Excludes compasses, model trees, toolbars and coordinate axes. You can cut the edge of UI and not falsify the model or miss the full model.
+- Displays a clear colour to avoid flooding targets on the side of the back of the transparent shell. The report retains the name, source, measurement, status and recommendations; and does not repeat cross-graph instructions such as "transparent scale, fit view, hidden shell".
+- The CATIA GetRealOpacity status is not defined. The zero area auxiliary object has to record the actual status. Turning off refreshing/selecting syncs only as a recoverable performance optimization and not omitting to resume the audit.
 
-## AI 复核未评价项
+## AI Review not evaluated
 
-1. 冻结当前未评价对象对名单及来源哈希，读取每对精确事实、输入有效性、来源、可用局部图片和规则。不得引入旧模型的豁免。
-2. AI 对每对作建议通过、建议未通过或仍需依据的判断，记录理由、范围、置信度、证据路径和下一步。无证据的猜测不能写成确定结论。
-3. 明确实际评价主体：当前会话 AI、外部模型或人工。只有真的调用外部模型接口才能声称调用了外部 AI；规则脚本或已有建议序列化不等于新一轮模型调用。
-4. 有效面双方边界接触可以建议通过几何干涉项，但不证明接触接口批准或满足净距。有效正间隙低于筛查阈值可建议净距未通过，须注明规则批准状态。零公共体积接触不能凭这一事实断言整体通过。
-5. 无效 BREP 上的双侧内部采样可提示优先风险，不能自动认定正常连接。内部交线且穿透证据不完整保持复核；补查物理用途、拓扑或独立计算。
-6. 独立显示 AI 建议和原始状态；用户明确要求应用建议时，按结论范围及证据门槛更新，保留旧状态与理由审计。未授权工程豁免不能仅凭 AI 置信度放行。
-7. 核对建议记录唯一性、总数覆盖、来源哈希及 UI/报告一致性。报告完整列出逐对判断，明确仍需依据的对象，而非笼统称 AI 全部评价通过。
+1. Freezes the current not evaluated object for the list and source hash, reading each pair of precise facts, input validity, source, available decail view and rules. Exemptions from the old model cannot be introduced.
+2. AI records the reasons, scope, confidence, path of evidence and next steps for each judgement that the recommendation has been adopted, the recommendation has not been adopted or remains to be relied upon.
+3. Clarify the actual evaluation body: current session AI, external model or manual. Only a real call to the external model interface can claim to have been made to use external AI; a rule script or already recommended serialization does not amount to a new round of model calls.
+4. A valid interface allows for the approval or satisfaction of a net distance. A valid positive gap below the screening threshold may recommend that the net distance is not passed, but must indicate the status of approval of the rules.
+5. Invalid BREP internal sampling on both sides may indicate a priority risk and cannot automatically identify a normal connection. Internal contact lines and penetration are incomplete and subject to review; additional physical use, popping or independent calculations are checked.
+6. Independent display of AI recommendations and original status; users who explicitly request the application of recommendations are updated by range of findings and evidentiary threshold, and maintain old status and justification audits. Unauthorized works exemptions cannot be released on AI confidence alone.
+7. Checks the uniqueness of the recommendation record, the coverage of the total, the source hash, and the consistency of the UI/report. The report presents a full list of the subject-by-judgment and identifies the objects that still need to be relied upon, rather than referring to AI as a whole as approved.

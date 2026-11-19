@@ -1,4 +1,4 @@
 interface:
-  display_name: "版本差异清单"
-  short_description: "对比两版结构与属性位姿，区分几何修改、移动和匹配不确定项。"
-  default_prompt: "使用 $catia-revision-diff 按本次指定模型和范围完成版本差异清单，保留证据并明确未评价项。"
+  display_name: "CATIA revision comparison"
+  short_description: "Compare two CATIA revisions for structural, metadata, pose, and verified geometry changes. Report additions, removals, modifications, and unmatched objects."
+  default_prompt: "Use $catia-revision-diff to complete this request. Compare the two specified revisions, preserve the evidence, and flag uncertain matches."

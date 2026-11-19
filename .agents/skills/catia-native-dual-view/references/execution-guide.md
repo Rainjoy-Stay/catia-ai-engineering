@@ -1,135 +1,135 @@
-# CATIA 双视角截图与报告统一规范
+# CATIA Dual-Specific Cross-Specific Mapping and Reporting Harmonization of Norms
 
-版本：2026-10-13。适用于本项目 CATIA 原生检查截图与报告。
+Version: 2026-10-13. Applies to the original CATIA check screenshot and report.
 
-本版合并桌面的《通用双视角截图脚本》《04_双视角截图逐步操作》和项目截图要求，并采用用户本次确认的取景定义。原文件保留，本版作为本次全量检查截图与报告的统一执行依据。
+This version of the General Dual-Specific Script Script 04_ Double-Specific Script Progressive Operation and Project Script Requirements, which combines the desktops, uses the user's definition of this confirmed view. The original document is retained and this version serves as the uniform basis for the implementation of this full-scale inspection of the screenshot and the report.
 
-## 1 固定要求
+## 1 Fixed Requirements
 
-**两图等大，只改变显示范围与视野：整体图显示完整模型后全部适应；局部图隐藏干涉对以外的对象，再对干涉对全部适应。**
+** Two figures are large, except for changes in display range and view: Fit All In after overview shows the complete model; detail view hide objects other than inference level fit All In**.
 
-| 项目 | 整体定位图 | 局部细节图 |
+| Item | Holistic Map | Local Details |
 |---|---|---|
-| 显示对象 | 完整检查模型中的实体与有限面壳 | 当前干涉对 A/B |
-| 背景 | 其他对象浅灰、约20%不透明 | 非目标对象全部隐藏 |
-| 目标 | A橙色、B青色，默认完全不透明 | 与整体图保持相同A/B及颜色 |
-| 取景 | 背景与目标准备好后，对全部可见几何执行全部适应 | 隐藏非目标对象后，对全部可见A/B执行全部适应 |
-| 观察方向 | 默认等轴侧 | 默认与整体图一致 |
-| 图像及报告尺寸 | 与局部图完全相同 | 与整体图完全相同 |
+| Show Object | Complete check the entities in the model and limited numbers | Current reference level A/B |
+| Background | Other objects are grey, about 20% opacity | Hide all non-target objects |
+| Objective | AOrange, B-Cyan, completely opacity by default | Keep the same A/B and colour as overview |
+| View | Set All In | Execute Fit All In for all of A/B when non-target objects are hidden |
+| Observation direction | Default Axis Side | Default corresponds to overview |
+| Images and Report Dimensions | Same as detail view | Same as overview |
 
-不得用“最近24个对象”“最大面积对象”或局部邻域代替完整整体图；不得仅选中目标而保留其他对象可见，却声称已完成局部隔离。
+A complete overview may not be replaced by a “maximum area object” or a local neighbourhood for the “most recent 24 objects”; targets may not be selected to keep other objects visible, but local isolation is claimed to have been completed.
 
-两图的区别应真实来自显示范围和相机适应后的视野。禁止用同一张图重复排版。整体图必须能辨认模型轮廓和目标所在位置，局部图必须能辨认双方及相关接口。
+The difference between the two diagrams should really come from the field of view that shows the range and the camera adapt. It is forbidden to repeat the layout with the same image. Overview must be able to identify the profile of the model and the location of the target, and detail view must be able to identify the parties and the interfaces.
 
-默认报告采用项目既有 A4 横向格式；每个问题一页，整体图与局部图使用相同画幅、相同嵌入宽高，保留对象、测量、分类和建议。图像等比例放置，不拉伸，不人为制造“大主图、小定位图”。
+The default report is in the A4 horizontal format; each page, overview and detail view uses the same painting, the same embedded width, and keeps objects, measurements, classifications and suggestions. Images, etc., are placed in scale, do not stretch and do not artificially make the "big map, small position map".
 
-## 2 本版解决的冲突
+## 2 Conflict resolution in this edition
 
-| 原资料中的不同说法 | 本次统一结果 |
+| Different statements in the original information | This unified result |
 |---|---|
-| 大幅局部图加小幅整体图、推荐A4纵向 | 不采用；两图等大，沿用A4横向 |
-| 整体图限定相关邻域 | 不采用；完整检查模型显示后全部适应 |
-| 强制两个不同观察方向 | 不强制；默认同方向，显示范围及视野不同 |
-| 黄、红、绿、蓝目标配色 | A橙色RGB(255,161,56)，B青色RGB(31,214,224) |
-| 全图像素扫描、中央兜底框 | 不采用；限定视口和目标区域，排除界面与辅助几何 |
-| 通用脚本运行结束即视为验收完成 | 不采用；必须检查真实图片和显示恢复结果 |
+| Large detail view plus small overview, recommended A4 vertically | Not used; two figures are large, following A4 horizontal |
+| Overview Limit Relevant Neighbourhoods | Not; after a complete check of the model display Fit All In |
+| Force two different observation directions | Not forced;defaults in the same direction, displaying different ranges and horizons |
+| Yellow, red, green, blue. | AOrange RGB (255,161,56), B Cyan RGB (31,214,224) |
+| Full Image Scan, Central Bottom Box | Not used; limiting view and target areas, excluding interfaces and auxiliary geometry |
+| Universal script is considered accepted and accepted when it is completed | Not used; real pictures must be checked and recovery results shown |
 
-如果同一方向存在遮挡、退化或投影重合，可调整局部方向，并记录原因；仍看不清时补第三张真实局部图或CATIA截面。不能以换方向代替正确的整体/局部显示范围。
+If there is a mask, degradation or projection overlap in the same direction, the local direction can be reoriented and the cause recorded; the third real detail view or CATIA cross-section is still not visible. The correct overall/local display range cannot be replaced by a different direction.
 
-## 3 截图队列与对象身份
+## 3 Intercept Queue and Object Identity
 
-1. 从本次结构化结果建立完整队列，覆盖需要配图的FAIL、WARN、REVIEW、NOT_EVALUATED及可定位ERROR；要求展示的正常连接或豁免案例另列。
-2. 无几何对象的环境错误保留日志和环境证据，不伪造几何截图。没有问题时也要有模型概览。
-3. 每项记录Issue ID、A/B对象键、真实树名、父级、完整路径、类型、承载Body/面及对应测量证据。
-4. 名称重复时使用完整实例路径或本轮重新登记的索引。索引只能用于当前模型及当前树结构，不能沿用历史编号。
-5. CATPart内Body不等于装配零件。Face、开放面壳、组件实例和Body分别记录，不能把Body背景定位称为精确面定位。
-6. 不以管路候选数量或截图外形决定对象身份；管路识别队列与干涉队列分别登记。
-7. 全量结果不得被脚本默认的前20项限制截断。未截图项保留编号和原因，报告标为未完成。
+1. Creates a full queue from this structured result, covering FAIL, Warn, REVIEW, NOT_EVALUATED and the searchable ERRO; the normal connection or exemption cases required are listed separately.
+2. No geometric object’s environmental error keeps logs and environmental evidence and does not forge geometric maps.
+3. Each record is Issue ID, A/B object, real tree name, parent, complete path, type, carrying body/face and corresponding measurement evidence.
+4. When a name is repeated, use the full example path or index for the current round to re-register. The index can only be used for the current model and the current tree structure, and history numbers cannot be used.
+5. In CATPart, Body does not amount to the assembly of parts. Face, open surfaceshells, examples of components and Body are recorded separately and the background location of Body cannot be described as a precise face location.
+6. The identity of the target is not determined by the number of candidates or by the physical appearance of the route; the route identification queue and the interference queue are registered separately.
+7. The full result cannot be interrupted by the first 20 limits of the script default. The uncut item retains the number and cause, and the report is marked as incomplete.
 
-## 4 显示事务和正确控制层级
+## 4. Showing the transaction and correct control level
 
-优先在独立检查副本截图，不保存供应商源模型。操作前记录：原活动文档、选择、显示/隐藏、真实颜色、不透明度、颜色及透明度继承、相机原点/视线/up、缩放、投影、渲染模式和Saved状态。
+Priority is given to independently checking the copy screenshot, without preserving the supplier source model. Pre-operational records: original active document, selection, display/hidden, true colour, opacity, colour and transparency succession, camera origin/vision/up, scaling, projection, rendering mode and Saved state.
 
-先对一个对象试改并回读，确认真正控制可见几何的层级。CATProduct组件层、引用CATPart、Body和最终几何特征可能有不同继承；不能仅修改组件节点就假定实体已经变为目标颜色。
+CATProduct layers, references to CATPart, Body, and final geometric features may be inherited differently; changes to component nodes cannot assume that the entity has become the target colour.
 
-**只给实际实体或面壳着色，不给默认基准平面、坐标轴、空Body等辅助对象着色。** 辅助对象影响取景或标注时，记录其身份及原显示状态后隐藏，结束时恢复。
+** Colours are given only to the actual entity or surface shell, and does not colour the satellite objects such as the default base plane, coordinates, empty Body, etc. ** The auxiliary object influences the viewing or label, and is recorded as its identity and original state, hidden and restored at the end.
 
-背景浅灰RGB(185,190,198)，不透明度默认52/255；目标默认255/255。52表示约20%不透明，不是52%透明。历史COM的SetShow(0)为显示、SetShow(1)为隐藏；MCP的visible使用布尔值，不能混用极性。
+Slightly background RGB (185,190,198). Untransparent default 52/255; target default 2255.52 indicates that about 20% is not transparent, not 52% transparent. The historical COM SetShow (0) is a display, SetShow(1) is hidden; the MCP uses the boolean value and does not mix polarity.
 
-不得把未定义或混合的显示属性当作统一值。只有状态返回明确证明一致时才允许分组保存/恢复；否则逐对象记录。
+Undefined or mixed display properties may not be treated as uniform values. Groupings are allowed to be saved/restored only if the state returns clearly proves consistent; otherwise, object-by-object records are recorded.
 
-## 5 整体图操作
+## 5 Overview Operations
 
-1. 核对本次活动文档与A/B身份。
-2. 显示完整检查模型中的实体与有限面壳；必要父级也保持显示。
-3. 非目标对象设为浅灰、约20%不透明；A/B保持显示，设为不透明橙/青。
-4. 隐藏已登记的非物理辅助平面、坐标轴或零面积辅助元素，不遗漏实际有限实体与面壳。不可测对象单列覆盖缺口，不当作检查通过。
-5. 清除临时选择高亮，刷新视图，设置等轴侧或本项已确认的方向。
-6. 执行全部适应；实际查看完整模型是否入画、位置参照是否清楚、A/B是否可见。
-7. 保存原图和相机记录，再生成定位标注。
+1. Check this activity document against A/B identity.
+2. Displays the entities in the complete check model with limited surface shells; the necessary parent levels are also displayed.
+3. Non-target objects are set to be grey and about 20 per cent non-transparent; A/B maintains the display as non-transparent oranges/greens.
+4. Hides the registered non-physically assisted plane, coordinates or zero area support elements, without missing the actual limited entity and surface shells. Non-detectable objects cover the gap in a separate column and are not considered to pass the check.
+5. Clears the temporary selection of highlight, refreshing the view, setting the side of the axis or the confirmed direction of this item.
+6. Execute Fit All In; physically check if the complete model is painted, if the location reference is clear, if A/B is visible.
+7. Keep original maps and camera records, and generate position indications.
 
-整体图不应是空背景中的孤立干涉对。若完整模型下目标很小，定位框用于说明其位置；详细关系由等大的局部图承担，不随意隐藏远端实际零件改变整体图定义。
+Overview should not be isolated in an empty background. If the target under the complete model is small, the location box is used to indicate its location; the detailed relationship is covered by a large detail view, which does not readily hide the remote actual parts changing overview definition.
 
-## 6 局部图操作
+## 6 detail view operation
 
-1. 隐藏干涉对以外的实体、面壳及辅助几何，保留使A/B可见所必需的父级；不删除几何。
-2. A/B保持与整体图相同的身份和橙/青顺序，默认不透明。
-3. 保持整体图的观察方向，清除临时选择高亮并刷新。
-4. 执行全部适应，使干涉对完整入画、边缘留有余量；不能仍沿用整体图的缩放。
-5. 实际检查双方、接口和与结论相关的端部/壁边界是否清晰。
-6. 如遮挡，可将遮挡方暂改为约30%—50%不透明，另一方保持清楚，并记录实际值；必要时调整局部方向或增加真实剖视。
-7. 保存原图与相机记录。两图画布尺寸相同；禁止为追求占比而裁掉关键几何。
+1. Hide entities other than inference pair, surface shells and auxiliary geometry, retaining the required parent level to make A/B visible; do not delete geometry.
+2. A/B maintains the same identity and orange/green order as overview, and the default is not transparent.
+3. Keeps the observation direction of the overview, clears the temporary selection highlight and refreshs.
+4. Execute Fit All In to complete the painting and leave the edges behind; the overview scaling cannot be continued.
+5. Physically check the clarity of the parties, interfaces and end/wall boundaries relevant to the conclusions.
+6. In the case of cover-up, the barrier could be changed temporarily to about 30-50 per cent non-transparent, while the other side remained clear and recorded actual values; local orientations could be adjusted or real profiling could be increased, if necessary.
+7. Saves original maps and camera records. Both drawings are of the same size; it is forbidden to reduce critical geometry in pursuit of ratio.
 
-“局部”首先指只显示干涉对，并对其全部适应。额外的交区放大或剖视作为补图，不取代该局部图。
+"local" refers firstly to the display of only inference pair and to its Fit All In. Additional intersection zooming or profiling is used as a supplement and does not replace the detail view.
 
-## 7 红框与界面排除
+## 7 Red Box & Interface Exclusion
 
-原图使用CATIA导出的JPG、BMP或TIFF，原始文件保留。后处理只用于裁去界面边缘、格式转换和标注，不生成或擦除模型几何。
+The original map is used as a JPG, BMP, or TIFF exported by CATIA. The original file is retained. The latter processing is used only to cut the interface edges, format conversions and labels, and does not generate or erase the geometry of the model.
 
-定位框可来自：经确认的对象屏幕范围、同相机选择差分，或结构化三维位置投影。整体/局部采用各自相机计算定位区域，不能直接复用另一张图的像素坐标。
+The positioning box can be derived from the confirmed range of the object screen, the selected difference with the camera, or a structured three-dimensional projection. The respective camera is used to calculate the positioning area, and the pixel coordinates of the other map cannot be used directly.
 
-必须记录真实视口、目标ROI、罗盘、树、工具栏、坐标轴及其他辅助元素的排除区域。窗口尺寸、相机或罗盘位置改变后重新核定。坐标轴、默认平面和树高亮不能进入目标掩膜。
+The exclusion area of the real vision mouth, target ROI, compass, tree, toolbar, coordinate axis and other supporting elements must be recorded. The window size, camera or compass is re-approved when the position is changed. Coordinate axis, default plane and tree highlight cannot enter the target mask.
 
-使用选择差分时，两次拍摄之间不得改变相机、显示范围、颜色、窗口大小。孤立对象辅助定位图也必须与对应原图采用完全相同的相机，且排除辅助几何。
+When using the selected difference, the camera, display range, colour, window size cannot be changed between the two shots. The stand-alone object assistive positioning map must also use the same camera as the corresponding map and exclude the auxiliary geometry.
 
-红框只表示对象或问题位置，不表示精确干涉边界、穿透量或尺寸。找不到可靠目标、目标触及排除边缘或框覆盖辅助元素时，返回NEEDS_REVIEW；保留原图和原因，不补中央框，不将无框图称为已标注合格。
+The red box only indicates the object or problem location, and does not indicate precise interference with the boundary, penetration or size. When no reliable target is found, the target touches the edge of the exclusion or the frame over the support element, returns NEEDS_REVIEW; preserves the original map and reasons, does not fill the central box, and does not refer to the unboxed figure as a qualified one.
 
-图注应包含Issue ID、整体/局部角色、方向、A/B实际名称或短路径、定位级别及对应测量。数字只取自本项结构化结果。
+The figure should include Issue ID, integral/local role, direction, A/B actual name or short path, positioning level, and corresponding measurements. The number is taken only from the results of the structuralization of this item.
 
-## 8 逐图和报告验收
+## 8. Figure-by-case and report acceptance and inspection
 
-每项检查：身份正确；A/B及相关位置可见；整体有完整环境、局部确已隔离；两图视野不同且互补；颜色与透明度正确；红框未圈入界面或辅助几何；中文名、单位及编号一致。
+Each check: correct identity; A/B and related location visible; complete environment, partially isolated; different and complementary visions; correct colour and transparency; red box not enclosed or supported geometry; Chinese name, unit and number.
 
-两张图片必须具有相同原始画布和相同报告嵌入尺寸，等比例显示。原图应有足够分辨率；可通过增大实际CATIA视口提高细节，不用插值放大伪造质量。
+Both images must have the same original canvas and the same report embedded in sizes and equal proportions. The original picture should have sufficient resolution; details could be enhanced by increasing the actual CATIA view without plug-in to enhance the quality of the forgery.
 
-索引至少记录：Issue ID、对象键及路径、原图/标注图、图像宽高及哈希、实际相机、A/B颜色与不透明度、隐藏对象、ROI和排除区域、QA状态及失败原因。
+The index records at least: Issue ID, object keys and path, original/marked, image width and Hash, actual camera, A/B colour and opacity, hidden object, ROI and exclusion area, QA state and cause of failure.
 
-组装Word/PDF后渲染复核：两图等大、未裁掉关键几何、无文字重叠或标题掉页、红框和图注清晰。不能只凭截图函数返回成功宣称验收通过。
+Rendering Word/PDF after assembly: two large, uncut key geometry, no overlap of words or clear headers, red boxes, and graphics. You cannot return a successful acceptance by using an amplogram function alone.
 
-## 9 恢复与失败处理
+## 9 Recovery and failure processing
 
-finally路径恢复触碰对象的显示、颜色、不透明度及继承，恢复辅助平面/轴、相机、渲染模式、选择和原活动文档。回读核对原记录，写display_restoration结果。
+Read back the original records and write display_restoration results.
 
-恢复失败列出具体对象、属性和补救动作，不最后“全显示、统一灰色”冒充恢复。不通过保存源模型消除Saved标志变化。
+Resume failed to list specific objects, attributes and remedial actions, and not end up " show all, unify gray ". Saved sign changes are not eliminated by saving the source model.
 
-强制结束进程、CATIA崩溃或断电可能无法执行finally；必须使用此前保存的状态记录恢复。本轮不合格试图不得混入最终报告。
+The mandatory closure process, CATIA collapse or power outage may not be possible; previously kept state records must be used to restore.
 
-只清理本次创建且已确认无需保留的临时对象，保留检查副本与证据，不关闭用户其他文档。
+Only the temporary object created in this instance and confirmed that it is not necessary to keep it, keep a check of copies and evidence and do not close the user's other documents.
 
-## 10 现有脚本及实施边界
+## 10 Existing scripts and enforcement boundaries
 
-工作区已存在的通用入口为`CATIA管路智能检查系统_内网移植包_4.8.0_20260924/project/tools/capture_generic_dual_view.py`；配套参考与修订脚本位于同目录的`report_capture_reference_20260920`。
+The existing common entry for the workspace is `CATIA管路智能检查系统_内网移植包_4.8.0_20260924/project/tools/capture_generic_dual_view.py`; the accompanying reference and revised script is in the same directory as `report_capture_reference_20260920`.
 
-原通用入口以CATPart Body和CATProduct递归组件为选择单位。其默认背景、继承处理及视角参数不应自动视为满足本规范；Face/独立面壳需要专项对象解析。使用前列对象、核对实际参数，再先验收一项真实双图。
+The original universal access is based on the CATPart Body and CATProduc subcomponents as the selection units. Its default background, succession treatment and perspective parameters should not automatically be considered as satisfying this norm; Face/Independent Surface Shells needs a specific object analysis. Use the front-line object, check the actual parameters, and receive a genuine double-graph first.
 
-原资料中的离线测试或历史R30验收状态仅作来源记录，不代表本次实机验收。不得直接运行含历史Body编号、统一颜色恢复或中央兜底框的旧脚本。
+The offline test or historical R30 acceptance status in the original information is recorded only as a source and does not represent the current actual acceptance. Old scripts containing historical Body numbers, uniform colour restoration, or central background boxes should not be directly run.
 
-本次几何事实统一来自CATIA原生DMU/GSD/SPA；截图及像素分析不改变几何判定。调用成功、画面验收和工程判定分别记录。
+This geometric fact is derived from the original CATIA DMU/GSD/SPA; screenshots and pixel analysis do not change geometric determinations.
 
-## 11 来源与优先级
+## 11 Sources and priorities
 
-1. 用户2026-10-13确认：两图等大；整体完整模型全部适应；局部仅干涉对全部适应。
-2. 桌面《通用双视角截图脚本.md》《04_双视角截图逐步操作.md》。
-3. 项目`REPORT_FORMAT.md`、空间检查技能截图参考及通用脚本说明。
+1. User 2026-10-13 confirms: two large maps, etc.; whole model Fit All In; only partially.
+2. Desktop " Generic dual-view script.md " 04_two-view screenshot step by step.md.
+3. Project `REPORT_FORMAT.md`, cross-reference to space inspection skills and generic foot note.
 
-以上文件中与第1项冲突的版式、邻域限定或强制方向要求，在本次任务中按本规范执行；其他身份、证据、标注和恢复要求继续保留。
+The layout, perimeter limitation or mandatory direction requirements in the above document, which conflict with item 1, are carried out in this mandate in accordance with this norm; other identification, evidence, labelling and restoration requirements continue to be retained.

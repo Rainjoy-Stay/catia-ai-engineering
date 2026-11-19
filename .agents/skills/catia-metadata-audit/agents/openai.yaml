@@ -1,4 +1,4 @@
 interface:
-  display_name: "属性一致性与交付预检"
-  short_description: "检查件号版本描述与引用完整性，输出缺项和可审查属性修改表。"
-  default_prompt: "使用 $catia-metadata-audit 按本次指定模型和范围完成属性一致性与交付预检，保留证据并明确未评价项。"
+  display_name: "Metadata and delivery preflight"
+  short_description: "Check part numbers, revisions, descriptions, names, materials, references, and assembly records. Report gaps and propose verifiable, authorized edits."
+  default_prompt: "Use $catia-metadata-audit to complete this request. Audit metadata for the specified model and scope. Preserve evidence and identify unevaluated items."

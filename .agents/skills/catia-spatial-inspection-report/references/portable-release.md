@@ -1,15 +1,15 @@
-# 内网包一致性与搬目录验收
+# Intranet package consistency and removal cataloguing and acceptance
 
-先确定本轮实际使用的入口、几何引擎、UI、截图和报告脚本，再制作干净目录。历史包的一键入口可能与当前工作区流程不同；只复制旧包或只更新文档不足以同步功能。
+Identify the entry, geometric engine, UI, screenshot and report scripts that are actually used in this round, and then make a clean directory. The one-key entry to the historical package may differ from the current working area process; simply copy old packages or update documents is not enough to synchronize.
 
-检查默认调用链中的固定模型名、Body 数、坐标、输出目录、净距阈值和子进程路径，均从当前活动文档或运行配置获得。参数需同时传给包围盒筛查、精算子进程、UI和报告。多个导出批次全部导入，注册标识避免跨批冲突。
+Check the fixed model name, number of Bobby, coordinates, output directories, net distance thresholds and sub-process paths in the default call chain, all obtained from the current active document or running configuration. Parameters are transmitted to both the surrounding box screening, the actuarial sub-process, UI and the report. Multiple export batches are imported in full and registration marks avoid cross-series conflicts.
 
-UI不得内嵌历史管形路线、对象编号、人工放行总数或AI建议。对象类型来自登记的 geometry_kind；不能因 surface 字典存在把实体的公共体积显示为不适用。真实加载网格与已完成对象可用于核对进度，不能补造导出事件。
+The UI may not embed historical tube paths, object numbers, manual release totals or AI recommendations. Object types are from registered geometry_kind; the common volume of the entity cannot be shown as not applicable because of the existence of the Surface dictionary. Real load grids and completed objects can be used to check progress and cannot replace the export event.
 
-盘点实际解释器与依赖：工作区可能借用了另一个 Python 的 PDF、图像或文档库。把所需依赖及固定版本纳入包内，禁止启动时联网安装；保持企业模型地址和密钥为空或环境配置。MCP和手工入口应调用同一当前流程，注册配置在部署位置生成。
+An inventory of the actual interpreter and dependency: The working area may borrow another Python PDF, image or document library. The required dependencies and fixed versions are included in the package, and the installation of the network on start-up is prohibited; the business model address and key are maintained as empty or environmental configurations. MCP and manual access should call the same current process and register the configuration at the deployment location.
 
-验收分开记录：离线单元回归、当前流程几何回归、导航及UI、MCP协议初始化/列工具/实际调用、报告生成和渲染、同一参考几何测量对比。参考模型数量仅是该输入的预期，不能成为通用识别目标。
+The number of reference models is only expected from the input and cannot be a common target for identification.
 
-冻结文件哈希并打包，检查 ZIP 完整性，再从 ZIP 解压到含中文和空格的新目录，在原工作区以外启动；移除外部 Python 路径依赖后运行自检及哈希核对。日志和实际验证结果随交付保留。跳过项、CATIA未运行、R30许可及企业AI宿主未现场验证，应明确写为未验证，不能宣称全流程通过。
+Freezing and packing documents, checking the ZIP integrity, depressing from ZIP to a new directory containing Chinese and spaces, starting outside the original workspace; removing external Python path-dependent self-checking and Hash checking. Logs and actual validation results are kept with delivery. Skipping items, CATIA not running, R30 permissions and business AI hosts are not validated on site, and should be clearly stated as unverified and cannot claim that the entire process is passed.
 
-启动失败先保留日志和原包，定位可复现原因后由发布流程修复；不能让现场AI默默改源码后把其结果当作原版本结果。源模型修改与本轮人工例外也不应隐含在通用包中。
+The launch failed to retain the log and the package, where the location can be restored to the cause and repaired by the release process; the result cannot be changed to the original version by AI in situ. The source model modification and the current round of manual exceptions should also not be implied in the general package.

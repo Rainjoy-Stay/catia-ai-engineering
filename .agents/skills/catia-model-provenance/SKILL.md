@@ -1,26 +1,26 @@
 ---
 name: catia-model-provenance
-description: 收集 CATIA 数模文件、引用、元数据及授权接收记录，生成来源证据与归档索引；区分可观察文件事实、推测及无法证明的供应商接收链。
+description: Collect CATIA files, references, metadata, and authorized receipt records. Distinguish observed facts from inferences and identify gaps in the receipt chain.
 ---
 
-# 来源识别与接收链溯源
+# Model provenance and receipt chain
 
-先读 [日常操作约定](../../../docs/CATIA_DAILY_OPERATIONS.md) 的“共同执行约定”，再执行本技能。优先发现当前已注册的结构化 CATIA 工具；工具源码存在不等于已注册。模型操作遵循当前可用的 catia-model-understanding；缺少该技能时使用共同约定中的最小只读流程。只在用户要求图片时读取现行双视图技能。
+Read the shared operating rules in [Everyday CATIA operations](../../../docs/CATIA_DAILY_OPERATIONS.md). Discover the structured CATIA tools registered in the current session and verify their contracts. Follow the available `catia-model-understanding` skill for model operations, or use the documented minimum read-only workflow if it is unavailable. Consult the current paired-view skill when the user requests images.
 
-## 自然语言入口
+## Natural Language Entry
 
-- “查一下这套数模从哪来的，整理接收和转换链。”
-- “把模型文件和传递单对上，生成归档溯源清单。”
-- “判断这些零件是原生 CATIA 还是 STEP 导入，并给出证据。”
+- "Check out where the numbers come from, sort out the reception and conversion chains."
+- "Play the model file and the pass sheet to generate an archived retrospective list."
+- "to determine whether these parts are original CATIA or STEP imports and give evidence."
 
-## 执行
+## Implementation
 
-1. 先采集当前文档类型、完整路径、未保存状态、外部引用、可读产品属性和格式信息。文件大小/修改时间/哈希只对本次读取的磁盘字节有效；内存中未保存几何不得继承磁盘哈希作为当前内容指纹。读取前后文件大小或时间改变时标记 FILE_CHANGED_DURING_READ。
-2. 证据分为 FILE_FACT（路径/哈希/格式）、MODEL_METADATA（原始属性/引用）、RECEIPT_RECORD（传递单/接收登记/授权邮件或 PLM 记录）及 INFERENCE。记录每条事实来源、读取方法、时间、适用对象和是否人工确认；保留原始编码和时区未知状态。
-3. 用户要求接收链时，在已授权目录和已连接系统查找已有传递单、版本记录、PLM 标识及导入/转换审计。只读查询，不发信、不改变共享，不因任务而将模型或清单发往外部 AI。无记录时写 UNKNOWN，不能将文件创建时间当接收时间或把作者字段当供应商身份。
-4. 用证据建立 source artifact → received artifact → conversion → inspection derivative 链；每条边有事件类型、前后哈希/标识、时间及凭据。不确定边为 UNVERIFIED。相同哈希只证明相同字节，不证明谁发送或合法权属。
-5. 原生可编辑特征、导入 B-Rep、结果无链接、混合模型分别按可读特征报告。单个 Import/STEP 名称不足以判定整个模型来源；STEP 文件头中的应用/作者只是声明。几何像某厂家不构成来源证据。
+1. First collects information about the current document type, complete path, unsaved status, external references, readable product properties and formats. File size/ change time/ Hash is valid only for the disk bytes read this time; geometry cannot inherit the disk Hash as the current content fingerprint in memory. Mark FILE_CHANGED_DURING_READ when reading back-to-back file size or time change.
+2. The evidence is divided into FILE_FACT (path/hash/format), MODEL_METADATA (original attribute/citation), RECEIPT_RECORD (transmit/receipt registration/authorization of mail or PLM records) and INFERENCE. Record each factual source, reading method, time, applicable object and whether it is manually confirmed; keep the original coding and the time zone unknown.
+3. When a user requests a receiving chain, search for an existing passer, version record, PLM identifier and import/transform audit in an authorized directory and connected system. Read only a query, do not send a letter, do not change the sharing, do not send a model or list to an external AI because of a task. Write UNKNOWN when there is no record, cannot create a file at the time of receipt or identify the author field as a supplier.
+4. Creates a chain of evidence based upon evidence — type of event, front-and-back hash/identify, time and evidence. Uncertain side is UNVERIFIED. The same hash only proves the same byte, does not prove who sent it or who legally owned it.
+5. Original editable features, import B-Rep, results unconnected, hybrid models reported separately by readable features. Individual Import/STEP names are not sufficient to determine the entire source of the model; applications/authors in the head of the STEP file are only stated. Geometrics like a manufacturer do not constitute evidence of the source.
 
-## 验收与交付
+## Acceptance and delivery
 
-交付 provenance.json、artifact-index.csv、链路缺口和归档建议。来源字段不自动写回模型，不移动或重命名原文件。来源可信度用证据层级和缺口描述，不生成无依据百分比分数。没有接收凭据时明确“已识别文件事实，接收链未确认”。
+Deliver `provenance.json`, `artifact-index.csv`, receipt-chain gaps, and archival recommendations. Preserve the source files and avoid writing provenance fields back to the model. State evidence levels and gaps without assigning unsupported percentages. If receipt records are missing, report the observed file facts and leave the receipt chain unconfirmed.

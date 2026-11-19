@@ -1,48 +1,48 @@
-# 本地版本整理与验证
+# Local release maintenance and validation
 
-日期：2026-11-12。用户授权完成修改后自动同步 GitHub，并将不用的旧版归档、验证最新版后清理冗余副本。
+November 12, 2026. The user authorized automatic GitHub synchronization after verified changes, archival of unused versions, validation of the latest release, and cleanup of redundant copies.
 
-## 当前保留
+## Retained assets
 
-- `release_build/CATIA_Offline_20261012/`：完整离线检查基线（运行时必需）。
-- `model_understanding_workbench/`、`tools/`、`.agents/skills/`：当前开发与代理入口。
-- `AI_Engineering_Platform_Latest_20261013/`：原生检查案例及交付物整理版；不能等同于新的一键产品。
-- `CATIA管路智能检查系统_Agent交付版_20260920/`：Codex CATIA MCP 配置及正在运行的进程仍指向这里，未移动、未删除、未擅自切换连接。
-- `CATIA管路智能检查系统_内网移植包_4.8.0_20260924/`：当前截图技能引用其工具与参考，保留。
-- `CATIA管路智能检查系统_内网移植包_4.8.0_R30_详细执行与通用截图版_20260929/`：两个当前案例/报告脚本存在固定路径引用，保留。
-- `release_build/CATIA_V5_AI_DROP_V4_5_DEV/`：视频打包工具引用其中的历史成果，暂保留。
-- 原模型、源数据、报告、截图、视频及现有 `_archive`：有独立证据或创作价值，未按版本号盲删。
+- `release_build/CATIA_Offline_20261012/` contains the complete offline inspection baseline and required runtime.
+- `model_understanding_workbench/`, `tools/`, and `.agents/skills/` contain active development and agent entry points.
+- `AI_Engineering_Platform_Latest_20261013/` organizes native inspection cases and deliverables. Acceptance as a unified one-click product remains pending.
+- `CATIA管路智能检查系统_Agent交付版_20260920/` remains in place because the configured Codex CATIA MCP and the running process refer to it.
+- `CATIA管路智能检查系统_内网移植包_4.8.0_20260924/` contains tools and references used by the current screenshot skill.
+- `CATIA管路智能检查系统_内网移植包_4.8.0_R30_详细执行与通用截图版_20260929/` remains in place because two current case and report scripts refer to fixed paths there.
+- `release_build/CATIA_V5_AI_DROP_V4_5_DEV/` remains available because video packaging tools reference its historical artifacts.
+- Original models, source data, reports, screenshots, videos, and existing `_archive` content were retained for their independent evidentiary or creative value.
 
-## 本次归档
+## Archive
 
-归档根：`_archive/cleanup_20261112/`。
+The archive root is `_archive/cleanup_20261112/`.
 
-- 4.7.0 发布目录、2026-09-20 最新整理版目录、4.4 开发目录及 4.4 试用包目录：移出活动区，逐文件 SHA-256 校验 ZIP_STORED 无压缩归档；归档验证通过才清除冗余展开副本。
-- 根目录 6 个历史发布/补丁 ZIP：移入归档 `packages/`，保留原始字节。
-- `move-manifest.json` 记录原位置和归档位置；每个新 ZIP 的 `.index.json` 保存路径、字节数和哈希；`verification.json` 记录校验结果，`deletion-receipt.json` 记录已清理的展开目录。
+- The 4.7.0 release directory, September 20, 2026 curated directory, 4.4 development directory, and 4.4 trial package directory were moved out of active use. Their uncompressed `ZIP_STORED` archives were verified per file by SHA-256 before redundant extracted copies were removed.
+- Six historical release and patch ZIP files from the root were moved under `packages/` with their original bytes preserved.
+- `move-manifest.json` records original and archived locations. Every new ZIP has an `.index.json` with paths, byte counts, and hashes. `verification.json` records validation and `deletion-receipt.json` records the extracted directories removed.
 
-恢复时将对应 ZIP 解压回 move-manifest 中原目录，保留所有子路径；历史工具的固定路径需恢复后再执行。没有恢复源目录前，不运行指向已归档版本的旧入口。
+To restore a package, extract its ZIP to the original directory in `move-manifest.json` and preserve all subpaths. Restore the original layout before running historical tools that contain fixed paths.
 
-## 本轮验证
+## Verification
 
-- Python 3.12 x64、依赖与配置通过；注册 149 个 MCP 工具。
-- 550 项离线回归通过，其中 4 项跳过。
-- 发布清单 6035 个文件哈希通过。
-- 模型理解 32 项合成/模拟 COM 测试和 4 个工具的 MCP 协议验证通过。
-- 最新 UI 启动成功，HTTP 200；未启动几何检查。
-- 真实 CATIA 附着不可用，当前未完成实机模型/许可及 R30 内网验收。离线通过不表示实机全流程已验证。
-- 系统 Python 缺少 mcp；改用项目自带 runtime 后理解模块协议验证通过。未修改全局 Python 环境。
+- Python 3.12 x64, dependencies, and configuration checks passed. The server registered 149 MCP tools.
+- The 550-case offline regression suite passed with four skips.
+- All 6,035 release manifest file hashes matched.
+- Model understanding passed 32 synthetic and mock COM tests and MCP protocol checks for four tools.
+- The current UI started and returned HTTP 200. Geometry checks were not started.
+- Live CATIA attachment was unavailable. On-machine model and licensing validation and R30 intranet acceptance remain pending.
+- System Python lacked `mcp`. The model understanding protocol check passed using the bundled project runtime. The global Python installation was left intact.
 
-因此，只清理归档已完整保留且逐文件校验的冗余展开副本，不删除旧版的唯一内容，也不删除在用 MCP 环境。
+Cleanup applied only to redundant extracted copies whose archives passed per-file validation. Unique historical content and active MCP environments were preserved.
 
-## 日后使用
+## Future use
 
-本地根目录 `打开最新版.cmd` 打开当前界面，`验证最新版.cmd` 重新执行离线验证。GitHub `local-launchers/` 中保存的是本地布局启动器源码，源码镜像未带 runtime，不能在刚 clone 的仓库中直接当完整软件运行。
+The local root launcher `打开最新版.cmd` opens the current UI. `验证最新版.cmd` repeats offline verification. GitHub's `local-launchers/` contains launchers for this local layout. A fresh source checkout requires a separately installed runtime.
 
-后续修改完成并通过相应验证后，按根 AGENTS.md 自动同步私有 GitHub；模型、档案 ZIP、运行时与原始日志仍留本地。
+After completing and verifying future changes, follow `AGENTS.md` to synchronize the private GitHub repository automatically. Models, ZIP archives, runtimes, and raw logs remain local.
 
-归档采用 ZIP_STORED 以提高速度；它保留恢复能力和清爽目录，不承诺减少磁盘占用。
+The archive uses `ZIP_STORED` for faster processing and straightforward recovery. Disk savings are not guaranteed.
 
-## 完成记录
+## Completion record
 
-4 个旧版目录共 34,023 个文件已归档校验；4 个冗余展开副本已删除。6 个历史 ZIP 已移动归档。在用 MCP 和被引用版本保留。恢复索引为归档目录内 restore-index.json，汇总见 cleanup-summary-20261112.json。清理后最新 UI 命令入口的 --help 检查通过。
+Four older directories containing 34,023 files were archived and verified. Four redundant extracted copies were removed, and six historical ZIPs were archived. The active MCP and referenced versions were retained. See `restore-index.json` in the archive directory for recovery and `cleanup-summary-20261112.json` for the summary. The current UI command entry point passed its `--help` check after cleanup.

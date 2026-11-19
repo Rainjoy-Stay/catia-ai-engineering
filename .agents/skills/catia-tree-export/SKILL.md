@@ -1,26 +1,26 @@
 ---
 name: catia-tree-export
-description: 从 CATIA 整机或部件导出层级、实例路径、件号、版本、描述和数量清单，用于结构树抄录、装配统计和 BOM 对账；不把几何 Body 清单当作恢复的产品 BOM。
+description: Export CATIA hierarchy, instance paths, part numbers, revisions, descriptions, and quantities with field provenance and read coverage.
 ---
 
-# 结构树与BOM清单导出
+# Product tree and BOM export
 
-先读 [日常操作约定](../../../docs/CATIA_DAILY_OPERATIONS.md) 的“共同执行约定”，再执行本技能。优先发现当前已注册的结构化 CATIA 工具；工具源码存在不等于已注册。模型操作遵循当前可用的 catia-model-understanding；缺少该技能时使用共同约定中的最小只读流程。只在用户要求图片时读取现行双视图技能。
+Read the shared operating rules in [Everyday CATIA operations](../../../docs/CATIA_DAILY_OPERATIONS.md). Discover the structured CATIA tools registered in the current session and verify their contracts. Follow the available `catia-model-understanding` skill for model operations, or use the documented minimum read-only workflow if it is unavailable. Consult the current paired-view skill when the user requests images.
 
-## 自然语言入口
+## Natural Language Entry
 
-- “把当前整机结构树导成 Excel 能打开的清单，带层级、路径、件号、版本和描述。”
-- “只导出附件机匣下面三级，按件号和版本汇总数量。”
-- “把同一零件的所有安装位置列出来，别把实例当成不同零件。”
+- "Forcing the current whole structure tree into a list that Excel can open, with hierarchy, path, part number, version and description."
+- "Export only the lower three stages of the attachment box, aggregated by part number and version."
+- “List all installation locations of the same component and do not treat examples as different parts.”
 
-## 执行
+## Implementation
 
-1. 解析整机/指定子树、最大深度、是否含根、实例明细或零件汇总、格式和输出位置。用户未指定时导出当前活动文档全部可读层级、实例明细及 UTF-8 BOM CSV；另存 JSON 作为证据。要真正 xlsx 时使用可用表格技能，不改扩展名冒充。
-2. 用文档信息、模型 manifest 和已注册的结构读取能力取得定义与实例。遍历按原始子节点索引建立路径；路径同时保留各段名称和索引，避免同名兄弟覆盖。优先复用独立理解模块的快照；版本和描述未被该模块采集，须由已验证属性读取补充，否则标为 NOT_READ。
-3. 每行输出 snapshot_id、occurrence_id、parent_id、level、instance_path、instance_name、definition_reference、part_number、revision、description、source_document、read_status、evidence_ref。根层级为 0。区分节点缺失、字段空字符串、属性不支持与读取失败。
-4. 一件多实例分别列明细；汇总优先用已验证的定义身份和版本。仅按件号汇总时披露可能碰撞，不把同件号不同引用静默合并。统计直接子项数量、展开叶件数量分别说明；不以枚举序号充当持久身份。
-5. CATPart 的 Body/曲面清单单独输出 geometry_inventory，注明不是装配 BOM；不从几何分块臆造供应商件号。
+1. The solver/specify the sub-tree, maximum depth, root content, example detail or part aggregation, format and output position. When the user does not specify the full readable level, example breakdown and UTF-8 BOM CSV of the current active document; JSON is saved as evidence. Use the available table skills for real xx without changing the extension.
+2. Defines and examples with document information, model model method and registered structure reading ability. A path is indexed using the original subnode; the path is maintained with paragraph names and indexes to avoid being overwritten by the same brother. Priority is given to a snapshot of the independent understanding module; versions and descriptions are not captured by the module and must be read and supplemented by the validated properties, otherwise marked as NOT_READ.
+3. Output per line snapshot_id, occurrence_id, parent_id, level, instance_path, instance_name, definition_reference, part_number, revision, description, source_document, read_status, evidence_ref. Root level is 0. Differentiating nodes is missing, fields are empty strings, properties are not supported and read failed.
+4. A multiple example shows the details separately; aggregate priority is given to the validated definition identity and version. Only part number is used to disclose potential collisions, without a silent combination of references to part number. Statistics on the number of direct sub-items and the number of expanded leaves are given separately; no serial number is used as a permanent identity.
+5. The CATPart Body/ Curve List output geometry_inventory separately, indicating that it is not a assembly BOM; it does not assume the supplier part number from geometry.
 
-## 验收与交付
+## Acceptance and delivery
 
-校对根、目标子树和抽样路径；输出期望/已读取节点、深度截断、未加载引用、失败行及汇总口径。CSV 对名称和描述等外部文本做公式注入防护，保留原值于 JSON。缺失数据不能填成 0 或编造版本。交付 tree.csv、tree.json、summary.json，并说明是否完整；不保存模型。
+Verify the root, target subtree, and sample paths. Report expected and read node counts, depth truncation, unloaded references, failed rows, and aggregation criteria. Protect external names and descriptions from CSV formula injection and preserve original values in JSON. Keep missing values and revisions unknown. Deliver `tree.csv`, `tree.json`, and `summary.json` with a completeness statement. Leave the model unsaved.

@@ -1,6 +1,6 @@
 interface:
-  display_name: "CATIA 原生等大双视图"
-  short_description: "制作等大的整体与局部原生截图，核对透明隐藏、定位框及显示恢复"
-  default_prompt: "使用 $catia-native-dual-view，为本次CATIA检查生成两图等大的整体与局部截图，按完整模型及干涉对分别全部适应并验收。"
+  display_name: "Equal-size native CATIA views"
+  short_description: "Capture equal-size native overview and detail images. Verify transparency, visibility, locator boxes, and display restoration."
+  default_prompt: "Use $catia-native-dual-view to complete this request. Capture an overview with the complete model fitted and a detail view with the isolated interference pair fitted. Use equal-size images."
 policy:
   allow_implicit_invocation: true

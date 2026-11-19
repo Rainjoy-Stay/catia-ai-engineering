@@ -1,28 +1,28 @@
 # Opening Interface Analysis
 
 
-## 报告截图代码说明（2026-10-10）
+## Description of the report's amplification codes (2026-10-10)
 
-本节为当前截图代码说明；本文旧黄/红配色、全图像素扫描或中央默认框的描述，在新报告创建中以本节修订为准。其他业务要求、历史事实和既有报告结果保持原义。
+This section is a description of the current screenshot code; the description of the old yellow/red colour, full image scan or central default box in this document is amended in the creation of the new report by this section. Other business requirements, historical facts and established reporting results remain as they are.
 
-涉及当前模型配图或报告创建时，先读[原始代码与修订入口](../../tools/report_capture_reference_20260920/README.md)。三段原始代码解释相关邻域整体取景、双方隔离局部取景及高亮标注；正式通用截图和罗盘排除修订代码也保存在同目录，可随本项目使用。
+When it comes to the creation of the current model layout or report, read the [original code and revision portal](../../tools/report_capture_reference_20260920/README.md). Three original paragraphs explain the overall view of the relevant neighbourhood, the isolated local view and the high-profile mark; the official generic cut-off and compass exclusion amendment codes are also kept in the same directory and can be used with the project.
 
-对象A/B采用UI橙色RGB(255,161,56)与青色RGB(31,214,224)，背景约20%不透明、取景目的与既有布局不变。明确排除罗盘、树、工具栏和坐标轴，只检测目标屏幕ROI；缺可靠像素或掩膜影响目标则待复核，不补中央框。高亮框不是精确干涉边界，原始脚本固定Body编号、旧颜色阈值与统一黄色恢复不可直接沿用。
+Object A/B uses UI orange RGB (255,161,56) and CGGB (31,214,224) with a background of about 20% which is not transparent, with a view to finding the same layout. The compass, tree, toolbar and coordinates are explicitly excluded and only the target screen ROI is detected; the absence of a reliable pixel or mask impact target is subject to review without filling the central frame. Highlight frames do not interfere precisely with borders, and the original script fixes the Body number, the old colour threshold and the unified yellow value.
 
-接管—开孔几何判定核心模块。模块自身不直接调用 CATIA，现已通过 `project/catia_checker/opening_interfaces.py` 接入主检查器、一键检查、报告生成和 MCP `catia_check_assembly`。
+Takeover - The core module of the open geometric determination. The module does not call CATIA directly by itself. It has now been accessed through `project/catia_checker/opening_interfaces.py` to the primary checker, one-key check, report generation and MCP `catia_check_assembly`.
 
-输入必须是 CATIA SPA 或精确 B-Rep 已提取的事实：开孔中心、法向、半径、边界完整性、筒壁不连续证据，以及接管轴线、外半径和轴向范围。
+The input must be CATIA SPA or the exact fact that B-Rep has been extracted: the centre of the opening, the direction, the radius, the integrity of the boundary, the evidence of the discontinuity of the barrel wall, and the taking over axis, the outer radius and the range of the axis.
 
-判定覆盖：同轴偏差、夹角、径向间隙、是否穿过开孔平面、是否跨越完整筒壁，以及证据是否足够。证据不足返回 `REVIEW`，明确几何不合格返回 `FAIL`，全部满足才返回 `PASS`。网格结果不作为输入依据。
+Determination of coverage: same axle deviations, angles, trajectories, whether or not to cross the open surface, whether or not to cross the whole barrel wall and whether the evidence is sufficient. Insufficient evidence to return `REVIEW`, clearly geometrically ineligible for return `FAIL`, all content to return `PASS`. The grid result is not used as the basis for input.
 
-`match_openings_to_nozzles` 先以接管有限轴段包围盒执行 X 轴扫描，再用轴线角度、中心偏差、半径差和轴向范围筛选。它输出一对一匹配、歧义候选、孤立开孔、无孔接管及理论组合/实际候选数量，不执行全量精确两两计算。
+`match_openings_to_nozzles` carries out the X-axis scan first to take over the limited-axis encircling box, then selects the axis angle, centre deviation, radius and axis range. It produces one-to-one matches, different candidates, isolated openings, holes-free takeovers, and theoretical combinations/actual candidates, with no exact two-to-two calculations.
 
-`analyze_opening_network` 是独立总入口：正常匹配进入精确接口判定；无匹配接管返回 `FAIL/NO_MATCHING_OPENING`；孤立开孔和多候选歧义返回 `REVIEW`。该入口只消费已提取事实，明确声明不修改源模型。
+`analyze_opening_network` is the independent master entrance: normal match to access accurate interface determination; no match to take over return `FAIL/NO_MATCHING_OPENING`;Isolated openings and multiple candidate returns `REVIEW`. The portal only consumes the fact that the source model is not modified.
 
-`adapt_exact_geometry` 接收 CATIA SPA 或 OCCT B-Rep 的解析几何记录。只有完整圆形内边界和解析圆柱会被接纳；缺中心、法向、半径、轴线或有限轴向范围的记录会进入带原因的拒绝日志，绝不补猜数据。
+`adapt_exact_geometry` receives the resolution geometric records of CATIA SPA or OCCT B-Rep. Only the full circle boundaries and deconstructing cylinders will be admitted; records with no central, legal, radius, axis or limited axis range will enter the cause log and will not be supplemented with data.
 
-`merge_coaxial_cylinders` 将共轴且轴向重叠的解析圆柱面恢复为一个接管候选。最大半径作为外半径、较小半径作为内半径；只有单个圆柱面时保留 `INNER_RADIUS_NOT_OBSERVED`，出现多个同心层级时保留 `MULTIPLE_CONCENTRIC_RADII`。
+`merge_coaxial_cylinders` restores the contour column surface of the coaxial and overlapping axis to a receiver candidate. The maximum radius is the outer radius and the smaller radius is the inner radius; `INNER_RADIUS_NOT_OBSERVED` is retained when a single column is present and `MULTIPLE_CONCENTRIC_RADII` is retained when multiple concentric layers are present.
 
-主项目默认尝试从 `geometry_inventory` 或 OCCT manifest 自动发现输入，也可通过 CLI `--opening-interface-facts` 或 MCP 参数 `opening_interface_facts` 提供外部精确事实。若只有圆柱而缺少可靠的开孔边界和筒壁不连续证据，主流程跳过该接口判定并保留原因，不能生成推测性的未开孔 FAIL。
+The main item default attempts from `geometry_inventory` Or OCT automatically discovers input, also via CLI `--opening-interface-facts` or MCP Parameters `opening_interface_facts` Provides external precision facts. If only the cylinder lacks reliable evidence of porous boundaries and non-continuation of silos, the main process skips the interface to determine and preserve the cause and does not generate speculative unopened FAIL.
 
-当前可靠范围是完整圆形内边界、解析圆柱和可配对的对向等半径边界。复杂曲面孔、无法恢复的分段圆弧及退化拓扑仍需增强，现阶段返回 `REVIEW` 或拒绝记录。
+The current reliable range is the full circle boundary, the decomposed cylinder, and the symmetric radius. Complex curves, irrecoverable subarctics, and degradation expansion still need to be enhanced, with the return of `REVIEW` or denial of records at this stage.

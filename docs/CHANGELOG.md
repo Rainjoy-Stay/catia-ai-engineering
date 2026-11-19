@@ -1,77 +1,77 @@
-# 版本记录
+# Changelog
 
 ## 2.2.0 — 2026-09-29
 
-- 用户确认内网CATIA版本为V5 R30（Release 30），替代此前R18目标；同步活动SPEC、4.8.0包内SPEC/参考副本、架构说明、Agent入口和发布清单。
-- 内网执行说明细化为主手册＋六个分册，明确大局部/小整体双视角、透明隐藏、完整检查覆盖及CATIA树名称统一。
-- 软件仍为4.8.0，文档修订为detailed-r1；源码缺口独立披露。21项相关离线测试通过，未将其当作R30实机验收。
-- 历史r18技能/接口路径为兼容标识，保留真实历史测试版本。
+- The user confirmed CATIA V5 R30 (Release 30) as the target, replacing R18. Updated the active specification, the specification and reference copy in package 4.8.0, the framework documentation, agent entry points, and the release manifest.
+- Intranet Implementation Notes are refined into a master manual + six fascicles that identify both large local/small corporate perspectives, transparent concealment, complete check coverage and CATIA tree names.
+- The software is still 4.8.0 and the document is revised to develop-r1; the source gap is independently disclosed. 21 associated offline tests passed and were not accepted as R30.
+- Historic r18 skills/interface paths are compatible markers and authentic history test versions are maintained.
 
 ## 2.1.0 — 2026-09-22
 
-- 整理 2026-09-20 至 2026-09-22 的开发、CATIA 实测、报告、项目交付和汇报材料工作，新增 `近期工作整理_20260922.md`；
-- 将复杂局部空间检查扩大到 `12 × 12 × 12 mm`、22 个 Body 和 231 个对象对；报告仅保留问题与待复核项；
-- 将干涉证据由分析渲染图升级为 CATIA V5 原生双视图：整体集合体定位图中周围零件约 20% 不透明，问题双方黄/红高亮并用红框定位；同时提供局部隔离图；
-- 明确截图操作规范、报告逐页渲染复核及显示状态恢复要求；
-- 增加管路候选复核，记录 Body 741、839、840、841，并避免把普通直圆柱直接误判为管路；
-- 将管路候选复核接入主检查入口和 Word 报告；
-- 完成管路受控创建事务链：一次性预检令牌、CATIA 内存创建、节点/管径/半径复读、原生 DMU 逐组件验收和失败自动回滚；
-- 在 `MiniEngine_Tubing_Final_20260921.CATProduct` 完成实机临时创建与清理验证，模型清单恢复到基线，全程未保存；
-- 完成最大管径与 `R=2.5D` 寻优复核；因 Part2.1 允许体积包含率仅 3.79%，正确拒绝 D4/R10 越界候选；
-- 完成 PART3.1 点.1/点.2 高亮与标注，以及 3 分钟项目介绍 PPT 的模板逻辑版。
+- (a) Collating the development of 2026-09-20 to 2026-09-22, CATIA monitoring, reporting, project delivery and reporting, adding `近期工作整理_20260922.md`;
+- Extension of complex local space inspections to `12 × 12 × 12 mm`, 22 Body and 231 objects; report only on reservations and pending review;
+- (a) Upgrade the interferometric evidence from the analytical rendering to CATIA V5 original dual view: about 20 per cent of the surrounding parts in the overall aggregate locator map are non-transparent, and the parties to the question are yellow/red bright and position in red frames; local isolation maps are provided;
+- (b) Clear cut-off operational guidelines, page-by-page review of reports and display of recovery requirements;
+- (a) Increase the number of pipeline candidates for review to record Body 741, 839, 840 and 841 and to avoid miscalculating the ordinary straight cylinders directly as a pipeline;
+- (b) Review of the road candidates for access to the main inspection portal and the Word report;
+- Completion of the piped circuit controlled creation service chain: one-time pre-screening badge, CATIA memory creation, node/pipeline/radio rereading, native DMU component-by-component acceptance and failure automatic rollback;
+- The temporary creation and clean-up validation of the live machine at `MiniEngine_Tubing_Final_20260921.CATProduct` is completed, the model list is restored to the baseline and the entire process is not saved;
+- (a) Completion of the review of the maximum tube path and `R=2.5D` for merit; due to the permitted volume coverage of only 3.79 per cent in Part 2.1, correct rejection of D4/R10 cross-border candidate;
+- Completes the PARRT3.1 point/ point/ point.2 highlighting and labelling, as well as the three-minute PPT introduction template logical version.
 
 ## 1.1.0 — 2026-08-24
 
-- 已实现 CATIA 原生 DMU 全装配单次 `Between All` 扫描，替代外部逐组件两两遍历；
-- 使用临时 CATProduct 隔离 Clash 分析对象，检查过程不保存源模型；
-- 新增显式组件对豁免、结构化冲突计数和扫描截断标志；
-- 新增公司内网 OpenAI-compatible 大模型适配器及确定性离线降级；
-- 新增 v1.1 运行配置、规则配置与适配器自动测试；
-- 明确采用 CATIA 原生 DMU Space Analysis 作为普通装配干涉、接触和间距检查的首选权威引擎；
-- 明确 DMU 负责几何事实、规则引擎负责工程判定、AI 负责解释和报告，截图不参与最终判定；
-- 全装配检查改为单次 `Between All Components`，禁止大装配默认逐对 COM 调用；
-- 增加 Conflict 提取、对象语义关联、允许连接白名单、Run—物理实现过滤和根因合并要求；
-- 增加 AABB/BVH 宽阶段、增量缓存、进度、取消、超时和分阶段性能日志；
-- 增加公司内网纯离线、本地大模型和企业 AI 网关三种部署模式；
-- 确认公司内网已有自有大模型，将其设为目标生产模式并增加可替换 LLM Adapter、内网 RAG、审计和降级要求；
-- 增加离线安装包、许可证/目录自检、数据不外发、临时文件清理和安全审计要求；
-- 定义 v1.1 最小可交付能力及断网验收要求。
+- CATIA Native DMU full assembly single `Between All` scan has been achieved, replacing the external component-by-component twice;
+- Using temporary CATProduct to isolate Clash analysts, the check process does not save the source model;
+- New visible components for exemption, structured conflict count and scanned cut-off signs;
+- New company, intranet OpenAI-compatible, large model adapter and definitive offline downgrading;
+- Add a new v1.1 to run configuration, rule configuration and adapter auto-test;
+- (a) The explicit use of CATIA as the original DMU Space Analysis as the preferred authoritative engine for general assembly intervention, contact and space checks;
+- (b) Clarify that DMU is responsible for geometric facts, the rule engine is responsible for engineering determination, AI is responsible for interpretation and reporting and does not participate in the final determination;
+- Full assembly inspection is changed to a single `Between All Components`, which prohibits the default alignment of large assembly to COM calls;
+- Add Conflict extraction, object semantic association, allowing connection to white lists, Run-Physic filtering and root cause consolidation requirements;
+- Add the AABB/BVH width phase, incremental cache, progress, cancellation, overtime and phased performance logs;
+- Increase three deployment modes of company intranet pure offline, local large models and enterprise AI gateway;
+- Confirms that the company intranet has its own large model, has targeted production patterns and has added replacement LLM Adapter, intranet RAG, auditing and downgrading requirements;
+- Additional offline installation packages, permit/catalogue self-check, data release, temporary document cleansing and security audit requirements;
+- Definition v1.1 Minimum deliverables and offline acceptance requirements.
 
 ## 1.0.3 — 2026-08-19
 
-- 增加 `catia_measure_component_interference`，支持两个顶层 CATProduct 组件的模型级干涉检查；
-- 使用 CATIA 原生 DMU Space Analysis Clash 引擎，不再依据截图或包围盒推断；
-- 输出 `INTERFERENCE / CONTACT / CLEARANCE`、有符号结果值、穿透深度和冲突组件；
-- 计算完成后自动移除临时 Clash 对象并恢复原选择集，不保存源装配；
-- 在当前 `Product1.CATProduct` 上确认 `Part1.1`—`Part2.1` 穿透约 153.322 mm；
-- MCP 全量注册测试通过，共 122 个工具。
+- Add `catia_measure_component_interference` to support model-level interferometry for two top-level CATProduc components;
+- Using the original CATIA DMU Space Analysis Clash engine, no longer based on a screenshot or bounding box;
+- Output `INTERFERENCE / CONTACT / CLEARANCE`, symbolized result values, penetration depth and conflict components;
+- Automatically remove temporary Clash objects and restore the original selection set after the calculation has been completed, without saving the source assembly;
+- Confirm `Part1.1` — `Part2.1` piercing about 153,322 mm on the current `Product1.CATProduct`;
+- The MCP full registration test was passed, with 122 tools.
 
 ## 1.0.2 — 2026-08-18
 
-- 增加 `catia_measure_route_to_component`，支持 Arrangement Run—CATPart 产品实例测距；
-- 对未保存/不可直接导出的引用 CATPart，使用结果无链接临时 CATPart 网格化，并在测量后自动关闭；
-- 支持组件位置矩阵，将局部实体网格转换到装配全局坐标；
-- 支持直管/弯曲中心线到三角实体的最近距离、交点、有符号净距和穿透深度；
-- 在 Product4 上确认 Part3.1 与 BAD_02、BAD_03 分别存在约 2.953 mm 和 20 mm 几何穿透；
-- 源 Product、CATPart 和 Arrangement Run 均未被修改或保存。
+- Add `catia_measure_route_to_component` to support the sample range of Arrangement Run-CATPart products;
+- (b) CATPart references for unsaved/not directly exported, temporary CATPart grids using unconnected results and automatically closed after measurement;
+- (b) Supporting the assembly position matrix by converting the local physical grid to the assembly global coordinates;
+- Support the nearest distance, nodal point, symbol net distance and penetration depth of the straight tube/curve centre to the triangular entity;
+- Confirms on Product 4 the existence of Part 3.1 and BAD_02 and BAD_03, respectively, of approximately 2.953 mm and 20 mm mm geometry penetrating;
+- Source Product, CATPart and Arrangement Run have not been modified or saved.
 
 ## 1.0.1 — 2026-08-18
 
-- 修复 CATIA ArrangementNode `GetPoint` 输出数组的 COM 编组问题，可读取真实 XYZ 节点坐标；
-- 增加 `catia_measure_product_distance` 产品级只读测量能力；
-- 支持按直管中心线、圆弧弯曲和管外径计算有符号表面净距；
-- 输出最近中心线点、净距、穿透深度、接触/间隙/干涉状态及计算精度信息；
-- 使用当前 `Problem_Pipeline_Bundle.CATProduct` 的全部 15 个管路对象对完成回归测试；
-- 不修改或保存 CATIA 模型。
+- Fixing the COM grouping problems of CATIA Arrangement Node `GetPoint` output arrays with real XYZ nodes coordinates readable;
+- (a) Increase in `catia_measure_product_distance` product level read-only measurement capability;
+- Supports the calculation of the symbol surface net spacing by the centre line of the pipe, the bending of the arc and the outer diameter of the tube;
+- Output of recent central point, net spacing, penetration depth, exposure/spacing/interferocity and computational accuracy information;
+- Complete the regression test using all 15 piped objects of the current `Problem_Pipeline_Bundle.CATProduct`;
+- Do not modify or save the CATIA model.
 
 ## 1.0.0 — 2026-08-18
 
-- 正式建立项目需求基线；
-- 明确航空发动机短舱、刚性管和软管检查范围；
-- 明确 CATIA V5-6R2022 Tubing Design 和 AI Agent 只读工作模式；
-- 建立干涉、间距、转弯、接口、支撑、防火、制造装配和维护性规则；
-- 建立试运行暂定阈值、规则优先级与适航/行业标准候选集；
-- 定义 Word/PDF 报告、截图标注和 CATIA 内部定位要求；
-- 禁止 v1.0 自动修改或自动修复供应商模型。
+- (a) Formalization of a baseline of project requirements;
+- (b) Clarify the scope of air engine short-seat, rigid and hose checks;
+- (a) Clearly CATIA V5-6R2022 Tubing Design and AI Agent read-only working patterns;
+- Establishing rules for intervention, spacing, turning, interfaces, support, fire protection, assembly and maintenance;
+- Establishment of tentative thresholds for commissioning, priority of rules and candidate lists for seaworthiness/industry standards;
+- Define Word/PDF report, truncated icons and CATIA internal positioning requirements;
+- v1.0 Automatically modify or repair supplier models is prohibited.
 
-后续任何规则、范围、阈值或系统行为变化均应在本文件记录，并提升 SPEC 版本。
+Any subsequent changes in rules, scope, thresholds or system behaviour should be recorded in this document and the SPEC version enhanced.

@@ -1,40 +1,40 @@
-# 从模型识别管形区域与重建中心线
+# From model to identify tube-shaped areas and rebuild the central line
 
-## 范围和数量
+## Scope and quantity
 
-从当前运行的实体、有限面壳与复合 Body 几何扫描；截图只用于显示验收，不能作为识别输入。用户指出的数量是漏检线索，不是应凑齐的目标。区分对象数、连续路线数和直段/弯段数，不把空间框结果表述成整机管路总数。
+Scanning from the currently operating entity, limited surface shells and complex Body geometrics; the screenshot is only used to show acceptance and not as an input to recognize. The number indicated by the user is a leak-check thread, not a target to be matched. Distinguishing the number of objects, the number of consecutive routes and the number of straight/blank segments, does not present the result as a total of the whole pipe.
 
-记录每个对象的扫描结果、候选曲面组、接受或排除依据、失败与限制。无候选不等于已证明不存在管路。范围外对象和无法唯一映射的来源不能隐含在覆盖声明中。
+The absence of a candidate does not amount to a proven lack of pipe. Outside the range of the object and the only source that cannot be mapped cannot be implied in the cover statement.
 
-## 几何识别路径
+## Geometric Identification Path
 
-- 同时处理解析圆柱、圆环、多段扫掠和 BSpline 曲面；圆柱面筛选不能覆盖样条弯管。
-- 在复合 Body 内按连续管形区域识别，不能要求整个 Body 都由管面组成或恰有两个端盖。同一 Body 可含多条路线、接头及其他实体。
-- 对参数一致的相邻曲面组沿路线方向采样截面；单张闭合曲面也应检查。拟合截面平面及圆，必要时检查轻微椭圆截面，记录残差、平面误差、尺寸变化、轴比和采样方向。
-- 检查截面周向覆盖及最大角度缺口，避免把局部圆弧或圆角拟合成整根管。圆环参数角覆盖应计算区间并集，不能累加重叠区间，否则不同分片会把局部圆角误报成完整弯管。
-- 识别容差随单位、尺度、导出精度和实际残差确定，并记录配置；历史模型的长度径比、采样数及误差阈值不能直接当作通用标准。
+- Concomitantly handle the resolution of cylinders, circles, multiple sweeps and BSpline curves; the cylindrical screen does not cover the sample bends.
+- In complex Body, identified as a continuous tube area, it is not possible to require that the whole Body be made up of a tube face or that there be two end covers. The same Body can contain multiple routes, connections and other entities.
+- The adjacent curvature groups with consistent parameters take a sample transect along the route; a single closed curvature should also be checked. The proposed cross-section plane and circle should be checked, if necessary, for a slight elliptical transect to record the difference, plane error, size change, axis ratio and sample direction.
+- Checks the cross-sectional perimeter and the maximum angle gap, avoiding the idea that a local arc or a round angle should be synthesized into the whole tube. The circle angle covers the range that should be calculated and assembled, and cannot be cumulatively overlapping, otherwise different fractions will mistook the local arc into a full bend.
+- The identification of the margin is determined by unit, scale, export accuracy and actual disability, and the configuration is recorded; the length ratio of the historical model, the sample taken and the error threshold cannot be directly used as a general criterion.
 
-## 排除与证据等级
+## Exclusion and Level of Evidence
 
-对直圆柱候选结合轴线上材料状态、内外径、端口、封口和精确体积判定；只有外圆柱或长细外形不足以证明管路。实心短销、杆、螺栓类及圆盘应从管路候选排除，局部圆柱区域也可能只是复合零件中的销。
+The material status, internal and external diameter, port, seal and precise volume of the directly cylindrical candidates on the axle; only external cylinders or long outer shapes are not sufficient to prove the piped circuit. Solid shorts, poles, bolts, and disks should be excluded from the piped candidates, and the local cylindrical area may be only for sale in composite parts.
 
-弯曲且截面连续的导入实体可能因转换而封口或缺失内腔。可保留为“管形区域”，分别记录内腔、壁厚、流体用途未确认；不能据此直接证明可用管路，也不能仅因无内腔漏掉弯曲管形。
+An importing entity that bends and crosses continuously may be closed or missing from its inner cavity as a result of conversion. It can be kept as a " piped area ", recording the unrecognized use of the inner cavity, wall thickness and fluids; it cannot be directly demonstrated that the tube is available, nor can it be left out of the cavity alone.
 
-已排除对象不进入管路报告的独立页面或管路截图包，排除审计单独保留。它们仍可能涉及真实干涉，不得删除干涉报告中的相关事实。
+The independent pages or block-of-the-way packages that exclude the subject from access to the reports of pipelines and exclude the audit from holding separate reservations. They may still involve genuine interference and may not remove interference with the relevant facts in the reports.
 
-## 中心线及弯曲半径
+## Centreline and Curve Radius
 
-以连续截面中心或可靠解析轴线重建路线，保存三维点、曲面索引、方向、源路径与几何哈希。不得用局部圆角半径或圆环支撑面半径替代路线弯曲半径。
+Reconstruct the route with a continuous cross-section centre or reliable axial analysis line to preserve the three-dimensional point, curve index, direction, source path and geometry of hash. A partial round radius or circle shall not be used to support the curved radius of the route.
 
-采样路线长度与局部半径均标明为估计值。局部曲率测量应避开近直线、端点和不稳定窗口；比较多个窗口并加密采样，核对中心位置、长度和最小半径是否收敛。最小半径明显变化时报告范围及误差限制，不输出虚假的高精度数值。
+The length of the sample route and the local radius are indicated as estimates. Local curvature measurements should avoid the close line, end and unstable window; compare multiple windows and encrypt the sample to check whether the centre position, length and minimum radius are condensed. The range and error limits are reported when the minimum radius changes significantly and do not output false high accuracy values.
 
-几何半径可测不等于符合规格。没有管径、材料、制造方法和适用最小弯曲半径要求时，工程合规保持未评价；无法可靠重建中心线时，半径也保持未评估。
+Geometric radiuss may not be measured to be equal to specifications. Project compliance is maintained when no tube path, material, method of manufacture and minimum bend radius requirements are applied; and the radius is not assessed when no reliable re-establishment of the centre line is possible.
 
-## UI、报告与回归验收
+## UI. Reporting and re-entry
 
-- UI 显示全部已识别路线、中心线及逐条定位；模型导入进度以实际完成对象与网格验证，不能因事件字段不兼容显示空结果，更不能补造实时事件。
-- 同步识别 JSON、检查汇总、UI、报告和截图清单，清除当前交付中的旧计数及旧独立非管路页面；下载内容应与本地最终文件哈希一致。
-- 定位图与局部图尺寸一致、视角可读且彼此不同。UI 网格及重建中心线截图明确标注来源，不能称为 CATIA 原生截图。原生干涉双视图继续遵守 capture-and-review.md。
-- 验证样条弯管、复合 Body 内管形、同 Body 多路线、实心销杆、局部圆角、轻微椭圆截面及采样不收敛场景。核对覆盖和证据，不把本次识别数量设为未来模型的验收常量。
+- UI displays all identified routes, centre lines and article by article; model import progress is validated by physical completion of objects and grids, and cannot be replaced by real-time events because event fields are not compatible to show empty results.
+- Synchronize the JSON, check the summary, UI, report and screenshot lists, clear the old count in current delivery and the old independent non-rubber page; downloads should be consistent with the local final document hash.
+- The map corresponds to the size of the detail view, is readable and differs from one another. The UI grid and the re-establishment centre screenshot clearly indicate the source and cannot be called the CATIA original screenshot. Native interferometry continues to follow Capture-and-review.md.
+- Checks cover and evidence, and does not set this identification to be the acceptance constant for future models.
 
-现有 tools/scan40_swept_routes.py 和 tools/reclassify40_piping.py 可作为实现参考。先检查其历史路径、输出覆盖行为和运行配置；重新分类脚本不得覆盖已经完成的路线识别结果。
+Existing tools/scan40_swept_routes.py and tools/reclassify40_piping.py can be used as a reference. Check their historical path, output overwhelm behaviour and operation configuration; the reclassification script should not cover completed route identification.

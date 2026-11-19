@@ -1,33 +1,33 @@
 ---
 name: catia-native-dual-view
-description: 为本项目制作和验收 CATIA 原生整体与局部双视图及报告配图。两图等大，整体完整模型全部适应，局部仅干涉对全部适应；用于截图、透明隐藏、定位框及显示恢复，不用于几何判定或建模。
+description: Capture and validate native CATIA overview and detail images for interference reports. Use equal-size views, Fit All In on the complete model for the overview, and Fit All In on the isolated interference pair for the detail. Covers screenshots, transparency, visibility, locator boxes, and display restoration.
 ---
 
-# CATIA 原生等大双视图
+# Equal-size native CATIA views
 
-本项目用户在2026-10-13确认的要求如下；本次用户的新要求仍优先。不要把其他模型的旧编号、截图或人工放行带入新任务。
+These requirements were confirmed on October 13, 2026. Follow the user's instructions for the current run when they supersede this guidance. Use the current model's object IDs, captures, and review decisions.
 
-## 取景与版式
+## Framing and layout
 
-- **两图等大。整体图显示完整检查模型后全部适应；局部图隐藏干涉对以外的对象后，对干涉对全部适应。** 不用最近邻域替代整体，不把整体与局部排成一大一小。
-- 默认同一等轴侧观察方向，区别来自显示范围和视野。整体要看得出模型轮廓和目标位置；局部双方完整入镜、接口清楚。遮挡或投影退化时调整局部方向并记录原因，必要时补第三张真实图或截面。
-- A为橙色RGB(255,161,56)，B为青色RGB(31,214,224)。双方默认不透明；整体背景浅灰RGB(185,190,198)、约20%不透明（52/255）。局部必要时仅降低遮挡方不透明度至30%—50%，记录实际值。
-- 默认A4横向问题页，两图原始画布与报告嵌入尺寸一致，等比例显示，不裁掉关键几何。报告格式另有本轮明确要求时依用户要求调整。
+- **Use equal-size images. Show the complete inspection model and run Fit All In for the overview. Hide all objects outside the interference pair and run Fit All In on that pair for the detail.** The overview must cover the complete model.
+- Use the same isometric orientation by default. The overview must show the model outline and target location. Both parts must fit in the detail, with the interface visible. If occlusion or a degenerate projection obscures evidence, adjust the detail angle, record the reason, and add a native view or section if needed.
+- Use orange RGB(255, 161, 56) for A and cyan RGB(31, 214, 224) for B. Both are opaque by default. Use light gray RGB(185, 190, 198) at about 20% opacity (52/255) for surrounding geometry in the overview. If needed, lower only the occluding part's opacity to 30–50% in the detail and record the actual setting.
+- Default to a landscape A4 issue page unless the current report specification says otherwise. Match the two original canvas sizes and embedded sizes. Preserve aspect ratio and retain all relevant geometry.
 
-## 实际执行
+## Capture procedure
 
-1. 先确认本轮文档、A/B真实名称及路径、对象类型和测量来源；模型操作遵循可用的catia-model-understanding。Body定位不能冒称精确Face定位。
-2. 优先用独立检查副本。保存受影响对象的显示、颜色、不透明度及继承，相机、渲染、选择、活动文档及Saved状态。先试一项，回读确认真正控制可见几何的层级。
-3. **只给实际实体或面壳着色。** 默认平面、坐标轴、空Body等辅助对象不得一起染色或进入定位框；需要隐藏时记录并恢复。组件节点改色不证明引用几何已改色。
-4. 准备整体显示、清除选择高亮、刷新并全部适应，保存原图与相机；再隐藏非目标对象，刷新并对A/B全部适应，保存局部原图与相机。不要仅换图片名称或沿用整体缩放。
-5. 定位框使用可靠的对象投影、同相机选择差分或测量位置投影。分别记录视口、目标ROI和界面/辅助元素排除范围；变化后重新核定。红框只表示位置，不代表精确交集或工程尺寸。
-6. 实际查看两图：身份正确，整体有完整环境，局部只有双方，两图视野互补，颜色和接口可读，框未圈进平面/坐标轴/树/罗盘。先验收少量真实样图再批量处理；不合格图不得进入正式报告。
-7. 在finally中按记录恢复并回读核验，包括辅助对象、相机、选择与活动文档。中断后用已有状态台账恢复，不能全显示或统一灰色冒充恢复。源Saved状态变化须披露，不通过保存源模型掩盖。
+1. Confirm the document, real names and paths for A and B, object types, and measurement source. Follow the available `catia-model-understanding` skill for model operations. Describe Body-level location at its actual resolution.
+2. Prefer a separate inspection copy. Record affected objects' visibility, colors, opacity and inheritance, plus the camera, rendering mode, selection, active document, and `Saved` state. Test one change and read it back to identify which level controls the visible geometry.
+3. **Color only actual solids and surface shells.** Exclude default planes, axes, empty Bodies, and other helpers from coloring and locator boxes. Record and restore any helper visibility changes. Read back the reference geometry to verify that a component-level change reached it.
+4. Set up the full model, clear selection highlights, refresh, and run Fit All In. Save the raw overview and camera. Hide non-target objects, refresh, and run Fit All In on A and B. Save the raw detail and camera.
+5. Place locator boxes using a reliable object projection, same-camera selection differencing, or projected measurement locations. Record the viewport, target region of interest, and exclusions for UI and helper elements. Reevaluate them when the view changes. A red box locates the object only.
+6. Inspect both images. Verify object identity, complete model context, only A and B in the detail, complementary framing, legible colors and interfaces, and locator boxes free from planes, axes, the tree, or compass. Accept a small set of real captures before processing the full batch. Exclude rejected images from the report.
+7. Restore and verify state in `finally`, including helpers, camera, selection, and active document. After an interruption, restore from the recorded state. Report any source `Saved` state change without saving the source to suppress it.
 
-## 缺口与交付
+## Gaps and delivery
 
-无法唯一映射、读回显示属性、取得可靠定位框或解除遮挡时，保留对应队列项并标为NEEDS_REVIEW，说明补齐动作；不能补中央框、用旧图替代或从截图反推几何判定。几何事实来自本轮CATIA原生DMU/GSD/SPA。
+Keep any item with ambiguous mapping, missing display readback, unreliable locator boxes, or unresolved occlusion in the queue as `NEEDS_REVIEW`, with the action needed to finish it. Use only current evidence and leave unsupported boxes empty. Geometry verdicts come from the current native DMU/GSD/SPA checks.
 
-完整配图队列、索引字段、脚本入口及异常操作需要时再读[执行说明](references/execution-guide.md)。不必每次重复读整份旧文档；不将此前失败的试验脚本视为已验收工具。
+Consult the [execution guide](references/execution-guide.md) as needed for the complete queue, index fields, scripts, and exception handling. Previously unsuccessful experiments require validation before use.
 
-报告生成后渲染核对两图等大、关键几何完整、图注清楚；保留原图、标注图、相机/显示记录、哈希及恢复结果。只声明实际完成的检查和验收。
+Render the report and check image sizes, completeness of the geometry, and caption legibility. Keep raw and annotated images, camera and display records, hashes, and restoration results. Report only completed checks and acceptance steps.

@@ -1,27 +1,27 @@
 ---
 name: catia-search-duplicates
-description: 在 CATIA 按名称、件号、特征类型或参数搜索，按体积、表面积及几何证据筛选相同件候选；不将体积面积签名相同等同于形状或工程件身份相同。
+description: Find CATIA objects by name, part number, feature type, or parameter. Use volume, area, and geometry evidence to screen duplicate candidates.
 ---
 
-# 特征搜索与相同件候选
+# Feature search and duplicate candidates
 
-先读 [日常操作约定](../../../docs/CATIA_DAILY_OPERATIONS.md) 的“共同执行约定”，再执行本技能。优先发现当前已注册的结构化 CATIA 工具；工具源码存在不等于已注册。模型操作遵循当前可用的 catia-model-understanding；缺少该技能时使用共同约定中的最小只读流程。只在用户要求图片时读取现行双视图技能。
+Read the shared operating rules in [Everyday CATIA operations](../../../docs/CATIA_DAILY_OPERATIONS.md). Discover the structured CATIA tools registered in the current session and verify their contracts. Follow the available `catia-model-understanding` skill for model operations, or use the documented minimum read-only workflow if it is unavailable. Consult the current paired-view skill when the user requests images.
 
-## 自然语言入口
+## Natural Language Entry
 
-- “找出所有名字带支架的零件，列出路径并定位。”
-- “搜索直径 8 毫米的孔，以及半径小于 2 毫米的圆角。”
-- “按体积和表面积找疑似相同件，区分同一件的重复安装和不同文件的同形件。”
+- "Find out all parts of the name with the rack, list the path and locate them."
+- "Search holes of 8 mm diameter and round angles with a radius of less than 2 mm."
+- “Specific identical items by volume and surface area, distinguishing between duplicates of the same item and analogues of different documents.”
 
-## 执行
+## Implementation
 
-1. 区分名称/件号检索、特征/参数检索、复用实例统计、几何候选四种任务。先查结构，再按候选引用读取特征或测量；同一已验证定义只测一次并映射回实例。大模型用分块、进度和预算，截断明确报告。
-2. 名称/类型搜索可用已注册 catia_search_elements 或快照查询。CATIA Search 语法须按实际支持验证，转义输入中的通配符和引号；不让自然语言拼接成无限范围查询。搜索前保留选择集，完成后恢复；定位只选定已解析的唯一对象。
-3. 特征结果含文档、父容器、实例路径、精确特征名、类型、参数和单位。复核实际参数语义；圆柱面不是孔特征，B-Rep 模型可能无原生 Hole/Fillet。未读取的 Body/HybridBody 范围列缺口，不能报告“全模型没有”。
-4. 几何签名在定义局部坐标系测量，至少记录闭合状态、体积 mm³、表面积 mm²、测量范围/方法/误差。未知单位、零体积开放壳、无效量值、NaN 和读取失败排除出实体体积组，另列面积候选。质量依赖材料/密度，不能直接替代几何签名。
-5. 成对判断采用 abs(a-b) <= atol + rtol*max(abs(a),abs(b))，体积与面积分别设容差。用户未给时可使用明确标注的筛查容差，不能当工程验收标准。分桶只加速检索，必须检查相邻桶并做成对复核；不要因 A≈B、B≈C 就宣称 A≈C。
-6. 以 CANDIDATE_SAME_SIGNATURE 输出疑似组，再用精确形状比较/双向几何差、拓扑和特征证据提升结论。AABB 尺寸受旋转影响，未经对齐不用于硬性排除；镜像件、左右件、材料与版本不同仍需区别。没有精确比较工具就保持候选，不写“完全相同”。
+1. Distinguishing name/ part number search, feature/parameter retrieval, re-use case count, geometry candidate four tasks. First check the structure, then read the features or measurements by the candidate reference; the same validated definition is measured only once and maps the example back. Large models use sections, progress and budgets to cut off clear reports.
+2. The name/type search can be searched using the registered catia_search_elements or snapshot. The CATIA Search syntax must be verified with actual support, with a cross-reference and quote in the transliteration input; the natural language is not collaged into an unlimited range of queries. The selection set is maintained before the search, and is restored after completion; the location is selected only for the only object that has been decrypted.
+3. Characteristic results include documents, parent packagings, case paths, precise feature names, types, parameters and units. Review the semantics of the actual parameters; the cylindrical surface is not a perforation, and the B-Rep model may not be native Hole/Fillet. Unreaded Body/HybridBody range column gaps cannot be reported as "The whole model does not exist ".
+4. Geometric signatures are defined in the local coordinates system to record, at a minimum, closure, volume mm3, surface area mm2, measurement range/method/ error. Unknown units, zero volume open shells, invalid mass values, NN and reading failure exclude physical size groups and separate area candidates. Quality depends on material/density and cannot directly replace geometric signatures.
+5. Use abs(a-b) < = atol + rtol*max (abs(a), abs(b)) in pairs of judgements, with a difference in size and size. Users can use clearly marked screening tolerances when not given, not as a project acceptance standard. The sub-breeding only accelerates the search and must be checked and reviewed in pairs; do not claim A → C because of A → B, B → C.
+6. Output groups with CANDIDATE_SAME_SIGNATURE, which raise the conclusions with precise shape comparison/biverse geometry, popping and characterization evidence. AAB size is affected by rotation and is not used for rigid exclusion without alignment; mirrors, left and right, materials and versions still need to be distinguished. Candidates are maintained without a precise comparison tool and are not written "same".
 
-## 验收与交付
+## Acceptance and delivery
 
-交付 search-results.csv、signature-candidates.csv 和 coverage.json；每对标明 SHARED_DEFINITION、SAME_FILE_BYTES、CANDIDATE_SAME_SIGNATURE 或 GEOMETRY_VERIFIED，并给证据。几何相同也不等于可替换件。不得自动合并、替换、删除或重链接相同件。
+Deliver `search-results.csv`, `signature-candidates.csv`, and `coverage.json`. Label each pair `SHARED_DEFINITION`, `SAME_FILE_BYTES`, `CANDIDATE_SAME_SIGNATURE`, or `GEOMETRY_VERIFIED` and include the evidence. Interchangeability requires separate engineering evidence. Keep merge, replacement, deletion, and relinking outside the automatic workflow.

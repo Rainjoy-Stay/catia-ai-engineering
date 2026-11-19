@@ -1,4 +1,4 @@
 interface:
-  display_name: "查找定位与显示恢复"
-  short_description: "按对象定位并临时隔离高亮，保留显示状态并验证恢复结果。"
-  default_prompt: "使用 $catia-display-review 按本次指定模型和范围完成查找定位与显示恢复，保留证据并明确未评价项。"
+  display_name: "Locate and isolate CATIA objects"
+  short_description: "Select, isolate, hide, or adjust transparency temporarily, then restore and verify the original display state."
+  default_prompt: "Use $catia-display-review to complete this request. Locate and temporarily isolate the specified objects, then restore and verify their display state."

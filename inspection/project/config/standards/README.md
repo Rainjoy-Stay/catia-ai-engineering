@@ -1,22 +1,22 @@
-# 可编辑工程标准
+# Editable Engineering Standards
 
-本目录保存独立于程序代码的工程标准参数。修改 JSON 后重新运行检查即可生效，不需要修改 Python 或重装 MCP。
+This directory saves standard project parameters that are independent of the program code. Changes to JSON are effective by reruning the check and do not require changes to Python or reloading the MCP.
 
-## HB 4-55-2002 导管弯曲半径
+## HB 4-55-2002 Curve radius of catheter
 
-文件：`HB_4-55-2002_bend_radius.json`
+Documents: `HB_4-55-2002_bend_radius.json`
 
-常用可调字段：
+Common truncable fields:
 
-- `minimum_bend_radius_ratio_r_over_d`：最低允许的中心线弯曲半径比，当前为 2.0。
-- `standard_radius_ratios_r_over_d`：标准半径系列。
-- `preferred_bend_radius_ratios_r_over_d`：推荐优选半径系列。
-- `high_pressure_recommendation.pressure_above_mpa`：高压建议触发值。
-- `high_pressure_recommendation.recommended_minimum_ratio_r_over_d`：高压建议半径比。
-- `nominal_diameters_mm`：可直接按本标准评价的公称外径系列。
+- `minimum_bend_radius_ratio_r_over_d`: The minimum allowed centre line bend radius is currently 2.0.
+- `standard_radius_ratios_r_over_d`: Standard Radius Series.
+- `preferred_bend_radius_ratios_r_over_d`: Recommended a preferred radius series.
+- `high_pressure_recommendation.pressure_above_mpa`: high pressure suggested trigger value.
+- `high_pressure_recommendation.recommended_minimum_ratio_r_over_d`: High pressure recommended radius ratio.
+- `nominal_diameters_mm`: A common exterior series that can be evaluated directly in accordance with this standard.
 
-活动规则通过 `rules-active.json` 中的 `routing.bend_radius_profile_file` 选择标准文件。
-如需临时覆盖最低半径比，可设置：
+Activity rules select standard files by `routing.bend_radius_profile_file` of `rules-active.json`.
+If the lowest radius ratio is to be temporarily covered, the following can be set:
 
 ```json
 "bend_radius_overrides": {
@@ -24,4 +24,4 @@
 }
 ```
 
-保持为 `null` 时使用标准文件中的值。高压 4DN 当前按建议性要求输出 `WARN`，不会当作强制不合格。
+Maintains the value of the standard file for `null`. High pressure 4DN is currently exporting `WARN` as recommended, which is not considered mandatory.

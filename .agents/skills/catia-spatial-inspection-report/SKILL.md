@@ -1,42 +1,42 @@
 ---
 name: catia-spatial-inspection-report
-description: 本项目 CATIA 空间框局部检查、实体与面壳导入、实时 UI、干涉双视图报告及未评价项 AI 复核。用于按现有模型重跑并交付检查结果；不用于创建几何或普通文档排版。
+description: Rerun bounding-box inspection on an existing CATIA model, import solids and surface shells, display live progress, and deliver paired-view interference reports with AI review of unevaluated items.
 ---
 
-# CATIA 空间框检查与报告
+# CATIA bounding-box inspection and reporting
 
-按用户本轮指定的区域、对象规模及判定要求执行。真实 CATIA 读写操作复用当前可用的 catia-model-understanding；本技能补充本项目的结果语义、UI 和报告验收。
+Use the region, object scope, and verdict criteria from the current request. Follow the available `catia-model-understanding` skill for CATIA reads and writes. This skill specifies result semantics, UI behavior, and report acceptance.
 
-## 范围与新一轮数据
+## Scope and fresh run data
 
-- 确认活动文档、源文件、保存状态和结构清单。单 CATPart 中的 Body 数不能表述成原生装配零件数。
-- 用户要求重新检查时，新建独立运行目录，从当前源几何重新导出。保留源文件哈希、导出审计、范围、对象名称与源路径；不得复用旧测量冒充重跑。
-- 按空间框选定约定规模，同时纳入有效实体与有限面壳。登记数、导出数、名称唯一映射数、框选数及缺口分别记录；零体积不等于面壳可忽略。无法唯一映射的来源保留未评价，禁止按序号猜测。
-- 删除缓存须符合当前工具批准结果；删除被拒绝时不得换路径或方法规避。独立目录可保证本轮隔离，但不能声称旧缓存已删除。
+- Confirm the active document, source file, save state, and structure inventory. Record the number of Bodies in a single CATPart separately from native assembly part count.
+- For a rerun, create a separate run directory and export from the current geometry. Preserve the source hash, export audit, scope, object names, and source paths. Measure again for the new run.
+- Select the agreed scope with the bounding box and include valid solids and bounded surface shells. Record inventory, export, unique name mapping, and spatial selection counts, plus any gaps. Include shells with zero volume. Keep ambiguous source mappings unevaluated and identify objects from evidence.
+- Follow the current tool authorization for cache deletion. Use an independent run directory for isolation. Report any earlier cache as deleted only when deletion is verified.
 
-## 计算与判定
+## Calculation and verdicts
 
-- 唯一无序对象对数应与完整组合数相符；区分包围盒排除、进入精算、完成、失败与补算。几何计算结束不等于工程规则覆盖完成。
-- 本项目用户已要求取消宽松模式：统一显示已记录判定，不显示微重叠放行控件。
-- 有效精确实体公共体积超过明确数值容差时，判几何干涉未通过。此前使用的 1e-6 mm³ 为本运行数值容差，不能当作所有模型的通用工程阈值。设计允许配合另行复核，不以用途未知把已确认重叠写成未评价。
-- 面壳无实体体积；交线不能单独证明材料穿透。区分双方边界接触、共面、内部交叉及双侧穿透证据。无效输入和证据不足不可自动放行。
-- 有可追溯包围盒距离下界排除证据时，不因缺少逐对精确测量将其降级为未知。
-- 判定对象种类以登记的 geometry_kind 为准，不能以非空或空的 surface 字典是否存在决定实体/面壳路径。
-- 1 mm 等未批准筛查阈值仅形成几何筛查结论；缺少工程净距规则、连接或豁免依据时，不宣称工程合规。
-- 用户要求由代理按实际情况定净距时，按对象类型、连接关系、用途及适用要求分别选择并说明依据，不机械沿用统一值。本轮用户允许净距与零公共体积接触通过、允许单张开放平面通过；这是本轮例外，不是未来模型的通用规则，也不自动覆盖实体重叠或未明确的内部面壳交线。
+- Reconcile the unique unordered pair count with the complete combination count. Track bounding-box exclusions, exact calculations, completed pairs, failures, and retries. Record engineering rule coverage independently of geometry calculation completion.
+- Display the recorded verdicts consistently. The user removed relaxed mode and its minor-overlap override.
+- Fail geometric interference when the exact common volume of valid solids exceeds the stated numerical tolerance. A previous run used 1e-6 mm³ as its numerical tolerance. Establish tolerance independently of any engineering limit. Review allowed design fits separately and preserve confirmed overlaps even when the design purpose is unknown.
+- Surface shells have no solid volume. Distinguish boundary contact, coplanarity, interior crossing, and evidence of penetration on both sides. An intersection curve alone is insufficient proof. Leave invalid or unsupported cases unresolved.
+- Preserve a bounding-box exclusion when it has a traceable lower-bound distance calculation, even if an exact pairwise measurement is unavailable.
+- Use the recorded `geometry_kind` to choose the solid or shell evaluation path. A `surface` dictionary alone cannot determine the type.
+- Treat unapproved values such as 1 mm as screening thresholds. Engineering compliance requires an approved clearance rule, connection basis, or documented exemption.
+- When the user delegates clearance selection, document the basis for each applicable type, connection, function, and requirement. The referenced run allowed clearance and zero-common-volume contact to pass and allowed a single open plane to pass. These are run-specific exceptions and do not automatically cover solid overlap or ambiguous interior shell intersections.
 
-## UI 与交付
+## UI and delivery
 
-- 管路识别必须由模型几何统一扫描确定，不以用户目测数量作为目标。覆盖多段扫掠、样条曲面，以及复合Body内连接接头的管形区域；不能因全Body含接头、导出封口或内腔缺失直接漏排管形。已排除的非管路对象不进入交付报告和截图包；审计可单独保留。
-- 管路候选须按几何证据排除实心销轴、螺栓、杆件和圆盘；圆柱外形或轴线不足以证明管路。导入后无内腔的弯曲管形仍可识别为管形区域，但流道、壁厚与工程用途须单独标明未确认。弯曲半径应来自可靠重建的管路中心线，不能使用局部圆角或圆环支撑半径替代；未取得路线时记录未评估，不猜测半径或宣称通过。具体扫描、排除和加密验证方法见 [references/model-piping-recognition.md](references/model-piping-recognition.md)。
+- Identify tubing by a uniform scan of the model geometry. Include multi-segment sweeps, spline surfaces, and tubular regions joined to fittings within composite Bodies. A fitting, capped export, or absent cavity can coexist with tubular geometry. Keep excluded non-tubing objects out of the report and screenshot package. Retain exclusions in the audit as needed.
+- Use geometric evidence to exclude solid pins, bolts, rods, and discs. A cylinder or axis alone does not establish tubing. An imported bent form can qualify as a tubular region without a cavity, while flow passage, wall thickness, and engineering function remain unconfirmed. Measure bend radius from a reliably reconstructed centerline. A local fillet or toroidal support surface is insufficient. Mark radius unevaluated when the route is unavailable. [Tubing recognition guide](references/model-piping-recognition.md)
+- Show only current-run objects, real active pairs, and actual concurrency. When processing ends, reset the active window to zero and retain results, gaps, and report download.
+- Reconcile grouped UI totals with JSON, CSV, and the report. Distinguish geometry failures from pending engineering review. Display identifiable names, source paths, measured values, units, and reasons.
+- Follow the [native paired-view skill](../catia-native-dual-view/SKILL.md) for equal-size images. Fit the complete model in the overview and the isolated interference pair in the detail. Use the same orientation by default. This supersedes older neighborhood and unequal-size guidance. For AI review, see the relevant section of the [capture and review guide](references/capture-and-review.md).
+- Render the rebuilt PDF or Word file and inspect affected pages. Verify that the download matches the local deliverable. Report validation only for inspected items.
+- When updating an intranet package, verify the actual call chain and test the relocated installation. A successful run in the development workspace does not establish offline package acceptance. [Portable release guide](references/portable-release.md)
 
-- UI 只展示当前运行对象、真实活动对象对及实际并发；不得重放旧事件伪装实时计算。完成后活动窗口归零，保留完整结果、缺口和报告下载。
-- 核对 UI 分组总数、JSON、CSV 与报告一致。几何失败与工程待复核分开说明，展示可识别名称、源路径、测量值、单位及原因。
-- 原生截图与报告配图使用 [catia-native-dual-view](../catia-native-dual-view/SKILL.md)：两图等大，整体完整模型全部适应，局部仅干涉对全部适应；默认同方向。该规则优先于旧版邻域取景或主次大小图要求。用户要求 AI 评价时读取 [references/capture-and-review.md](references/capture-and-review.md) 的 AI 复核部分。
-- 根据实际重建的 PDF/Word 渲染核对受影响页面，验证下载内容与本地交付一致。只有实际检查过的项目才报告验证通过。
-- 制作或更新内网包时读取 [references/portable-release.md](references/portable-release.md)，核对实际调用链与搬目录验收，不能把工作区运行成功当作离线包验收。
+## Reference entry points
 
-## 已知实现入口
+Historical implementation references under `tools/` include `complete40_pair.py`, `complete40_monitor.py`, `complete40_report.py`, and `fresh40-ui/`. Validate and parameterize the historical scope and output paths before use. Replace run-specific dates, model names, and hashes.
 
-项目根目录 tools/ 下 complete40_pair.py、complete40_monitor.py、complete40_report.py 及 fresh40-ui/ 为本次实现参考；文件名中的规模和输出目录是历史运行配置，使用前检查并参数化，不照搬日期、模型名或旧运行哈希。
-本次 review40_pending_ai.py 是当前会话 AI 已完成评估的序列化示例，不是调用外部模型的客户端，也不能作为新模型自动 AI 审核的替代品。
+`review40_pending_ai.py` serializes judgments already completed in that session. Reviewing a new model requires current evidence and a new assessment.

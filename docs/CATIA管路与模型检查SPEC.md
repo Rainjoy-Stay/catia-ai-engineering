@@ -1,750 +1,748 @@
-# CATIA 管路与模型几何质量检查系统 SPEC
+# CATIA Tubing and Model Geometry Inspection Specification
 
 
-## 报告截图代码说明（2026-10-10）
+## Report screenshot code reference (2026-10-10)
 
-本节为当前截图代码说明；本文旧黄/红配色、全图像素扫描或中央默认框的描述，在新报告创建中以本节修订为准。其他业务要求、历史事实和既有报告结果保持原义。
+This section is a description of the current screenshot code; the description of the old yellow/red colour, full image scan or central default box in this document is amended in the creation of the new report by this section. Other business requirements, historical facts and established reporting results remain as they are.
 
-涉及当前模型配图或报告创建时，先读[原始代码与修订入口](CATIA管路智能检查系统_内网移植包_4.8.0_20260924/project/tools/report_capture_reference_20260920/README.md)。三段原始代码解释相关邻域整体取景、双方隔离局部取景及高亮标注；正式通用截图和罗盘排除修订代码也保存在同目录，可随本项目使用。
+When it comes to the creation of the current model layout or report, read the [original code and revision portal](../inspection/project/tools/report_capture_reference_20260920/README.md). Three original paragraphs explain the overall view of the relevant neighbourhood, the isolated local view and the high-profile mark; the official generic cut-off and compass exclusion amendment codes are also kept in the same directory and can be used with the project.
 
-对象A/B采用UI橙色RGB(255,161,56)与青色RGB(31,214,224)，背景约20%不透明、取景目的与既有布局不变。明确排除罗盘、树、工具栏和坐标轴，只检测目标屏幕ROI；缺可靠像素或掩膜影响目标则待复核，不补中央框。高亮框不是精确干涉边界，原始脚本固定Body编号、旧颜色阈值与统一黄色恢复不可直接沿用。
+Object A/B uses UI orange RGB (255,161,56) and CGGB (31,214,224) with a background of about 20% which is not transparent, with a view to finding the same layout. The compass, tree, toolbar and coordinates are explicitly excluded and only the target screen ROI is detected; the absence of a reliable pixel or mask impact target is subject to review without filling the central frame. Highlight frames do not interfere precisely with borders, and the original script fixes the Body number, the old colour threshold and the unified yellow value.
 
-| 文档属性 | 内容 |
+| Document Properties | Contents |
 |---|---|
-| 版本 | 2.2.0 |
-| 状态 | V4.4 AI 主导工程检查基线 |
-| 发布日期 | 2026-09-09 |
-| 适用阶段 | 本地实测、内网验收与正式规则导入 |
-| 目标平台 | 内网：CATIA V5 R30（SystemConfiguration.Release=30）；开发验证：V5-6R2022 / Release 32；其他版本单独验证 |
-| 变更控制 | 后续变更通过版本记录和受控规则库管理 |
+| Version | 2.2.0 |
+| Status | V4.4 AI Lead Engineering Check Baseline |
+| Publication date | 2026-09-09 |
+| Phase of application | Local field measurements, intranet acceptances and formal rules import |
+| Target platform | Intranet: CATIA V5 R30 (SystemConfiguration.Release=30); development certification: V5-6R2022 / Release 32; other versions separately |
+| Change control | Subsequent changes are managed through version recording and controlled rule library |
 
-> 2026-09-29修订：内网目标由用户明确统一为CATIA V5 R30（Release 30）；此前R18目标要求作废。软件基线4.8.0。当前检查/命名/截图/报告细则见内网包《00_内网Agent逐步执行手册》及六个分册；R30目标确认不等于已完成R30实机验收。
+> 2026-09-29 Revision: Intranet targets are explicitly harmonized by users as CATIA V5 R30 (Release 30); previous R18 targets are required to be invalidated. The software baseline 4.8.0. The current inspection/naming/interception/reporting rules can be found in Internet, which includes the " 00_internetAgent Progressive Implementation Manual " and six fascicles; the R30 targets confirm that they do not amount to the completion of R30 real machine inspections.
 
-> 基线声明：本文件自 2026-09-09 起升级为项目 SPEC v2.0。v2.0 对应当前 V4.4 精简版：CATIA/几何工具提供客观事实，AI Agent 主动规划检查、选择工具、补充取证并判断设计关系；规则引擎负责数值阈值和最终可追溯判定。输出为 JSON、带红框截图和 Word，不生成 PDF。第 8.2 节数值仅为原型筛查默认值，不构成型号设计批准或适航符合性依据。
+> Baseline statement: This document has been upgraded from 2026-09 to project SPEC v2.0. v2.0 for current V4.4 streamlined version: CATIA/geometric tool provides objective facts, AI Agent proactively plans inspections, selects tools, supplements evidence and determines design relationships; the rule engine is responsible for numerical thresholds and ultimately retroactive determinations. Output is JSON, Red Boxshot and Word, and does not generate PDF. Section 8.2 values are only the default values for prototype screening and do not constitute a basis for model design approval or seaworthiness.
 
-## 1. 文档目的
+## 1. Document Purpose
 
-本 SPEC 定义一套面向 **航空发动机短舱管路布置**、CATIA V5 `CATProduct`/`CATPart`、原生 Tubing Design 数据及 STEP/STP、IGES/IGS 等中性格式哑模型的 AI Agent 模型检查规则与输出要求，用于识别：
+This SPEC defines a set of **air engine short-class tube layouts**, CATIA V5 `CATProduct` / `CATPart`, original Tubing Design data and the AI Agent model check rules and output requirements for neutral models such as STEP/STP, IGES/IGS for the identification of:
 
-- 管路与管路、结构、设备、实体或曲面之间的硬干涉；
-- 安装、运行、热胀、振动和维护所需间距不足；
-- 管路转弯、弯曲半径、直管段、分支和连接关系不合理；
-- 管路中心线、内孔、壁厚、接口方向或装配关系不连续；
-- 支撑布置、可制造性、可装配性和可维护性风险；
-- CATIA 模型本身的失效、重复、悬空或数据质量问题。
+- (b) Hard interference between the pipe and the route, structure, equipment, entity or curve;
+- Insufficient space for installation, operation, heating, vibration and maintenance;
+- (b) Unjustified lines of turn, bend radius, straight sections, branches and connections;
+- (b) Discontinuation of the connection between the central line, the interior, the wall thickness, the direction of the interface or the assembly;
+- (b) Supporting the risks of set-up, manufacturing, assembly and maintenance;
+- The CATIA model itself is ineffective, repetitive, suspended or data quality-related.
 
-本 SPEC 是供应商模型入厂检查的系统级基线，覆盖刚性管和软管。首阶段允许使用简单验证模型调试识别和几何算法；进入工程应用前，须用型号专用标准、经批准的设计手册和代表性短舱模型完成规则确认及验收。
+This SPEC is the system-level baseline for the vendor model entry inspection, covering both rigid and flexible tubes. The first stage allows for the use of simple validation models for debugging identification and geometric algorithms; prior to entry into the engineering application, the model-specific criteria, approved design manuals and representative short-class models are required to complete the rules and acceptances.
 
-### 1.1 预期系统边界
+### 1.1 Expected system boundaries
 
-- AI Agent 在 CATIA 客户端上下文内连接并读取当前模型；
-- 自动识别产品树、Tubing Design 管线、管段、软管、连接器、支撑、短舱结构和设备；
-- 执行只读几何与规则检查，生成结构化结果、带红框证据图、整改建议和 Word 报告；
-- 问题应能在 CATIA 内按对象路径、坐标或选择集重新定位；
-- 本阶段禁止自动修改、自动修复和未经用户确认的保存；
-- AI 负责理解任务、制定检查计划、选择工具、围绕可疑对象迭代取证、判断设计关系、形成理由和报告；确定性几何内核负责距离、干涉、角度、半径和连续性等可稳定计算的事实。AI 不得篡改工具测量值，也不得仅凭截图作尺寸结论。
+- AI Agent connects and reads the current model in the context of the CATIA client;
+- Automatic identification of product trees, Tubing Design pipes, sections, hoses, connectors, support, short-class structures and equipment;
+- (a) Execute read-only geometry and rule-checks to generate structured results, red box evidence maps, rectification proposals and Word reports;
+- The problem should be repositioned within CATIA according to the path, coordinates or selection set of the object;
+- At this stage, automatic modification, automatic repair and unconfirmed preservation are prohibited;
+- AI is responsible for understanding tasks, developing inspection plans, selecting tools, taking evidence over time around suspicious objects, judging design relationships, creating justifications and reporting; establishing stable facts such as geometrical kernel responsibility for distance, interference, angle, radius and continuity. AI may not tamper with tool measurements, nor may it draw conclusions based solely on amputations.
 
-### 1.2 v2.0 核心架构原则
+### 1.2 v2.0 Core architecture principles
 
-系统必须遵循“原生能力优先、确定性规则判定、AI 增强但不替代工程计算”的原则：
+The system must follow the principles of “prioritization of primary capacity, certainty rules, AI enhancements but not substitute for engineering calculations”:
 
-1. **CATIA DMU 是装配几何事实源**：普通组件之间的 Clash、Contact、Clearance 和 Distance 应优先调用 CATIA DMU Space Analysis；不得在原生能力可用时仅凭截图、包围盒或语言模型判断。
-2. **Tubing Design 是管路语义事实源**：管线、Arrangement Run、连接器、规格、Line ID、管径和目录属性应优先从原生对象读取。
-3. **专用计算补足 DMU 未覆盖项目**：中心线弯曲半径、R/D、端口连续性、内孔贯通、软管弯曲和规则补偿等由确定性管路算法计算。
-4. **规则引擎负责数值边界**：DMU/几何工具输出客观事实，规则引擎执行受控阈值、公式、适用范围和显式批准豁免，不把设计意图写死成简单白名单。
-5. **AI 是关系判断主体而非尺寸测量器**：AI 主动分析组件类型、端面、轴线、最近点、接触区域、拓扑、装配层级和周围组件，判断近距离是否属于合理设计连接；必要时继续调用工具取证。AI 不得自行编造或覆盖测量值。
-6. **图片只作为证据**：截图用于定位和沟通，不参与最终几何判定。
-7. **不确定性必须显式暴露**：证据不足、证据冲突或哑模型语义不足时输出 `REVIEW_REQUIRED`，不得为了减少告警而自动放行。
-8. **正常连接不作为问题展示**：确认的正常连接保留在 JSON 审计轨迹中，但不进入 Word 报告的问题清单和问题详情。
+1. ** CATIA DMU is a source of geometrical facts for assembly**: Clash, Contact, Clearance and Distinction between ordinary components should be called first and foremost by CATIA DMU Space Analysis; it should not be judged on the basis of a screenshot, bounding box or linguistic model only when original capacity is available.
+2. ** Tubing Design is a source of traffic-synthetic fact**: pipe lines, Arrangement Run, connectors, specifications, Line ID, plumbing and directory properties should be read from the original object first.
+3. ** Dedicated calculation to complete DMU items not covered**: central line curve radius, R/D, port continuity, internal contours, hose bends and rules compensation are calculated by firm pipe mode.
+4. ** The rule engine is responsible for numerical boundaries**: DMU/geometric tool output objective facts, rules engine enforcement of controlled thresholds, formulae, scope of application and explicit approval of exemptions, and does not write design intent into a simple white list.
+5. **AI is the subject of the relationship judgement rather than the dimension measurer**: AI does not create or overwhelm the measurement values itself by actively analysing the type, end, axis, nearest point, area of exposure, capping, assembly level and surrounding components to determine whether closeness is a reasonable design connection.
+6. ** Pictures are used as evidence only**: screenshots are used for location and communication and do not participate in the final geometry determination.
+7. ** Uncertainty must be exposed in a visible manner**: `REVIEW_REQUIRED` may not be automatically released in order to reduce alarms when insufficient evidence, conflict of evidence or lack of synonyms for a dumb model.
+8. **Showcasing of normal connections and omissions**: the confirmed normal connections are kept in the JSON audit trail, but do not enter the list of issues and questions in Word report.
 
-### 1.3 系统分层
-
-```text
-CATIA V5 R30（内网目标；Release 30）
-  ├─ Product Structure / Part / Tubing Design
-  └─ DMU Space Analysis：Clash / Contact / Clearance / Distance
-                    ↓ 本机 COM / MCP
-几何事实与规则工具层
-  ├─ 全装配冲突扫描与结果提取
-  ├─ 管路中心线、半径、角度、接口和流道算法
-  ├─ 对象分类、候选筛选、增量检查和问题合并
-  └─ 受控 JSON 规则库
-                    ↓
-AI 工程检查 Agent
-  ├─ 任务理解、工具选择与迭代取证
-  ├─ 连接/装配关系合理性判断
-  └─ 置信度、关键证据、原因与复核建议
-                    ↓
-报告与交互层
-  ├─ 本地 Word/JSON 与带红框截图
-  ├─ CATIA 定位与截图
-  └─ 默认：公司内网大模型；可选：经审批的企业 AI 网关
-```
-
-CATIA 模型、几何工具和规则文件不得依赖互联网。AI 服务不可用时仍应保存已取得的几何事实和基础扫描结果；凡需要设计意图判断的组件关系应降级为 `REVIEW_REQUIRED`，不得用模板或写死名单伪装成完整语义检查。
-
-## 2. 适用范围
-
-### 2.1 支持对象
-
-- CATIA V5 装配：`CATProduct`；
-- 零件：`CATPart`；
-- 参数化实体、导入实体、曲面、几何集合；
-- 直管、弯管、弯头、三通、支管、异径件、法兰、阀门、软管和支撑；
-- 设备、结构件、钣金件、线束或其他被配置为障碍物的模型。
-
-### 2.2 不在首版自动判定范围
-
-- 未提供载荷时的强度、疲劳、振动和应力合格性；
-- 未提供温度和约束时的热位移精确计算；
-- 未提供流体参数时的压降、流速、气蚀和排液性能；
-- 仅凭外形无法识别的介质、材料、焊接等级或工艺要求；
-- 曲面之间“视觉上接近”但无有效厚度、法向或设计语义的数据。
-
-上述项目可以输出“需补充数据”或“需人工/专业分析”，不得误报为合格。
-
-## 3. 检查模式
-
-系统应支持：
-
-1. **全量检查**：检查整个产品及全部适用对象；
-2. **选定范围检查**：按组件、管线编号、几何集、Body 或用户选择集检查；
-3. **变更检查**：仅检查相对基线新增或修改的对象及其邻近对象；
-4. **单项检查**：只运行干涉、间距、弯曲、接口、支撑等指定规则；
-5. **批处理检查**：对指定目录或模型清单执行只读检查并汇总。
-
-默认采用只读诊断，不得自动修改或保存源模型。
-
-## 4. 输入要求
-
-### 4.1 模型输入
-
-每次检查应记录：
-
-- 根产品名称、完整路径、版本/修订号和检查时间；
-- CATIA 版本、单位制和装配定位状态；
-- 产品树、实例名、零件号、引用文件及加载状态；
-- Body、几何集合、曲面、特征、参数、关系和发布元素；
-- 被抑制、隐藏、未解析、失效或未更新的对象；
-- 管路中心线、外径、内径或壁厚、端口、流向、管线编号和规格（若模型中存在）。
-
-### 4.2 业务输入
-
-项目应提供或配置：
-
-- 行业与适用标准；
-- 管路类别、介质、危险等级、压力、设计温度和材料；
-- 公称直径、外径、壁厚、允许弯曲半径和制造方式；
-- 静态、动态、保温、电气、热表面和维护间距；
-- 端口允许错位、角度、间隙和插入深度公差；
-- 支撑最大间距、固定点、导向点和禁布区；
-- 允许接触、允许穿透和豁免对象清单。
-
-对短舱项目还应输入或派生：防火区/非防火区、热源及温度场、转子非包容危险区、运动机构扫掠包络、振动位移包络、发动机相对短舱位移、保温/防火套厚度、可燃介质属性、最大工作与证明压力，以及舱门开启和 LRU 拆装包络。
-
-缺少关键业务输入时，系统应使用项目默认值并标记 `ASSUMED`；没有合法默认值时应标记 `NOT_EVALUATED`。
-
-## 5. 对象识别与分类
-
-系统应优先使用 CATIA 结构化数据识别对象，不得只依赖截图或颜色。
-
-识别优先级：
-
-1. 原生 Tubing Design 对象、目录属性、Line ID 和连接器；
-2. 发布的中心线、轴线、端面、接口点和参数；
-3. 参数化特征及命名规则；
-4. 拓扑和几何推断；
-5. 人工映射。
-
-每个对象至少分类为：`PIPE`、`ELBOW`、`TEE/BRANCH`、`REDUCER`、`FLANGE`、`VALVE`、`HOSE`、`SUPPORT`、`EQUIPMENT`、`STRUCTURE`、`SURFACE`、`UNKNOWN`。
-
-由几何推断得到的类型必须记录置信度；低于项目阈值时只能生成复核项，不能直接作失败结论。
-
-### 5.1 原生模型与中性格式模型分流
-
-系统必须先识别输入类型，再选择取证路线：
-
-- **CATIA 原生模型**：优先读取产品树、实例/零件名称、装配层级、约束、发布元素、接口、参数、属性、Tubing Design 对象、Line ID 和目录规格；几何证据用于验证语义，不盲目信任名称。
-- **STEP/STP、IGES/IGS 等哑模型**：不得因缺少原生管路语义而跳过管路检查。应先按可分离实体、连通域或几何体划分组件，再利用圆柱/圆锥/圆环截面、管径稳定性、长径比、壁厚、端面、中心线连续性、直管与弯管特征识别管路和连接件。
-- **混合或不确定模型**：同时保留原生属性与几何推断结果；两者矛盾时由 AI 调查并输出冲突证据，无法消解时进入人工复核。
-
-中性格式的标准数据流为：
+### 1.3 System Layers
 
 ```text
-格式识别 → 几何实体/组件划分 → 管路与连接件识别
-→ 管路邻近组件搜索 → 最近点/端面/轴线/接触/穿透/连续性取证
-→ AI 连接与设计关系判断 → 间距/干涉/弯曲半径等规则检查
-→ JSON → 红框截图 → Word 报告
+CATIA V5 R30 (target intranet deployment, Release 30)
+                    ↓ Local COM / MCP
+Geometry evidence and rule tools
+  ├─ Full-assembly clash scanning and result extraction
+  ├─ Tubing centerline, radius, angle, interface, and flow passage algorithms
+  ├─ Object classification, candidate screening, incremental checks, and issue consolidation
+  └─ Controlled JSON rule library
+
+AI engineering inspection agent
+  ├─ Task interpretation, tool selection, and iterative evidence collection
+  ├─ Assessment of connection and assembly relationships
+  └─ Confidence, key evidence, rationale, and review recommendations
+
+Reporting and interaction
+  ├─ Local Word and JSON outputs with locator-box screenshots
+  ├─ Locate and capture objects in CATIA
+  └─ Default company intranet model, with an approved enterprise AI gateway as an option
 ```
 
-STEP/IGES 中弯曲半径应优先从圆柱面、圆环面、截面或可恢复中心线测得；无法可靠恢复中心线时可给出保守几何估计，但必须注明方法和置信度，证据不足时输出 `REVIEW_REQUIRED` 或 `NOT_EVALUATED`，不得直接省略该检查项。
+CATIA models, geometry tools, and rule files should not rely on the Internet. AI should still save geometric facts and underlying scanning results that have been obtained when services are not available; any component relationship requiring design intent judgement should be downgraded to `REVIEW_REQUIRED` and should not be disguised as a full semantic check with templates or death lists.
 
-## 6. 检查规则
+## 2. Application
 
-### 6.1 模型健康度
+### 2.1 Subjects of support
 
-| 规则 ID | 检查内容 | 默认判定 |
+- CATIA V5 assembly: `CATProduct`;
+- Parts: `CATPart`;
+- Parametric entities, importing entities, curves, geometry collections;
+- (a) Direct, bend, bend, tricom, bronchial, insular, flange, valve, hose and support;
+- Equipment, structural elements, gold nuggets, beams or other models configured as barriers.
+
+### 2.2 Non-automatic determination of scope in the first edition
+
+- (a) The strength, fatigue, vibration and stress suitability when the payload is not provided;
+- No precise calculation of the temperature and thermal transport at the time of containment is provided;
+- (b) Pressure-down, flow speed, gas erosion and discharge performance when no fluid parameters are provided;
+- Media, materials, welding grade or process requirements that cannot be identified solely by their outer form;
+- `Visual proximity' between curves, but no valid thickness, direction or semantic design data.
+
+The above-mentioned items may be exported “for additional data” or “for manual/professional analysis” and may not be misreported as eligible.
+
+## 3. Check Mode
+
+The system should support:
+
+1. ** Full mass inspection**: inspection of the whole product and of all suitable objects;
+2. **Selected scope inspection**: check by component, pipe number, geometry set, Body or user selection set;
+3. ** Change inspection**: only new or modified objects relative to the baseline are checked, as well as their immediate proximity;
+4. ** Single inspection**: only rules specified for interference, spacing, bending, interfaces, support, etc.;
+5. ** Batch-processing inspection**: a read-only inspection and summary of a specified catalogue or model list.
+
+By default, read-only diagnostics are used and the source model cannot be automatically modified or saved.
+
+## 4. Input Requirements
+
+### 4.1 Model input
+
+Each inspection shall record:
+
+- Root product name, complete path, version/revision number and inspection time;
+- CATIA version, unit and assembly position;
+- Product tree, example name, zero part number, reference file and loading status;
+- Body, geometry, curves, features, parameters, relationships and release elements;
+- Objects that are suppressed, hidden, undefunct, invalid or unupdated;
+- (b) Central, outer, inner or wall thickness, port, direction, line number and specification (if present in the model).
+
+### 4.2 Operational inputs
+
+The project shall provide or configure:
+
+- Industry and applicable standards;
+- (a) Pipeline type, medium, hazard class, pressure, design temperature and materials;
+- b. Common diameter, outer diameter, wall thickness, permitted bend radius and method of manufacture;
+- Static, dynamic, temperature-preservation, electrical, heat surface and maintenance space;
+- Port allows for error, angle, gap and depth variance;
+- Support maximum spacing, fixed points, point of direction and no-bub zone;
+- Lists of persons allowed access, allowed penetration and exempted.
+
+The short-seat project should also be imported or derived from fire/non-fire-protective areas, heat and temperature fields, rotor non-inclusive hazardous areas, motor-sweeping ring, vibrating-place transfer package, relative short-seat engine shift, temperature/fire-proofing thickness, combustible media properties, maximum work and proof pressure, and hatch opening and LRU unassembly.
+
+When critical business input is missing, the system should use the project default and mark `ASSUMED`; when no valid default is available, mark `NOT_EVALUATED`.
+
+## 5. Object Identification and Classification
+
+The system should prioritize the use of CATIA structured data identification objects and not rely solely on screenshots or colours.
+
+Identification of priority:
+
+1. Native Tubing Design objects, directory properties, Line ID and connectors;
+2. Centres, axes, ends, interface points and parameters issued;
+3. Parametric characteristics and naming rules;
+4. (b) Trawling and geometric extrapolation;
+5. Artificial mapping.
+
+Each object is classified at least as: `PIPE`, `ELBOW`, `TEE/BRANCH`, `REDUCER`, `FLANGE`, `VALVE`, `HOSE`, `SUPPORT`, `EQUIPMENT`, `STRUCTURE`, `SURFACE`, `UNKNOWN`.
+
+The type derived from geometric inferences must record confidence; below the project threshold, only review items can be generated and failure conclusions cannot be made directly.
+
+### 5.1 Diversion of primary and neutral format models
+
+The system must first identify the type of input and then choose the evidence route:
+
+- ** CATIA Native Model**: Priority is given to reading product trees, examples/part names, assembly levels, constraints, release elements, interfaces, parameters, attributes, Tubing Design objects, Line IDs and directory specifications; geometric evidence is used to validate semantics and not blindly trusted names.
+- ** STEP/STP, IGES/IGS, etc.**: The lack of protopathic meanings should not lead to passing through the circuit. Components should first be divided by separable entity, connected domain or geometric body, using cylinder/convene/ring cross-section, pipe stability, long-range ratio, wall thickness, end-side, centreline continuity, direct tube and bending characterization pipelines and connections.
+- **Mixed or uncertain model**: both original properties and geometric inferences are retained; when the two conflicts are investigated and conflicting evidence is exported by AI and manual review is not possible.
+
+The standard data stream in neutral format is:
+
+```text
+Detect format → identify geometry and components → recognize tubing and connectors
+→ Find nearby components → gather closest-point, end-face, axis, contact, penetration, and continuity evidence
+→ Assess connection and design relationships with AI → apply clearance, interference, and bend-radius rules
+→ JSON → locator-box screenshots → Word report
+```
+
+STEP/IGES curved radiuss shall be measured first from the column surface, circle, transect or recoverable central line; conservative geometric estimates may be given when the central line cannot be reliably restored, provided that the method and confidence level are indicated, the output of `REVIEW_REQUIRED` or `NOT_EVALUATED` is not directly omitted when there is insufficient evidence.
+
+## 6. Inspection rules
+
+### 6.1 Model health
+
+| Rule ID | Check Contents | Default determination |
 |---|---|---|
-| MDL-001 | 引用文件缺失或未加载 | FAIL |
-| MDL-002 | Part/Product 更新失败、特征失效或过期 | FAIL |
-| MDL-003 | 重复组件、零尺寸实体、孤立几何 | WARN/FAIL，可配置 |
-| MDL-004 | 单位或比例异常 | FAIL |
-| MDL-005 | 管路关键参数、端口或中心线缺失 | NOT_EVALUATED + WARN |
-| MDL-006 | 同一检查对象存在多个不一致版本 | FAIL |
+| MDL-001 | The reference file is missing or not loaded | FAIL |
+| MDL-002 | Part/Produc Update failed, feature expired or expired | FAIL |
+| MDL-003 | Repeat components, zero-sized entities, isolated geometry | Warn/FAIL, configured |
+| MDL-004 | Anomalous unit or proportion | FAIL |
+| MDL-005 | Missing piping key parameters, port or centreline | NOT_EVALUATED + WARN |
+| MDL-006 | Multiple inconsistent versions of the same object | FAIL |
 
-模型健康度失败时，系统仍可继续执行有意义的检查，但报告必须注明结果可能不完整。
+When model health failure occurs, the system can continue to perform meaningful examinations, but the report must indicate that the results may be incomplete.
 
-### 6.2 硬干涉检查
+### 6.2 Hard interference checks
 
-检查组合至少包括：
+The inspection combination includes at least:
 
-- 管路—管路；
-- 管路—设备；
-- 管路—结构；
-- 管路—支撑；
-- 管路—曲面；
-- 其他实体—实体、实体—曲面（按配置启用）。
+- Pipeline - Pipeline;
+- (b) Pipeline-equipment;
+- (a) Pipelines - structure;
+- Pipelines - support;
+- (a) Pipeline-curvature;
+- Other entities - entities, entities - curves (enabled by configuration).
 
-规则要求：
+The rules require:
 
-- 实体公共体积大于几何容差时判定为硬干涉；
-- 报告干涉体积、最大穿透深度（可计算时）、干涉位置和双方完整路径；
-- 区分预期连接处的材料相交、流道开孔和非预期碰撞；
-- 三通、支管、阀体等连接处须同时检查外部材料关系和内部流道贯通；
-- 仅边/点接触应按接触容差分类，不应误判为体积干涉；
-- 经 AI 调查确认的正常设计连接不形成干涉问题；显式批准的允许接触/允许穿透仍须绑定具体规则、对象对和模型版本并可追溯。
+- (a) The entity's common volume is determined to be hard interference when it is greater than the geometric difference;
+- (b) Report the volume of interference, maximum penetration depth (when calculable), the location of interference and the complete path of both parties;
+- (b) Distinguishing the intersection of material from the expected interface, the opening of the channel and the non-expected collision;
+- Three connections, such as tributaries and valves, are subject to simultaneous inspection of external material relations and internal flow flow;
+- Side/point exposure should be classified according to exposure tolerance and should not be miscalculated as volume interference;
+- The normal design connection confirmed by the AI survey does not pose an interference problem; explicit approval for access/permeability remains subject to the binding of specific rules, object pairs and model versions and can be traced.
 
-短舱检查必须至少在以下状态运行：名义装配状态、舱门/反推等机构规定状态、发动机与短舱相对位移包络状态，以及软管最大运动包络状态。只有静态 CAD 时，不得宣称动态状态无干涉。
+The short-seat inspection must be performed in at least the following states: the nominal assembly state, the condition of the body, such as the hatch/reverse, the state of the relative transfer of the engine to the short cabin, and the state of the maximum motor envelope of the hose. Only static CAD shall not be declared dynamic without interference.
 
-#### 6.2.1 CATIA DMU 原生检查要求
+#### 6.2.1 CATIA DMU Primary screening requirements
 
-- 普通 CATProduct 组件之间的干涉应使用 `GetTechnologicalObject("Clashes")` 对应的 CATIA 原生 Clash 能力；
-- 全装配检查必须优先采用一次性 `Between All Components` 计算，由 CATIA 内部完成候选筛选和几何求交；
-- 禁止将对全部零件执行外部双重循环、逐对创建 Clash 作为大装配默认方案；逐对检查仅用于指定对象复核、单元测试或详细定位；
-- 指定范围检查可使用 `Inside One Selection`、`Selection Against All` 或 `Between Two Selections`；
-- 计算配置至少记录：Computation Type、Interference Type、Clearance、精度/接触容差和 CATIA 版本；
-- 必须读取 CATIA 返回的 Conflict Type、Value、First Product、Second Product、状态和可用定位信息；
-- 报告必须区分 CATIA 的原始 Conflict Value 与系统派生的“穿透深度”字段。不能证明二者等价时，应保留原始值并标记派生方法；
-- 检查过程中创建的临时 Clash/Distance/Group 对象必须在 `finally` 清理，并恢复用户原选择集和活动文档；
-- 不得保存包含临时检查对象的源模型；清理失败时检查状态为 `ERROR` 并明确提示用户；
-- 原生 DMU 许可证或自动化接口不可用时，可使用经验证的 B-Rep/网格后备算法，但结果必须标记计算方法、精度和局限性，不得冒充原生 DMU 结果。
+- Interference between ordinary CATProdut components should use the original CATIA Clash capability corresponding to `GetTechnologicalObject("Clashes")`;
+- Full assembly inspections must be based on one-time `Between All Components` calculations, with CATIA internal screening of candidates and geometry;
+- Prohibits external dual circulation of all parts, creating Clash on a pair basis as the default option for large assembly; the check-by-check is used only for object-specific review, unit testing or detailed positioning;
+- Specified range check to use `Inside One Selection`, `Selection Against All` or `Between Two Selections`;
+- Computation of configuration at least recorded: Computation Type, International Type, Clearance, precision/exposure and CATIA versions;
+- Access to information on condition Type, Value, First Project, Second Project, status and available location must be read for CATIA returns;
+- The report must distinguish between the original CATIA Confilt Value and the system-generated “penetrating depth” field. If the two are not proven to be equivalent, the original value should be retained and the method of extraction marked;
+- The temporary Clash/Distance/Group object created during the check must be cleaned in `finally` and the user selection set and activity document restored;
+- No source model containing temporary check objects should be saved; check `ERROR` in case of clean-up failure and send a clear message to the user;
+- An empirical B-Rep/ Grid backup algorithm may be used when the original DMU licence or automated interface is not available, provided that the result marks the method of calculation, precision and limitations and does not impersonate the original DMU result.
 
-#### 6.2.2 AI 主导的冲突与近距关系调查
+#### 6.2.2 AI-led conflict and close relationship surveys
 
-原生 Clash 或其他几何工具返回的冲突/近距候选必须经过以下调查后才能形成工程问题：
+The conflict/proximity candidate returned by the original Clash or other geometric tools must have been investigated before the engineering problem could arise:
 
-1. 解析完整组件实例路径，不能只使用可能重复的叶节点名称；
-2. 识别对象类型和所属系统/管线；
-3. 排除空零件、无主形状表示和无法计算的组件，并单列数据质量问题；
-4. 识别并关联 Run 与其物理管件实现，避免同一管路自冲突；
-5. 由 AI 根据现有证据提出关系假设，并按需继续调用距离、端面、轴线、截面、邻域、装配路径或截图工具取证；
-6. AI 综合直接连接、中间连接件、支撑/安装关系、几何连续性及异常穿透迹象，输出关系结论、理由、置信度和关键证据；
-7. 关系结论只能为 `PASS_NORMAL_CONNECTION`、`CHECK_CLEARANCE` 或 `REVIEW_REQUIRED`；不得使用静态“连接件豁免名单”替代调查；
-8. 对 `CHECK_CLEARANCE` 执行受控最小间距/干涉规则；对 `REVIEW_REQUIRED` 保留候选并提交人工复核；
-9. 合并同一对象对、同一区域和同一根因的重复 Conflict；
-10. 输出 DMU 原始结果、AI 关系判断和规则判定，三者均须保留以便审计。
+1. (a) The path to the full component example, which cannot only use the name of the leaf node that may be repeated;
+2. Identification of the type of object and the system/pipeline to which it belongs;
+3. (b) Exclude empty parts, no-owner shape expressions and uncalculated components, and separate data quality issues;
+4. (b) Identification and association of Run and its physical tube, avoiding conflict between the same route and itself;
+5. By AI to make relationship assumptions based on available evidence and to continue to call for evidence as required at distance, end, axis, transect, adjacent area, assembly path or means of interception;
+6. AI Consolidated direct connection, intermediate connection, support/installation relationship, geometric continuity and signs of unusual penetration, output relationship conclusions, reasons, confidence and key evidence;
+7. Relationship conclusions can only be `PASS_NORMAL_CONNECTION`, `CHECK_CLEARANCE` or `REVIEW_REQUIRED`; no static "connection waiver list" may be used as an alternative to investigations;
+8. (b) Implement the control minimum spacing/interference rule for `CHECK_CLEARANCE`; reserve candidates for `REVIEW_REQUIRED` and submit them for manual review;
+9. Merge duplicates of the same object, the same area and the same cause;
+10. The output of the original DMU result, AI relationship judgement and rule determination shall be retained for audit purposes.
 
-推荐采用两阶段工具调用：`prepare` 建立候选与证据缺口，AI 自主调查，`finalize` 校验引用的测量事实并固化结果。若 AI 未取得新证据，不应无意义地重复调用同一工具。
+A two-stage tool is recommended: `prepare` to create candidate and evidence gaps, AI to investigate independently, and `finalize` to verify the results of the quoted measurements and consolidate the results. If AI does not obtain new evidence, it should not use the same tool unnecessarily again.
 
-### 6.3 间距检查
+### 6.3 Spacing
 
-间距必须测量真实几何最短距离，不以包围盒距离作为最终结论。包围盒只用于候选对筛选。
+The spacing must measure the shortest real geometry distance, not the final conclusion. The box should be used only for candidate-to-peer screening.
 
-按对象关系配置不同阈值：
+Configure different thresholds by object relationship:
 
-- 管路—管路净距；
-- 管路—结构/设备净距；
-- 管路—热表面、电气件或运动件净距；
-- 法兰、阀门、过滤器、仪表周边的操作和拆装空间；
-- 保温层、涂层、防护套安装后的净距；
-- 运动、振动、热位移扫掠包络与周边对象的净距。
+- Pipelines — net routing distance;
+- Pipeline - structure/equipment net spacing;
+- Pipeline - thermal surface, electrical or sporting net spacing;
+- (a) Operation of the perimeter of the flanges, valves, filters, instrumentation and deassembly space;
+- Net spacing of the insulation, coating and protective gear installed;
+- Motion, vibration, heat-sweeping, net distance from the surrounding object.
 
-每个候选组件对先进行关系判断，再进行数值判定：
+Each candidate makes a relationship judgement and then a numerical determination:
 
-1. `PASS_NORMAL_CONNECTION`：有充分证据证明属于正常连接、装配接触或合理关联，间距检查通过；该记录保留在 JSON 审计数据中，但不出现在 Word 问题清单和详情页。
-2. `CHECK_CLEARANCE`：未发现合理连接关系，继续按实际最短距离与规则阈值判定 PASS/WARN/FAIL。
-3. `REVIEW_REQUIRED`：信息不足、证据冲突或 AI 置信度不足，不得自动通过，提交人工复核。
+1. `PASS_NORMAL_CONNECTION`: There is sufficient evidence of a normal connection, assembly contact or reasonable connection, and a space check passed; the record is kept in JSON audit data but does not appear on Word List of Issues and Detailed Pages.
+2. `CHECK_CLEARANCE`: No reasonable connection has been found and PASS/WARN/FAIL continues to be determined at the actual minimum distance and rule threshold.
+3. `REVIEW_REQUIRED`: Insufficient information, conflicting evidence or insufficient AI confidence, not automatically passed, review of the author's work.
 
-直接对接的设计接口，其预期净距通常为 0；确认属于正常连接后无需在问题报告中说明“间距为 0”。若两个主体通过垫片、焊料、密封件或中间连接件连接，主体间可存在由中间件厚度形成的正距离，不得为了展示而篡改测量值为 0，但同样不作为普通间距问题报告。
+The design interface for the direct interface, with the expected net distance normally 0; recognition of normal connection does not require a "0 space" in the question report. If the two subjects are connected by gaskets, welds, seals, or intermediate connectors, there may be a positive distance between the subjects from the middle thickness, and the measurement value may not be tampered with for presentation purposes to 0, but it is likewise not reported as a normal space problem.
 
-对需要继续检查的 `CHECK_CLEARANCE` 候选，数值分级为：
+For the `CHECK_CLEARANCE` candidate who needs to continue the check, the numerical rating is:
 
-- `d < 0`：硬干涉；
+- `d < 0`: Hard interference;
 - `0 ≤ d < C_fail`：FAIL；
 - `C_fail ≤ d < C_warn`：WARN；
 - `d ≥ C_warn`：PASS。
 
-其中 `d` 为考虑保温、运动包络等补偿后的有效净距，`C_fail` 和 `C_warn` 由规则配置表定义。
+Of which `d` In order to consider the net range after compensation such as temperature protection, sports packages, etc. `C_fail` and `C_warn` Defines by the rules configuration table.
 
-### 6.4 管路中心线与接口连续性
+### 6.4 Centerline and interface consistency
 
-- 相邻直管、弯头、三通、法兰和设备口的中心线应连续；
-- 接口位置偏差不得超过 `Tol_position`；
-- 接口轴线夹角不得超过 `Tol_angle`，设计转角除外；
-- 连接端面应相向且法向关系正确；
-- 内孔应贯通，不得被管壁、阀体或相邻 Body 意外封堵；
-- 外径、内径/壁厚和规格变化应通过合法异径件或规则允许的过渡实现；
-- 法兰配对应检查规格、口径、密封面、朝向、间距和螺栓操作空间；
-- 开口端、未连接端和重复连接应单独报告。
+- The central line of the adjacent line, the bend, the triangulation, the French and the equipment mouths shall be continuous;
+- An interface location deviation shall not exceed `Tol_position`;
+- The axis angle of the interface shall not exceed `Tol_angle`, except for the design corner;
+- (b) The interface should be opposite and the relationship is correct;
+- (a) The interior is connected and cannot be accidentally blocked by a piped wall, valve or adjacent Body;
+- Changes in outer diameter, inner diameter/wall thickness and specifications should be effected by a legitimate anatomy or a transition permitted by the rules;
+- French matching inspection specifications, calibres, sealed surfaces, direction, spacing and bolt operating space;
+- Open, unconnected and duplicate links should be reported separately.
 
-### 6.5 转弯角度与弯曲半径
+### 6.5 Turn angle and bend radius
 
-每个转弯应识别入口轴、出口轴、夹角、中心线半径和切点。
+Each turn shall identify the entry axis, the exit axis, the angle, the centre line radius and the cut point.
 
-- 转弯角度应属于项目允许集合，或处于允许连续弯管范围；
-- 实测中心线弯曲半径 `R_actual` 不得小于 `R_min`；
-- 若按管径倍数控制，应满足 `R_actual / D_ref ≥ K_min`；
-- 弯头前后应有满足制造、焊接、装夹、检测或接头要求的最小直段；
-- 连续反向弯、空间复合弯和小半径急弯应标记制造/装配复核；
-- 不允许仅根据外轮廓估算中心线半径；无法可靠识别时输出 `NOT_EVALUATED`；
-- 对软管应检查最小动态/静态弯曲半径、扭转、接头附近直段及运动状态，不套用刚性管规则。
+- (b) The angle of turn should be within the range of the project allowed to be assembled or within the range of the continuous line allowed;
+- (a) A curve radius of `R_actual` for the central line of the field shall not be less than `R_min`;
+- `R_actual / D_ref ≥ K_min` should be satisfied if it is controlled by a pipe run multiple;
+- (b) A minimum direct segment to meet the requirements for manufacture, welding, packaging, testing or docking should be present before and after the bend;
+- (a) Continuous reverse bends, space complex bends and small-range acute curves to mark manufacturing/assembly review;
+- The estimation of the centre line radius based on the outer contour is not allowed; the output of `NOT_EVALUATED` cannot be reliably identified;
+- The hose should check the minimum dynamic/static bend radius, reverse, close-to-wire and motion, without applying rigid tube rules.
 
-### 6.6 管路布置合理性
+### 6.6 Tubing route assessment
 
-自动规则包括：
+The automatic rules include:
 
-- 不必要的折返、短节、连续微小转角或过多弯头；
-- 极短直管段、难以焊接或无法装夹的管段；
-- 支管方向、三通形式和异径方向与配置规则不符；
-- 穿越维护通道、拆装包络、人员通道或禁布区；
-- 低点积液、高点积气风险（需重力方向和介质属性）；
-- 排水、放气或排污支路位置不合理；
-- 与设备口强行错位连接，存在装配预应力风险；
-- 未考虑保温层、法兰拆卸、阀门操作、仪表读取或工具空间；
-- 对有坡度要求的管线，坡向和坡度不符合规则。
+- (b) Unnecessary reversals, short knots, continuous small turns or excessive bends;
+- (b) Very short direct sections, difficult to weld or uncapable sections;
+- (c) The direction of the bronchial, the three-way form and the direction of the alien are not consistent with the rules of configuration;
+- (b) Crossing maintenance corridors, unpacking, personnel passages or restricted areas;
+- Low-point aqueous fluids, high-point aerogas risk (gravity direction required and medium properties);
+- (b) Unreasonable location of the drainage, ventilation or drainage secondary roads;
+- (b) Forced misalignment of the equipment and risk of pre-assembly stress;
+- (a) No consideration of the insulation, French dismantling, valve operation, instrument reading or tool space;
+- The direction and degree of slopes do not conform to the rules for pipes with slope requirements.
 
-“合理性”应输出触发规则和证据，不得仅给出主观结论。
+The “reasonableness” should be the source of the trigger rule and evidence and must not be based solely on subjective conclusions.
 
-短舱专项规则还包括：
+The special rules for short-seat also include:
 
-- 可燃液体管路与点火源、热表面、排气泄漏路径及潜在喷射方向的隔离/屏蔽；
-- 防火墙穿越、火区边界、关断阀位置和防火等级属性的完整性；
-- 破裂或针孔泄漏喷射锥是否可能冲击热表面、电气设备、进气/通风口或其他关键系统；
-- 管路破裂后泄漏液体的排放路径是否会形成积液或扩散到其他区域；
-- 转子非包容、风扇叶片脱落或其他高能碎片危险区内是否存在共因失效风险；
-- 发动机振动、机匣热膨胀和吊挂相对运动下，刚性管是否被强迫承载位移，软管是否有足够余量且无扭转；
-- 不相容或功能冗余管路是否过度共路，单点事件是否可能同时损伤多路系统。
+- (a) Separation/shield of combustible liquid pipelines from ignition sources, thermal surfaces, vent routes and potential direction of spraying;
+- Completeness of firewall crossing, fire zone boundary, break valve position and fire-protection grade properties;
+- (a) Whether a bursting or needle leaking spray cone is capable of impacting on thermal surface, electrical equipment, gas/ventilation vents or other critical systems;
+- Whether the emission pathways of leaked liquids following the break-up of the pipe will form a sap or spread to other regions;
+- Whether there is a risk of co-resistance in rotor non-inclusivity, fallout of fan blades or other high-energy debris hazard areas;
+- Whether, under relative motion, motor vibrations, thermal expansion of aircraft boxes and hangings, rigid tubes are forced to be moved and the hoses are sufficient and unreverted;
+- Whether incompatible or functional redundant circuits are excessively common and whether single-point incidents can damage multiple-road systems at the same time.
 
-### 6.7 支撑与约束
+### 6.7 Supporting and restraining
 
-- 首个支撑距设备口、弯头、阀门或集中载荷的距离；
-- 相邻支撑间距是否超过按口径、材料、介质和方向配置的上限；
-- 垂直管段、长悬臂、阀门和重型附件是否存在支撑缺失；
-- 固定、导向、滑动支撑的自由度是否与热位移意图冲突；
-- 支撑是否与管外表面或保温外表面正确接触，是否悬空或穿透；
-- 支撑自身是否与邻近结构或设备干涉；
-- 未提供载荷和热分析时，只做几何与规则检查，不宣称结构强度合格。
+- The distance of the first support device, the bend, the valve or the centralized load;
+- Whether the adjacent support space exceeds the upper limit by caliber, material, medium and direction;
+- (b) Whether there are supporting deficiencies in vertical sections, long arms, valves and heavy attachments;
+- Whether the degree of freedom supported by fixed, directed and smoothing conflicts with the intention of the heat shift;
+- Whether the support is correctly exposed to, suspended or penetratored to the outer surface of the tube or to the outer surface of the temperature protection;
+- Supporting interference with adjacent structures or equipment;
+- When payloads and heat analyses are not provided, only geometry and rules checks are performed and no structural strength is claimed.
 
-### 6.8 壁厚、实体和曲面质量
+### 6.8 Wall thickness, physical and curvature
 
-- 管外径、内径、壁厚应与规格一致，并沿管段保持连续；
-- 壁厚应满足 `t_actual ≥ t_min`，且局部突变应报告；
-- 管端、三通和交叉处不得存在双层壁、残留封板、悬空薄片或非流道实体；
-- 曲面应检查间隙、重叠、自交、法向异常、未闭合边界和微小面；
-- 曲面参与间距检查时应明确其代表物理边界、包络面还是参考面；
-- 对导入的无历史实体，应记录可检查但可追溯参数有限。
+- The outer diameter, inner diameter and wall thickness of the tube shall be consistent with the specifications and shall be continuous along the section;
+- The wall thickness should meet `t_actual ≥ t_min` and the local mutation report;
+- (b) Double walls, residual seals, slabs or non-flowing entities shall not be present at the end of the tube, at the tributary and at the intersection;
+- Curvatures should be checked for gaps, overlaps, self-transactions, abnormality, unclosed borders and micro-faces;
+- (b) The cross-section participation in the examination should indicate whether it represents the physical boundary, the envelope or the reference surface;
+- In the case of imported non-historical entities, the searchable, but traceable, parameters should be recorded.
 
-### 6.9 可制造、可装配和可维护性
+### 6.9 Manufacturability, assembly, and maintenance
 
-- 焊缝之间、焊缝到弯曲切点或附件之间的最小距离；
-- 工装、弯管机、焊枪、扳手、螺栓抽出和无损检测空间；
-- 子装配能否沿可行方向装入，是否存在几何锁死；
-- 法兰、阀门、滤芯、仪表和可更换件是否有拆卸路径；
-- 模块/分段长度和重量是否超过运输、吊装或安装限制；
-- 必须现场调整的闭合段或最后焊口是否被识别；
-- 无制造工艺参数时输出风险提示，不作工艺合格承诺。
+- The minimum distance between welds, between welds and bend points or attachments;
+- (b) Garmenting, decorating, welding, wrench, bolt extraction and non-destructive detection space;
+- Whether the sub-assembly is loaded in a feasible direction and whether the geometric locking is in place;
+- Whether French, valves, filter cores, instrumentation and replacements have a detachable path;
+- Whether the length and weight of the module/sub-section exceed the limits of transport, suspension or installation;
+- Whether closed sections or final welds, which must be adjusted on-site, are identified;
+- Output risk tips when no manufacturing process parameters are available, and no commitment to process qualification is made.
 
-## 7. 几何计算与容差
+## 7. Geometric calculations and tolerance differences
 
-- 所有数值统一换算到项目单位，内部建议使用 mm 和 degree；
-- 几何计算容差 `Tol_geom`、接触容差 `Tol_contact`、位置容差 `Tol_position` 和角度容差 `Tol_angle` 分开配置；
-- 候选对可用空间索引或包围盒加速，最终距离和干涉须基于精确几何；
-- 对大装配应支持按空间分区、管线、组件或变更集增量计算；
-- 同一对象对、同一位置和同一根因产生的问题应合并，避免重复告警；
-- 数值落在容差边界时应采用一致的闭区间/开区间规则，并在报告中显示原始值。
+- All values are converted to project units in a uniform manner and the use of mm and degree is recommended internally;
+- Geometrical variance `Tol_geom` Exposure differential `Tol_contact` Location difference `Tol_position` And the angle is different. `Tol_angle` Separate configuration;
+- Candidates accelerate the availability of space indexes or bounding boxes, and final distance and interference must be based on precise geometry;
+- (b) Large assembly should support the calculation of increments based on spatial partitions, pipelines, components or variations;
+- The same subject, the same location and the problems arising from the same cause should be combined to avoid repeating the alarm;
+- The values should be set at the margin of the margin using a consistent inter-segregation/open-space rule, and the original values should be shown in the report.
 
-## 8. 规则配置表
+## 8. Rulesheet
 
-每条规则至少包含：
+Each rule contains, at a minimum:
 
-| 字段 | 说明 |
+| Fields | Annotations |
 |---|---|
-| Rule_ID | 唯一编号 |
-| Name | 规则名称 |
-| Enabled | 是否启用 |
-| Scope | 适用产品、管线、对象类型或属性条件 |
+| Rule_ID | Unique Number |
+| Name | Rule name |
+| Enabled | Enable |
+| Scope | Application of product, pipe, object type or attribute conditions |
 | Severity | INFO/WARN/FAIL |
-| Threshold | 阈值、公式或标准表引用 |
-| Unit | 单位 |
-| Standard | 标准编号、版本和条款 |
-| Exception | 豁免条件 |
-| Evidence | 要求输出的测量和截图/视图 |
-| Owner | 规则责任专业 |
+| Threshold | References to thresholds, formulae or standard tables |
+| Unit | Units |
+| Standard | Standard numbers, versions and articles |
+| Exception | Conditions for exemption |
+| Evidence | Measurements and transects/views of requested output |
+| Owner | Rule-Responsibility |
 
-建议所有阈值采用外部 JSON/CSV/Excel 配置，不写死在检查程序中。
+It is recommended that all thresholds be based on external JSON/CSV/Excel configuration and not die in the inspection process.
 
-### 8.1 规则修改入口与本次检查覆盖
+### 8.1 Rule change access and coverage of this check
 
-包内必须提供一个可人工直接编辑、带字段说明和示例的主规则配置文件；JSON 为运行时权威格式，可附带 Markdown/表格说明视图。每次报告最前部必须列出本次实际生效规则、来源、版本、单位、适用范围及任何临时覆盖。
+The package must contain a master rule profile that allows manual direct editing, field description and illustrative examples; JSON, for an authoritative running-time format, can be accompanied by a Markdown/table description view. Each report must be at the front of the report with a list of the rules, sources, versions, units, scope of application and any temporary coverage of the actual entry into force.
 
-AI 必须理解并执行以下三类规则输入：
+AI must understand and implement the following three types of rules:
 
-- **长期修改**：“以后把此检查的最小弯曲半径改成 10 cm。”AI 应换算单位、定位对应 Rule ID、展示修改前后差异，经用户确认后更新主规则文件并保留版本记录。
-- **仅本次覆盖**：“这次弯曲半径按四分之一 D 检查。”AI 只写入本次运行快照，不污染长期规则，并在报告首页明确标为临时覆盖。
-- **按文件检查**：“按这个文件的要求检查。”AI 应读取用户提供的规范/表格/文档，提取候选规则、条款、单位、适用范围和冲突项；对含糊内容先标记待确认，不得臆造数值。经确认后生成本次规则快照再检查。
+- ** Long-term change**: “The minimum bend radius of this check shall later be changed to 10 cm.” AI shall convert units, position the rule ID, display variations, update the master rule file and keep the version records after confirmation by the user.
+- ** This coverage only**: “This curved radius is one quarter of a D inspection.” AI is only included in this operating snapshot, non-polluting long-term rules, and is clearly marked as interim coverage on the first page of the report.
+- ** Documentary examination**: “Check as required by this document.” AI should read the specifications/forms/documents provided by the user, extract candidate rules, clauses, units, scope of application and conflict items; the vague content is marked to be confirmed and the value cannot be assumed.
 
-规则优先级、单位换算、冲突解决和修改审计必须由确定性配置层校验。AI 可以解释和提出规则映射，但不能静默改写已批准规则。
+A rule priority, unit conversion, conflict resolution and revision audit must be verified by a certain configuration layer. AI can explain and propose a rule map, but it cannot quietly reformulate the approved rule.
 
-### 8.2 试运行暂定阈值（非符合性依据）
+### 8.2 Provisional pilot thresholds (not a compliance basis)
 
-以下值只用于简单模型验证、算法联调和问题分级，不构成航空型号的设计批准或适航符合性结论。型号规范或供应商合同有规定时，必须完全覆盖这些默认值。
+The following values are used only for simple model validation, algorithmic interlinking and problem ranking, and do not constitute design approvals for the aviation model or conclusions of seaworthiness.
 
-| 参数 | 暂定 FAIL | 暂定 WARN/目标 | 说明 |
+| Parameters | Provisional FAIL | WARN/Target | Annotations |
 |---|---:|---:|---|
-| 普通管路—静止实体有效净距 | `< 6 mm` | `6–12 mm` | 已扣除保温、制造公差和位移包络；小空间试验默认值 |
-| 管路—管路有效净距 | `< 6 mm` | `6–12 mm` | 连接件和经批准的共夹持位置除外 |
-| 管路—运动包络有效净距 | `< 12 mm` | `12–25 mm` | 只有真实运动包络可作正式判定 |
-| 管路—未定级热源有效净距 | `< 25 mm` | `25–50 mm` | 只能筛查；正式规则必须按温度、辐射、气流和屏蔽确定 |
-| 刚性管中心线最小弯曲半径 | `< 3D` | `3D–4D` | `D` 暂取管外径；材料/工艺/规格表优先 |
-| 刚性管接口位置偏差 | `> 0.5 mm` | `0.25–0.5 mm` | 仅用于检查模型对接，不替代装配公差分析 |
-| 刚性管接口轴线偏差 | `> 0.5°` | `0.25–0.5°` | 设计转角和柔性连接除外 |
-| 软管静态弯曲半径 | `< 8D` | `8D–10D` | 无软管制造商数据时的保守筛查值 |
-| 软管动态弯曲半径 | `< 12D` | `12D–15D` | 正式判定必须采用具体软管数据表 |
-| 软管接头后直段 | `< 2D` | `2D–4D` | 同时检查接头附近弯曲和扭转 |
-| 管路几何计算容差 | `0.05 mm` | — | 计算容差，不等于设计允许间距 |
-| 接触分类容差 | `0.10 mm` | — | 用于区分数值噪声、接触和穿透 |
+| General route — Geostationary physical net range | `< 6 mm` | `6–12 mm` | Deducted temperature protection, public transport and port transfer; default for small-space test |
+| Pipelines - Valid Clear Ranges | `< 6 mm` | `6–12 mm` | Except for connector and approved co-location |
+| Pipeline - Sport Convey Effective Spacing | `< 12 mm` | `12–25 mm` | Only the real sports envelope can be officially determined. |
+| Pipeline - Ungraded heat source effective net range | `< 25 mm` | `25–50 mm` | Screening only; formal rules must be determined by temperature, radiation, air flow and shielding |
+| Minimal curve radius of the hard tube centre line | `< 3D` | `3D–4D` | `D` temporary removal tube exterior; material/process/specification table priority |
+| Rigid tube interface position deviation | `> 0.5 mm` | `0.25–0.5 mm` | Use only to check model docking, not substitute for assembly spread analysis |
+| Rigid tube interface axis deviation | `> 0.5°` | `0.25–0.5°` | Except for design turn and soft connection. |
+| Stereostatic curve radius | `< 8D` | `8D–10D` | Conservative screening value when no data on hose manufacturers |
+| Flex dynamic bend radius | `< 12D` | `12D–15D` | Formalization of the need for specific hose data sheets |
+| Straight after the hose. | `< 2D` | `2D–4D` | And check the bends and reverses near the interface. |
+| The geometry of the route is different. | `0.05 mm` | — | Calculating the tolerance difference, which does not equal the space allowed for the design |
+| Exposure classification tolerance | `0.10 mm` | — | To distinguish numerical noise, exposure and penetration |
 
-支撑间距不设置一个跨口径的固定默认值。试运行时如缺少标准表，规则应输出 `NOT_EVALUATED`，仅检查明显悬空、支撑穿透、支撑未接触、长悬臂和重附件无邻近支撑。软管弯曲半径必须优先使用目录或零件号关联的制造商数据。
+Support spacing does not set a fixed default value across a caliber. If a standard table is missing, the rules should be used to output `NOT_EVALUATED`, which only check visible suspensions, support penetrating, support non-contact, long-strength and heavy attachments without adjacent support. The convulsion radius of the hose must give preference to directory or zero part number associated manufacturer data.
 
-### 8.3 阈值优先级
+### 8.3 Threshold priority
 
-1. 型号专用设计规范、经批准图样和符合性文件；
-2. 客户/主制造商供应商规范及管路目录；
-3. 经项目批准的 SAE/ISO/行业标准具体版本；
-4. 经批准的工程分析、试验或相似性数据；
-5. 本 SPEC 的试运行暂定阈值。
+1. Model specific design specifications, approved drawings and conformity documents;
+2. (b) Customer/master manufacturer supplier regulation and directory of piped routes;
+3. Specific versions of SAE/ISO/industry standards approved by the project;
+4. Approved engineering analysis, testing or similarity data;
+5. The provisional threshold for this SPEC to run on a trial basis.
 
-低层级不得覆盖高层级。每个自动判定结果必须记录实际使用的层级、文档版本和条款。
+The lower level does not cover the upper level. Each automatic decision must record the level, document version and article that is actually used.
 
-## 9. 结果状态与严重度
+## 9. Result status and severity
 
-- `PASS`：完成检查且满足规则；
-- `WARN`：接近限值、存在工程风险或需复核；
-- `FAIL`：违反明确规则；
-- `NOT_EVALUATED`：缺少数据、对象无法识别或算法不适用；
-- `EXEMPTED`：依据已批准豁免排除；
-- `ERROR`：模型、程序或计算失败。
+- `PASS`: Complete inspection and meet the rules;
+- `WARN`: Approaching limit values, existence of engineering risk or need for review;
+- `FAIL`: Violation of explicit rules;
+- `NOT_EVALUATED`: Lack of data, inability of object to identify or algorithm not applicable;
+- `EXEMPTED`: exclusions based on authorized exemptions;
+- `ERROR`: Failed to model, program or calculate.
 
-组件关系调查另设三个前置状态：`PASS_NORMAL_CONNECTION`、`CHECK_CLEARANCE`、`REVIEW_REQUIRED`。它们描述“是否应继续做普通间距判定”，不替代最终规则状态。`REVIEW_REQUIRED` 在对外报告中按复核项展示，不得折算为 PASS。
+The component relationship survey has three additional prestates: `PASS_NORMAL_CONNECTION`, `CHECK_CLEARANCE`, `REVIEW_REQUIRED`. They describe whether “the ordinary spacing determination should continue” and do not replace the final rule state. `REVIEW_REQUIRED` is shown in the external report by the review item and cannot be converted to PASS.
 
-严重度建议：
+Recommendations on severity:
 
-- S1：信息/优化建议；
-- S2：一般问题，设计人员确认；
-- S3：重大问题，影响制造、装配或维护；
-- S4：关键问题，硬干涉、流道堵塞、接口断开或安全间距违反。
+- S1: Information/optimization recommendations;
+- S2: General issues, confirmed by the designer;
+- S3: Significant problems affecting manufacture, assembly or maintenance;
+- S4: Critical issues, hard interference, traffic jams, faulty interfaces or breach of security spacing.
 
-## 10. 输出要求
+## 10. Output Requirements
 
-### 10.1 单项问题记录
+### 10.1 Records of individual issues
 
-每个问题至少输出：
+At least for each question:
 
-- 唯一 Issue ID、规则 ID、状态和严重度；
-- 根产品、完整组件路径、实例名、零件号、Body/特征/面标识；
-- 对象 A、对象 B 及其分类；
-- 问题位置坐标、测量方向和最近点；
-- 实测值、限值、单位、差值和采用的容差；
-- 触发原因、标准条款、推断置信度和假设；
-- 建议处理方向，不自动替代工程设计决策；
-- 至少两个有意义视角的定位图或可复现 CATIA 选择集；
-- 豁免人、原因、有效版本和批准时间（若适用）。
+- Only Issue ID, rule ID, status and severity;
+- Root product, complete component path, example name, zero part number, body/identity/face identification;
+- Object A, Object B and their classification;
+- (b) The coordinates of the problem position, the direction of the measurement and the nearest point;
+- (a) The measured values, limits, units, margin and the tolerance margin used;
+- (a) Trigger causes, standard clauses, presumptions of confidence and assumptions;
+- Recommended direction and no automatic replacement for engineering design decisions;
+- (b) At least two locational maps of meaningful perspectives or a set of CATIA selections;
+- Immunity, cause, valid version and time of approval, if applicable.
 
-### 10.2 汇总报告
+### 10.2 Summary Report
 
-报告应包含：
+The report shall include:
 
-- 检查范围、排除范围、配置版本和模型版本；
-- 按管线、组件、规则、严重度统计的问题数量；
-- FAIL/WARN/NOT_EVALUATED 清单；
-- 未加载、无法识别和未检查对象清单；
-- 规则覆盖率、对象覆盖率和检查执行错误；
-- 与上次基线相比的新增、已解决、持续和变化问题；
-- 总体结论：通过、有条件通过、不通过或无法判定。
+- Check scope, exclusion, configuration and model versions;
+- Number of problems by pipeline, component, rule, severity;
+- List of FAIL/WARN/NOT_EVALUATED;
+- List of unloaded, unidentifiable and uninspected objects;
+- (a) Standard coverage, target coverage and checking for errors in implementation;
+- Additional, resolved, continuing and changing issues compared to the previous baseline;
+- General conclusion: Adopted, conditionally adopted, non-adopted or undecided.
 
-规定输出：Word 人读报告 + JSON 机器可读权威结果 + 带红框截图 + CATIA 定位/选择信息。CSV 可作为可选汇总导出；本项目不生成 PDF。
+Regulate output: Word Reader Report + JSON Machine Readable Authority Results + with Red Boxshot + CATIA Positioning/Selecting Information. CSV can be exported as an optional summary; this project does not generate PDF.
 
-### 10.3 Word 报告版式与统一模板
+### 10.3 Word Report Layout and Harmonization Template
 
-每个问题页应包含：问题编号和结论、CATIA 产品树完整路径、规则与来源、实测值/限值、整改建议，以及至少两张图：一张上下文总览、一张局部近景。图中应用引线、箭头、半透明高亮或尺寸标注指出问题对象；颜色约定为红色 FAIL、橙色 WARN、蓝色 NOT_EVALUATED、绿色已确认豁免。截图必须与结构化问题记录绑定，不得用无法复现的截图替代对象定位。
+Each question sheet should include: question number and conclusion; CATIA product tree integrity path; rules and sources; measured/limit values; rectification proposal; and at least two maps: a context overview; a local view. Use a lead, arrow, semi-transparent highlight or size label to indicate the subject; colours agreed to be red FAIL, orange Warn, blue. NOT_EVALUATED Green is confirmed. The cut-off chart must be tied to a structured problem record and cannot be replaced by an unrecoverable cut-off chart.
 
-包内必须保留统一的 Word 报告模板。每次生成时复制模板并填充，不直接改坏母版。报告固定顺序至少为：本次生效规则、模型与检查范围、执行环境和工具、总体结论、统计摘要、问题清单、问题详情、未评估/人工复核项、方法限制与审计信息。截图须由原始图生成标注副本，红框/箭头不得覆盖关键几何或尺寸文字。
+A single Word reporting template must be maintained in the package. The template is copied and filled in each time it is generated, without any direct deterioration of the master. The reporting order is at least as follows: the rules in force for this time, the model and scope of the inspection, the implementation environment and tools, the overall conclusion, the statistical summary, the list of issues, the details of the questions, the non-assessment/manual review items, the methodological limitations and the audit information.
 
-CATIA 内部定位包应保存对象实例路径、Part/Body/Feature 名、拓扑稳定标识（可用时）、问题坐标、相机方向和选择集。若拓扑标识在模型更新后失效，应退化为组件路径加坐标邻域重新匹配并提示用户确认。
+The CATIA internal locator package should save the object's example path, Part/Body/Feature name, pop-stabilization mark (when available), problem coordinates, camera orientation and selection set. If the pop-up sign lapses after the model has been updated, it should be degraded to rematch the component's path plus coordinates adjacent area and alert the user to confirm.
 
-## 11. 豁免与误报管理
+## 11. Exemptions and misreporting management
 
-- 豁免必须针对明确的规则、对象对和模型版本；
-- 几何或版本变化后，相关豁免默认失效并重新评估；
-- 允许连接处、过盈装配、焊接搭接和设计开孔应由 AI 结合语义与几何证据调查；已批准豁免仍可作为强证据，但不得把组件类型名单当作自动放行结论；
-- 不得通过扩大全局容差隐藏局部误报；
-- 重复误报应转化为可审计的规则修订，不允许静默忽略。
+- Exemptions must be targeted at clear rules, object pairs and model versions;
+- The relevant exemption is defaulted and reassessed after a change in geometry or version;
+- (b) Allow connections, excess assembly, welding and design openings to be investigated by AI in combination with semantic and geometric evidence; the exemption granted may still be used as strong evidence, but the list of component types may not be used as an automatic release conclusion;
+- (b) No partial misrepresentation may be concealed by widening the global margin;
+- Repeated misstatements are translated into auditable rule revisions that do not allow for silent neglect.
 
-## 12. 性能与可靠性
+## 12. Performance and reliability
 
-- 检查过程不得修改、更新后保存或覆盖源文件；
-- 单个规则失败不得导致全部检查结果丢失；
-- 支持中断、恢复和可重复执行；
-- 同一模型、规则版本和计算环境应得到一致结果；
-- 全装配硬干涉不得采用外部 `N×(N-1)/2` 次 CATIA COM 调用；默认应为一次原生 DMU `Between All` 计算加结果提取；
-- 对距离不足、热区和维护空间等非全局 Clash 规则，应先用对象分类、空间分区、DMU 候选结果或 AABB/BVH 宽阶段筛选，再做精确计算；
-- 支持按子装配、空间区域、系统、Line ID、对象类型和用户选择集缩小范围；
-- 支持增量检查：组件几何版本、位置矩阵、规则版本和相关属性未变化时，可复用合格的历史结果；
-- 缓存不得掩盖 CATIA 会话内未保存的位置或几何变化；缓存键必须包含会话状态或可证明等价的几何指纹；
-- 目标性能基线：100 个有效组件的全装配 Clash 应在 60 秒内完成；1,000 个有效组件应在 10 分钟内完成。该数值为项目验收目标，最终应按公司工作站、模型复杂度和许可证环境校准；
-- 单个检查任务应提供进度、当前阶段、已完成冲突数、取消和超时机制；
-- 内存使用超过配置上限时，应按子装配/空间区块降级执行，不得导致 CATIA 或用户会话崩溃；
-- 所有日志应记录模型、规则、软件版本、开始/结束时间和异常堆栈。
+- The inspection process shall not modify, update and save or overwhelm the source file;
+- Failure of individual rules must not result in the loss of all inspection results;
+- Support for interruption, recovery and repetitivity;
+- The same model, the version of the rule and the computational environment should have consistent results;
+- Full assembly, hard interference, no external intervention. `N×(N-1)/2` Second CATIA COM call; default should be a native DMU `Between All` Computation and extraction of results;
+- Non-overall Clash rules, such as insufficient distance, hot zone and maintenance space, should be screened first for object classification, spatial partition, DMU candidate results or AABB/BVH wide phase before accurate calculation;
+- Support for the reduction of the size of sub-assembly, space area, system, Line ID, object type and user selection set;
+- Supports incremental inspection: eligible historical results can be reused when the geometric version of the component, position matrix, rule version and associated properties remain unchanged;
+- Cache must not conceal unsaved locations or geometric changes in CATIA sessions; the Cache key must contain geometric fingerprints of the status of the session or probative value;
+- Target performance baseline: 100 active components should be fully equipped Clash within 60 seconds; 1,000 effective components should be completed within 10 minutes. This value is the project acceptance target and should eventually be calibrated according to the company workstation, model complexity and licence environment;
+- Individual inspection missions should provide progress, the current phase, the number of conflicts completed, the cancellation and the time-out mechanism;
+- The memory use exceeding the configuration ceiling shall be performed by a downgrading of subassembly/space blocks and shall not result in a collapse of CATIA or user sessions;
+- All logs should record models, rules, software versions, start/end times and abnormal stacks.
 
-### 12.1 大装配执行流水线
+### 12.1 Large-assembly inspection pipeline
 
 ```text
-模型健康检查
+Check model health
     ↓
-读取产品树、语义和位置
+Read the product tree, semantics, and placement
     ↓
-排除空对象/禁用对象并记录明确批准豁免
+Exclude empty or disabled objects and record explicitly approved exemptions
     ↓
-CATIA DMU Between All 一次性 Clash
+Run one CATIA DMU Between All clash check
     ↓
-Conflict/近距候选提取、分类与去重
+Extract, classify, and deduplicate clash and proximity candidates
     ↓
-AI 围绕候选迭代取证并判断设计关系
+Gather evidence iteratively and assess candidate design relationships with AI
     ↓
-正常连接留档不报问题；非连接执行阈值；不确定转人工复核
+Archive normal connections outside the issue list, apply thresholds to nonconnections, and route uncertainty to manual review
     ↓
-定位、截图、问题合并和报告
+Locate, capture, consolidate issues, and report
 ```
 
-系统应分别记录各阶段耗时，使性能瓶颈能够区分为 CATIA 计算、COM 数据提取、规则执行、截图或报告生成。
+The system should record the time-consuming stages separately so that performance bottlenecks can be distinguished from CATIA calculations, COM data extraction, rule enforcement, cut-off or reporting generation.
 
-## 13. 验收测试
+## 13. Acceptance tests
 
-验收数据集至少包含：
+The receiving and inspection data set contains at least:
 
-1. 无问题的标准管路；
-2. 已知穿透量的实体干涉；
-3. 恰好位于间距阈值两侧的边界用例；
-4. 允许连接接触与非预期碰撞的对照用例；
-5. 错位、反向、断开和被封堵的接口；
-6. 合格和不合格的弯曲半径、转角及直段；
-7. 三通内孔未打通、支管壁伸入主管的用例；
-8. 缺支撑、超间距、支撑悬空或穿透的用例；
-9. 保温、运动包络和维护空间不足的用例；
-10. 导入实体、曲面、缺失引用和失效特征；
-11. 经批准豁免及模型变化后豁免失效的用例；
-12. 大装配性能、增量检查和重复执行一致性用例。
-13. 100/1,000 组件规模下的原生 Between All 性能测试，并验证没有逐对 COM 调用；
-14. CATIA 原生 Clash 结果与人工 DMU 操作结果的一致性对照；
-15. Run—物理管件、法兰配对、安装接触等预期关系的误报过滤；
-16. 完全断开互联网后的模型读取、检查、规则执行和基础报告测试；
-17. 临时 Clash/Distance/Group 对象清理、选择集恢复和源模型未保存验证。
+1. (b) Standard pipelines without problems;
+2. (b) Physical interference of known penetrators;
+3. Examples of borders that happen on both sides of the spacing threshold;
+4. (a) Cross-references allowing connection to contact and unexpected collisions;
+5. (a) An interface that is faulty, reverse, disconnected and blocked;
+6. (a) A qualifying and unqualified bend radius, corner and straight segments;
+7. Three examples of unreached cavity through the bronchial wall to the supervisor;
+8. (b) Examples of instances where support is lacking, hyperspace, support for suspension or penetrating;
+9. Examples of temperature protection, sports packages and inadequate space maintenance;
+10. Importing entities, curves, missing references and invalids;
+11. Examples of cases where exemptions have been granted and the exemptions have lapsed following changes in models;
+12. Examples of high-assembly performance, incremental checks and repeated implementation consistency.
+13. 100/1,000 Primary Between All performance test at component scale and verification that COM calls were not made on a log-on basis;
+14. CATIA Native Clash results compared to artificial DMU results;
+15. Run-fault filters for expected relationships, such as physics tubes, French matching, installation contacts, etc.
+16. (a) Model reading, inspection, rule enforcement and basic reporting testing after complete disconnection from the Internet;
+17. Temporary Clash/Distance/Group object clean-up, selected set restoration and source model not saved for validation.
 
-每条规则须有正例、反例和容差边界用例。验收时应给出期望 Issue ID/Rule ID、对象、测量值和状态，不只比较问题总数。
+For each rule, there must be examples of formal, contrived and differential boundaries.
 
-## 14. 实施边界与 CATIA 集成原则
+## 14. Application of the principles of border and CATIA integration
 
-- 使用 CATIA 结构化对象、拓扑、测量和装配树作为事实来源；
-- 检查前记录模型清单/基线，检查后不改变源模型状态；
-- 原生 Tubing Design 数据与普通参数化几何应明确区分；
-- 无原生管路语义时，可通过几何推断检查，但必须标记推断来源和置信度；
-- 截图仅作为证据，不能替代结构化测量；
-- 后续若增加自动修复，应另立 SPEC，并采用预览、最小可逆修改、更新验证、前后清单对比和用户确认流程。
+- Use CATIA structured objects, pouncers, measure and assemble trees as a factual source;
+- Record the model list/baseline before inspection and do not change the source model state after inspection;
+- Numerical Tubing Design data should be clearly distinguished from normal parameterization geometry;
+- (b) When there is no synonym for a primary tube, a geometric inference may be used, provided that the origin and confidence are marked;
+- (a) The cut-off chart is only evidence and cannot be a substitute for structured measurements;
+- Additional automatic fixes should be followed by a separate SPEC and a preview, minimum reversibility, updated validation, pre- and post-list comparison and user confirmation process.
 
-### 14.1 Agent 执行流程
+### 14.1 Agent Implementation Process
 
-1. 连接 CATIA，列出文档，按名称、类型和路径确认并激活目标模型；
-2. 识别原生 CATIA 或 STEP/STP、IGES/IGS 等输入类型，保存只读 manifest 基线；
-3. 原生模型读取装配、约束、属性和 Tubing Design 语义；哑模型执行实体划分、管路/连接件识别和置信度评估；
-4. 载入主规则与本次覆盖，生成不可变的本次规则快照；
-5. 调用 `prepare` 类工具完成模型健康、候选对、干涉、间距和管路几何事实的初始采集；
-6. AI 审查证据缺口，围绕可疑组件自主调用明确的测量、拓扑、邻域、装配和视图工具，直至足以判断或确认无法判断；
-7. AI 输出关系判断、理由、置信度和关键证据；`finalize` 校验引用的事实、执行阈值规则、去重并固化结果；
-8. 对弯曲半径、R/D、接口连续性、管路间距、支撑及其他已启用规则逐项给出已检查/未评估状态，不得因模型非原生而静默跳过；
-9. 为问题和复核项生成上下文图与局部图，制作带红框的标注副本；
-10. 按统一模板生成 JSON 和 Word；正常连接只在 JSON 审计中保留，不进入问题页；
-11. 用户复核结果并决定接受、退回供应商或建立有期限的豁免；
-12. 全过程不修改、不保存源模型。任何未来整改建议仅为建议文本。
+1. Connect CATIA, listing documents, confirming and activating the target model by name, type and path;
+2. Identify input types such as CATIA or STEP/STP, IGES/IGS, and save read-only baseline;
+3. Native models read assembly, binding, attributes and Tubing Design syntax; dumb model implementation entity classification, route/connector identification and confidence assessment;
+4. (a) Contain the main rule and this coverage to produce an immutable snapshot of this rule;
+5. (a) Call the `prepare` type tool for initial collection of model health, candidate pairing, interference, spacing and route geometric facts;
+6. AI reviews evidentiary gaps and uses clear measurement, scaling-up, neighbourhood, assembly and viewing tools around suspect components autonomously until they are sufficient or are determined to be undecidable;
+7. AI Output relationship judgement, rationale, confidence and key evidence; `finalize` validates quoted facts, enforces threshold rules, deweights and solidifies results;
+8. (a) To give an itemized/unassessed condition for the curved radius, R/D, interface continuity, pipe spacing, support and other activated rules and not to jump silently because the model is not original;
+9. Generate context maps and detail view for questions and review items, and produce red-boxed labels;
+10. Generate JSON and Word by a uniform template; normal connections are reserved only in the JSON audit and no problem pages are entered;
+11. User review results and decision to accept, return or establish a time-limited exemption;
+12. The whole process does not modify or save the source model. Any future change proposal is only recommended text.
 
-### 14.2 最小模型属性要求
+### 14.2 Minimum model properties requirements
 
-为了让 Agent 从“能看几何”提升到“能作工程判定”，供应商模型至少应提供：Line ID、介质、刚性/软性类别、外径、壁厚或内径、材料/规格、设计温度、工作压力、防火等级、流向、端口和连接器、支撑类型，以及防火区和热源/运动包络引用。缺少上述属性时，报告必须列出数据完整性缺口。
+In order for Agent to be raised from “visible geometry” to “enable for engineering determination”, the supplier model should provide at least: Line ID, medium, rigid/soft class, outer diameter, wall thickness or inner diameter, material/specification, design temperature, work pressure, fire-protection grade, direction, port and connector, type of support, and fire zone and heat source/motion package references. In the absence of these attributes, the report must include data integrity gaps.
 
-## 15. 法规与标准基线
+## 15. Legislation and standard baselines
 
-### 15.1 适航与安全要求
+### 15.1 Airworthiness and safety requirements
 
-- [EASA CS-25.1181–25.1203](https://www.easa.europa.eu/en/document-library/easy-access-rules/online-publications/easy-access-rules-large-aeroplanes-cs-25)：用于短舱指定防火区、可燃液体部件、防火墙、排液通风和关断等顶层要求。CS 25.1183 要求火区内可燃液体管路/附件具有相应耐火能力并布置或屏蔽以防泄漏液体被点燃；CS 25.1187 要求有效排液和通风。
-- CS 25.1185 给出油箱/储液器与防火墙或隔离罩至少 13 mm 净空气间隙的明确要求；该数值只适用于该条款对象，不能扩展成所有管路的通用间距。
-- AMC 25.1189 指出高压细孔泄漏形成喷雾会加剧火灾风险，并要求按每个可燃液体系统和每个防火区分析关断后的可排放体积。Agent 可检查几何路径和属性完整性，但不能替代火灾安全分析。
-- ISO 2685 可作为指定防火区设备耐火试验方法来源；模型检查只能验证所需等级属性、区域和证据是否齐全，不能从 CAD 外形推断试验合格。
+- [EASA CS-25.1181-25.1203](https://www.easa.europa.eu/en/document-library/easy-access-rules/online-publications/easy-access-rules-large-aeroplanes-cs-25): Capture requirements for designated fire zones, combustible liquid components, firewalls, fluid ventilation and shutdowns for short-seat use. CS 25.1183 requires that flammable liquid pipelines/annexes in the fire zone have the corresponding fire resistance and are equipped or shielded to prevent leaking liquids from being ignited; CS 25.1187 requires effective effluents and ventilation.
+- CS 25.1185 gives an explicit requirement for a gap between the tank/reserver and the firewall or shield of at least 13 mm of net air; this value applies only to the subject of the clause and cannot be extended to the general spacing of all pipes.
+- AMC 25.1189 states that the risk of a fire is exacerbated by the formation of a leak from high-pressure fine holes and requires an analysis of the volume of emissions following the break-up by each combustible liquid system and by each fire protection area. Agent can check geometric pathways and attribute integrity, but cannot substitute for fire safety analysis.
+- ISO 2685 may be used as a source of fire-resilient test methods for the specified fire zone equipment; model checks can only verify that the required grade attributes, areas and evidence are complete and cannot be extrapolated from the CAD shape to qualify for tests.
 
-如项目采用 FAA 认证基础，应建立对应的 14 CFR Part 25 条款映射；如检查发动机本体而非短舱安装，还须补充 Part 33/CS-E 的型号适用条款。最终认证基础由型号适航团队批准，Agent 不自行选择。
+If the project uses the FAA basis for authentication, a corresponding 14 CFR Part 25 article map should be established; if the engine is checked instead of a short-seat installation, the model application for Part 33/CS-E should be supplemented. The basis for final certification is approved by the model airworthiness team and Agent does not choose.
 
-### 15.2 管路行业标准候选集
+### 15.2 Candidate tubing standards
 
-- [SAE ARP994C](https://saemobilus.sae.org/standards/arp994b-design-tubing-installations-aerospace-hydraulic-systems)：航空液压管、软管和接头设计选型实践，覆盖布置、支撑、应力和柔性补偿等主题；采购正式最新版后再录入具体数值表。
-- [SAE AS18802](https://saemobilus.sae.org/standards/as18802-fuel-oil-lines-aircraft-installation)：航空器燃油和滑油管路安装要求，但其公开范围明确排除作为发动机组成部分随发动机提供的管路，使用时须先判定供应商模型边界。
-- [SAE AIR5386A](https://saemobilus.sae.org/standards/air5386a-hose-hose-assembly-selection-installation-inspection-maintenance-guidelines-listing)：航空软管与软管组件选择、安装、检查和维护指南索引。
-- SAE AIR5426：航空管接头及接头组件的选择、安装、检查和维护指南。
-- SAE AS683E：流体连接件安装程序与扭矩；几何 Agent 可检查接头类型、空间和属性，扭矩仍需制造/装配数据闭环。
+- [SAE ARP994C](https://saemobilus.sae.org/standards/arp994b-design-tubing-installations-aerospace-hydraulic-systems): Aviation hydraulic tubes, hoses and interface design selection exercises covering topics such as placement, support, stress and soft compensation; the official latest version of the procurement is followed by the entry of a specific value sheet.
+- [SAE AS18802](https://saemobilus.sae.org/standards/as18802-fuel-oil-lines-aircraft-installation): Aircraft fuel and ski pipeline installation requirements, but their public scope expressly excludes the pipelines provided with the engine as part of the engine, which must be used in order to determine the boundaries of the supplier model.
+- [SAE AIR 5386A](https://saemobilus.sae.org/standards/air5386a-hose-hose-assembly-selection-installation-inspection-maintenance-guidelines-listing): Index of guidelines for the selection, installation, inspection and maintenance of air hoses and hose components.
+- SAE AIR 5426: Guidance on the selection, installation, inspection and maintenance of the interface and interface components.
+- SAE AS683E: installation program for fluid connectors and twists; geometry Agent can check the type, space and properties of the interface, which still needs to be constructed/assembled with data closed loops.
 
-上述 SAE 文件多为版权标准。本 SPEC 目前仅使用公开范围说明，没有虚构其付费正文中的条款或数值。项目应采购适用版本，由设计、适航和标准化人员确认后，将批准的数值转录到受控规则库。
+This SPEC currently uses only a public scope description, and does not pretend the terms or values in its payment body. The project should purchase the applicable version, which is confirmed by the design, seaworthiness and standardization staff, and then forwards the approved values to the controlled rules house.
 
-### 15.3 标准采用决策
+### 15.3 Standard-based decision-making
 
-标准不是“越多越好”。每条规则须建立 `法规目标 → 符合性方法/行业标准 → 型号设计规则 → Agent 可计算条件` 的追溯链。无法由 CAD 证明的要求应输出证据缺口，不得转化为伪几何规则。
+The standard is not “as many as possible”. Each rule must establish a retroactive chain of `法规目标 → 符合性方法/行业标准 → 型号设计规则 → Agent 可计算条件`. The requirement of CAD proof should not be translated into a pseudo-geometric rule.
 
-## 16. 待项目确认参数（TBD）
+## 16. Parameters to be confirmed (TBD)
 
-1. 目标机型的认证基础：CAAC/FAA/EASA，以及具体修正案水平；
-2. 供应商模型边界：短舱安装管路、发动机本体管路或二者接口；
-3. Line ID 分类、介质清单、温度/压力等级和防火等级字典；
-4. 主制造商/客户标准、供应商 DQMR 与已采购 SAE/ISO 标准版本；
-5. 防火区、热源、转子危险区、机构运动和发动机相对位移包络数据；
-6. 按对象与区域划分的正式间距、弯曲半径、直段、接口和支撑规则；
-7. CATIA Tubing Design 的命名、目录、连接器、规格和属性约定；
-8. 简单验证模型的期望结果，以及后续代表性合格/不合格模型；
-9. 报告模板、语言、签审流程、豁免责任人与是否接入 PLM/QMS；
-10. 模型规模、目标运行时间、敏感数据隔离和审计保存期限。
+1. (a) The base for the certification of the target aircraft: CAAC/FAA/EASA, and the level of specific amendments;
+2. Model boundary of the supplier: installation of a pipe, engine hull, or interface between the two in the short module;
+3. Line ID classification, list of media, temperature/pressure level and fire-protection level dictionary;
+4. Main manufacturer/client standard, supplier DQMR and procured SAE/ISO standard version;
+5. Data on fire protection areas, heat sources, rotor hazard areas, institutional movements and relative transfer of engines;
+6. Formal spacing, curved radius, diameter, interface and supporting rules by object and area;
+7. CATIA Tubing Design name, directory, connector, specification and attribute agreement;
+8. Simple validation of expected results of models and subsequent representative qualified/unqualified models;
+9. Reporting template, language, signing process, exemption from liability and access to PLM/QMS;
+10. Model size, target running time, sensitive data segregation and audit retention period.
 
-## 17. 内网与离线部署要求
+## 17. Intranet and offline deployment requirements
 
-### 17.1 部署目标
+### 17.1 Deployment targets
 
-系统必须支持部署到公司 Windows 内网工作站。核心检查闭环不得要求访问互联网：
+The system must support the deployment to the company’s Windows intranet workstation.
 
-- 连接本机 CATIA V5；
-- 读取 CATProduct/CATPart/Tubing Design；
-- 执行 DMU Clash、Distance 和管路确定性检查；
-- 加载本地受控规则库；
-- 运行内网 AI 的调查决策循环，并生成本地 JSON、Word 和带红框截图；
-- 保存审计日志和可复现定位数据。
+- Connecting to local CATIA V5;
+- (b) Read CATProducing/CATPart/Tubing Design;
+- Perform DMU Clash, Distinction and pipe certainty checks;
+- Loading of the locally controlled repository;
+- Run intranet AI investigation decision loops and generate local JSON, Word and red box screenshots;
+- Maintain audit logs and recapable location data.
 
-自然语言 AI 能力分为可替换适配层：
+Natural language AI capabilities are divided into symbiotic layers:
 
-| 部署模式 | 几何与规则检查 | 自然语言解释 | 数据外发 |
+| Deployment pattern | Geometry and Rules Checking | Natural language interpretation | Data Outgoing |
 |---|---|---|---|
-| 内网纯离线（无模型） | 几何事实和数值规则可用；关系判断降级复核 | 模板化文本 | 无 |
-| 内网大模型（目标模式） | 完整闭环 | 公司内网部署并批准的大模型主动调查与判断 | 不出公司内网 |
-| 企业 AI 网关 | 完整闭环 | 经审批的云端/托管模型主动调查与判断 | 仅允许发送批准的数据字段 |
+| intranet pure offline (no model) | Geometric facts and numerical rules are available; relationship judgement downgrade review | Templateed Text | None |
+| Intranet Large Model (Target Mode) | Full closed circle. | Corporate intranet deployed and approved large model proactive survey and judgement | No company, intranet. |
+| Enterprise AI Gateway | Full closed circle. | Active survey and judgement of approved cloud/host models | Allow sending only approved data fields |
 
-本项目默认目标为“公司内网大模型”模式。AI 不可用或调用失败不得阻断已具备的几何测量与数值规则，但所有依赖设计意图的关系判断必须降级为 `REVIEW_REQUIRED`，并在报告中明确能力缺口。
+The default target for this project is the “corporate intranet large model” model. AI's non-availability or failure to call must not interrupt the geometric and numerical rules that are in place, but all relationship judgements that rely on design intent must be downgraded to `REVIEW_REQUIRED` and identify capability gaps in the report.
 
-### 17.1.1 公司内网大模型适配
+### 17.1.1 Corporation intranet large model adaptation
 
-- AI 层必须通过独立 `LLM Adapter` 接口接入，不得把具体厂商、模型名称或 SDK 写死在 CATIA 检查核心中；
-- 至少支持公司提供的 HTTP/HTTPS 推理接口；若接口兼容 OpenAI API，可通过配置切换 Base URL、模型名、鉴权头和超时，禁止把公网地址设为内网版本默认值；
-- 支持非 OpenAI 兼容接口的适配器扩展，包括公司统一 AI 网关、私有化推理平台或内部 Agent 平台；
-- 鉴权信息必须从公司批准的凭据服务、环境配置或受控密钥文件读取，不得写入代码、规则文件、日志和报告；
-- 模型调用输入应优先为结构化检查结果、规则条款、组件脱敏标识和必要上下文，不应默认传输完整 CAD 文件或无关模型树；
-- 提示词、术语表、报告模板和知识库应部署在内网并采用版本控制；
-- 如采用 RAG，检索源仅限经批准的公司规范、型号规范、标准摘要、历史问题库和整改案例，并记录文档版本及引用片段；
-- 每个 AI 输出必须能够追溯到：模型版本、提示词版本、知识库版本、输入 Issue ID 和生成时间；
-- 内网大模型可以生成检查计划、工具调用决策、对象/关系分类、设计合理性判断、解释和整改建议；不得覆盖 CATIA/几何工具给出的实测值、受控规则阈值或 `finalize` 的一致性校验结果；
-- 当 AI 输出与确定性结果冲突时，以 CATIA 原始结果和受控规则判定为准，并记录 `AI_CONFLICT`；
-- 未经审批，AI 不得调用 CATIA 修改、保存、删除、发布或提交 PLM 的操作。
+- The AI layer must be accessed through an independent `LLM Adapter` interface, and no specific manufacturer, model name or SDK should be written to the CATIA core;
+- Supports at least the HTTP/HTTPS reasoning interface provided by the company; if the interface is compatible with OpenAI API, the public address is prohibited as the default value for the intranet version by configuration toggle Base URL, model name, rights and overtime;
+- (a) Supporting the extension of adapters for non-OpenAI compatible interfaces, including the corporate unified AI gateway, the privatization reasoning platform or the internal Agent platform;
+- Accuracy information must be read from company-approved certificate services, environmental configurations or controlled key files and may not be written into codes, rule files, logs and reports;
+- Model call input should give priority to structured inspection results, rule clauses, component desensitization markers and necessary context, and should not default on the transmission of complete CAD files or unrelated model trees;
+- Intranet and version control should be used for alerts, glossarys, reporting templates and knowledge base;
+- If RAG is used, the search source is restricted to approved corporate norms, model codes, standard summaries, historical repositorys and clean-up cases, and document versions and reference clips are recorded;
+- Each AI output must be traceable to: model version, hint version, knowledge base version, input Issue ID and generation time;
+- A large Intranet model can generate inspection plans, tool call decisions, object/relationship classification, design reasonableness judgement, interpretation and rectification advice; it should not cover measured values given by CATIA/geometric tools, controlled rule thresholds or `finalize` (a) The results of the consistency verification;
+- When the AI output is in conflict with the certainty result, the CATIA original result and the controlled rules are determined and `AI_CONFLICT` is recorded;
+- AI may not call CATIA to modify, save, delete, publish or submit PLM without approval.
 
-### 17.1.2 内网大模型能力验收
+### 17.1.2 Intranet Large model capability acceptance
 
-内网大模型接入至少验证：
+Intranet large model access at least validates:
 
-1. 中文工程指令理解和对象范围解析；
-2. 结构化 Clash/测量结果的准确复述，不改变数值和单位；
-3. 按规则 ID、严重度和根因聚类；
-4. 基于批准知识库生成可追溯整改建议；
-5. 自动生成报告摘要、问题说明和供应商反馈文本；
-6. 提示词注入、越权操作和敏感信息泄露防护；
-7. 服务超时、限流、模型不可用时自动降级；
-8. 同一结构化输入的关键事实一致性测试。
-9. 正常直连、管路—接头—管路、非连接近距、异常穿透和证据不足五类关系判断测试；
-10. AI 能在首轮证据不足时选择恰当工具补证，并在没有新增证据时停止循环；
-11. STEP/IGES 缺少名称和约束时，能依据几何证据判断或保守转人工复核。
+1. (b) The understanding and interpretation of the object range of the Chinese project directive;
+2. Structured Clash/measured results accurately repeated without altering values and units;
+3. (a) Rules-based ID, severity and root cause clustering;
+4. (a) The generation of retroactive rectification recommendations based on approval of the knowledge base;
+5. Automatically generate summary reports, issue notes and vendor feedback texts;
+6. Injection, ultra vires operation and protection against disclosure of sensitive information;
+7. (a) Service overtime, restricted flow, automatic downgrading when models are not available;
+8. A key factual consistency test for the same structured input.
+9. Five types of relationship determination test for normal straight-link, pipe-link, non-connected perigee, abnormal penetration and insufficient evidence;
+10. AI is able to select the appropriate instrument to supplement the evidence in the first round and to stop the cycle in the absence of additional evidence;
+11. STEP/IGES is able to rely on geometric evidence or to pass a conservative manual review when it lacks name and discipline.
 
-AI 质量指标至少包括事实数值保持率、规则引用正确率、无依据结论率、整改建议采纳率和人工复核工作量；正式阈值由公司项目组批准。
+AI Quality indicators include, at a minimum, the maintenance rate of factual values, the correct rate of rule references, the rate of unfounded conclusions, the rate of acceptance of corrective recommendations and the workload of manual reviews; formal thresholds are approved by the corporate project team.
 
-### 17.2 环境与依赖
+### 17.2 Environment and dependency
 
-- 内网目标为 CATIA V5 R30（Release 30）；在目标机完成兼容性验收后确认支持范围。其他 CATIA V5 Release 按兼容矩阵单独验证；当前开发机版本不构成目标机要求，具体 Service Pack/Hot Fix 和许可证必须纳入验收；
-- Python、pywin32、MCP 服务和报告依赖应提供离线安装包、版本锁定和文件校验值；
-- Python 与 CATIA COM 位数必须匹配；
-- Tubing Design、DMU Space Analysis 和相关目录许可证必须在启动自检中分别探测；
-- CATIA Catalog、Tubing Standards、Specifications 和 Design Rules 路径必须可配置，不得写死开发机路径；
-- 支持公司内网文件服务器、受控临时目录、中文路径和只读供应商模型目录；
-- 安装程序不得要求管理员权限，除非公司部署方案明确批准。
+- Intranet targets CATIA V5 R30 (Release 30); confirm the range of support upon completion of the compatibility check for the target machine. Other CATIA V5 Releaase independently validates it against the compatible matrix; the current development version does not constitute the target machine requirement, and specific Service Pack/HotFix and licences must be included in the receipt and inspection;
+- Python, pywin32, MCP services and reporting depend on the availability of offline installation packages, version locks and document validation values;
+- Python must match CATIA COM digits;
+- Tubing Design, DMU Space Analysis and related catalogue licences must be detected separately during self-inspection;
+- CATIA Catalog, Tubing Standard, Specialisations and Design Rules Paths must be configured and cannot write a dead developer path;
+- Supporting company intranet file servers, controlled temporary catalogues, Chinese path and a read-only supplier model catalogue;
+- The installation procedure shall not require administrator authority unless the company's deployment programme has been explicitly approved.
 
-### 17.3 数据安全
+### 17.3 Data security
 
-- 默认不向公网发送 CATPart、CATProduct、截图、完整装配树、零件号或坐标；
-- 如使用企业 AI 网关，只发送规则结果摘要，并按公司策略脱敏组件名称和项目标识；
-- 所有外发字段、目标地址、调用时间和响应状态必须审计；
-- 本地临时 STL、截图、Clash 导出和报告中间文件应位于受控目录，并按配置自动清理；
-- 系统不得通过桌面截图或键鼠自动化绕过 CATIA 结构化接口和公司安全控制；
-- 源模型始终只读，除非未来单独批准自动修复 SPEC。
+- Default not to send CATPart, CATProduct, screenshot, complete assembly tree, zero part number or coordinates to the public network;
+- When using the Enterprise AI gateway, send only a summary of the results of the rules, with the name of the dissensitized component and the project identifier according to the company's strategy;
+- All outgoing fields, target addresses, call times and response status must be audited;
+- Local temporary STL, screenshot, Clash export and reporting intermediate files should be located in the controlled directory and automatically cleaned as configured;
+- (a) The system should not automate the CATIA structured interface and company security controls through desktop screenshots or keyboards;
+- The source model is always read-only unless an automatic repair of SPEC is approved separately in the future.
 
-### 17.4 启动自检
+### 17.4 Commence self-inspection
 
-内网版本启动时至少检查：
+Check at least on startup of intranet version:
 
-1. CATIA 进程、版本、位数和活动文档；
-2. COM/MCP 连接；
-3. Product Structure、SPA/DMU、Tubing Design 自动化接口；
-4. 所需许可证和目录；
-5. 规则库版本、签名和必填字段；
-6. 临时目录、报告目录和日志目录读写权限；
-7. 离线报告依赖；
-8. AI 服务状态，仅作为可选项，不影响核心检查启动。
+1. CATIA processes, versions, digits and activity documents;
+2. COM/MCP connectivity;
+3. (a) Auto-interfaces for Project Structure, SPA/DMU, Tubing Design;
+4. The required licences and directories;
+5. (a) Rule library versions, signatures and required fields;
+6. Read-and-write permission for temporary directories, report catalogues and log catalogues;
+7. Offline reporting is dependent;
+8. AI service status, only as options, does not affect core check startup.
 
-## 18. v2.0 最小可交付能力
+## 18. v2.0 Minimum deliverables
 
-v2.0 达成必须同时满足：
+V2.0 Achieving must be satisfied at the same time:
 
-1. 当前活动 CATProduct 的结构化识别和 manifest 基线；
-2. CATIA DMU `Between All` 单次全装配 Clash 扫描；
-3. 指定组件对的原生 Clash 复核；
-4. Arrangement Run—Run 及 Run—实体的确定性检查；
-5. 管径、节点、长度、弯曲角度、弯曲半径和 R/D 检查；
-6. 空零件、无主形状表示和未加载引用识别；
-7. AI 主导的 `prepare → 调查取证 → finalize` 关系判断框架，不依赖静态组件豁免名单；
-8. STEP/STP、IGES/IGS 的几何分流、管路识别、邻近关系调查，并对可测弯曲半径/R/D 执行检查；
-9. JSON 规则配置、自然语言/文件规则入口及 PASS/WARN/FAIL/NOT_EVALUATED/EXEMPTED/ERROR 和三种关系状态；
-10. 至少两个视角的证据图、红框标注副本、CATIA 定位信息和统一模板 Word 报告；
-11. 正常设计连接在 JSON 中可审计，但不进入 Word 问题清单或问题详情；
-12. 全流程不保存源模型，临时 DMU 对象全部清理；
-13. 完全断网状态下可运行核心闭环；
-14. 标准测试模型可重复得到相同测量事实；AI 关系结论变化时必须保留模型/提示词/证据版本以便审计。
+1. (a) The current activity CATProduct structured identification and baseline;
+2. CATIA DMU `Between All` Single full assembly Clash scan;
+3. (a) Original Clash review of assigned components;
+4. (a) Arrengement Run-Run and Run-Entities for certainty checks;
+5. (b) Pyropathic, nodal, length, bend angle, bend radius and R/D checks;
+6. (a) Empty parts, orphan shape expression and unloaded reference identification;
+7. AI-led `prepare → 调查取证 → finalize` relationship judgement framework, not dependent on the static component exemption list;
+8. (a) Geometric diversion, route identification, proximity survey for STEP/STP, IGES/IGS, and carrying out inspections of the convulsible convex radius/R/D;
+9. JSON rules configuration, natural language/file rules entry and PASS/WARN/FAIL/ NOT_EVALUATED / EXEMPTED/ERROR and three state of relationship;
+10. (b) Evidence maps of at least two perspectives, copies of red box labels, CATIA positioning information and the Word template report;
+11. The normal design connection is auditable in JSON but does not enter the Word list of issues or questions;
+12. The whole process does not save the source model and the temporary DMU object is completely cleaned;
+13. (a) Operatable core closed loops in completely de-netted states;
+14. Standard test models can repeat the same measurement facts; AI relationship conclusions must be changed in such a way as to retain a version of the model/tip/evidence for audit purposes.
 
-以下不属于 v2.0 完成声明：自动修改模型、自动提交 PLM、替代适航批准、在缺少载荷和温度边界时宣称强度/热安全合格。
+The following are not v2.0 declarations of completion: automatic modification of models, automatic submission of PLMs, alternative seaworthiness approvals, declared strength/thermal safety clearance in the absence of payloads and temperature boundaries.
 
-## 19. 异常处置与恢复
+## 19. Exception handling and recovery
 
-| 异常 | 必须采取的动作 |
+| Unusual | The action that must be taken. |
 |---|---|
-| 无法确定模型格式或活动文档 | 停止正式判定，列出候选文档及证据，要求用户确认目标；不得猜测后保存 |
-| CATIA/DMU 工具或许可证不可用 | 记录失败能力和影响范围；可使用已验证后备算法，但必须标注方法与精度 |
-| STEP/IGES 组件无法可靠划分 | 保留几何体和候选关系，输出 `REVIEW_REQUIRED`，不得宣称未发现问题 |
-| 管路或弯曲半径识别置信度不足 | 继续尝试截面、圆柱/圆环面、中心线和邻域取证；仍不足则 `NOT_EVALUATED/REVIEW_REQUIRED` |
-| AI 判断与几何事实冲突 | 以测量事实为准，记录 `AI_CONFLICT`，禁止 finalize 自动通过 |
-| AI 超时、不可用或输出不合法 | 保存当前证据，最多按配置重试；关系语义项降级人工复核，确定性项目继续 |
-| 规则文件缺失、单位不明或多份规范冲突 | 不使用猜测阈值；展示冲突和优先级，要求确认或使用明确标记的试运行规则 |
-| 临时 DMU 对象或选择集恢复失败 | 结果标记 `ERROR`，提醒用户检查会话；不得保存源模型 |
-| 截图或红框生成失败 | 保留结构化问题但标记证据不完整，报告不得假装图片已生成 |
-| Word 生成失败 | 保留 JSON、原图、标注图和日志，可单独重试报告阶段，不重复几何检查 |
+| Could not determine model format or active document | Discontinue formal determination, list candidate documents and evidence, and require user confirmation of target; no speculation to save |
+| CATIA/DMU tools or licences not available | Record failure and impact ranges; validated back-up algorithms may be used, provided that the method and accuracy are indicated |
+| STEP/IGES components cannot be reliably divided | Keep geometry and candidate relationships, output `REVIEW_REQUIRED`, not declare no problem |
+| Insufficient confidence recognition of piped or curved radiuss | Continue to attempt cross-section, cylindrical/circle surface, central line and adjacent area evidence; still insufficient `NOT_EVALUATED/REVIEW_REQUIRED` |
+| AI Conflict of judgement with geometric facts | `AI_CONFLICT` is recorded, based on the measurement of facts, and Finalize is forbidden to pass automatically |
+| AI Timeout, Unusable or Invalid Output | Preservation of current evidence, retrying up to configuration; downgrading of relationship semantic items manual review and continuation of the project for certainty |
+| Lack of rule files, unknown units or multiple norm conflicts | No guess thresholds; display of conflicts and priorities, requirement of confirmation or use of clearly marked test running rules |
+| Could not close temporary folder: %s | Result tag `ERROR` to remind users to check sessions; no source model is saved |
+| Failed to create screenshot or red box | Retain structured problems but marking evidence is incomplete and the report should not pretend that the picture has been generated |
+| Word Generation Failed | Retain JSON, original graphs, tabulations and logs and can retry the reporting phase separately without repeating geometry checks |
 
-## 20. 当前实现与验收边界
+## 20. Implementation and acceptance status
 
-- 当前实现基线位于 `release_build/CATIA_V5_AI_DROP_V4_4_DEV`，用于本地继续测试，暂不封装最终发布包。
-- 当前 V4.4 已具备 31 个只读 CATIA MCP 工具、自检、结构化 JSON、红框证据图、Word 报告、规则快照和 AI 关系调查接口。
-- 当前开发环境的本地流程验证不能代替内网验收；须在真实 CATIA V5 R30（Release 30）目标机上完成连接、工具能力、报告依赖和代表模型回归测试后方可签署验收。R18不再是本项目内网目标。
-- 项目暂定规则仍不是型号批准规则；导入正式规范后必须重跑并在报告首页显示本次实际生效规则。
-- STEP/IGES 的自由曲面中心线恢复和复杂软管识别属于持续完善项；无法可靠测量时必须显式复核，不得静默跳过。
+- The current realized baseline is at `release_build/CATIA_V5_AI_DROP_V4_4_DEV` for local testing to continue, leaving the final release package unsealed.
+- There are currently 31 CATIA MCP read-only tools, self-checking, structured JSON, Red Box Evidence Charts, Word Report, rule snapshots and AI Relationship Survey interfaces available.
+- The local process validation of the current development environment cannot replace the intranet inspection; it will not be signed until the connection, tool capacity, reporting dependence, and representative model regression tests are completed on the real CATIA V5 R30 (Release 30) target. R18 is no longer the goal of this project intranet.
+- The provisional rules for items are still not model approval rules; the formal rules must be reruned after they have been imported and the current rules in effect are shown on the front page of the report.
+- STEP/IGES free curvature centre line restoration and complex floppy recognition are continuing improvements; where reliable measurements are not possible, they must be reviewed in a visible manner and must not be omitted silently.

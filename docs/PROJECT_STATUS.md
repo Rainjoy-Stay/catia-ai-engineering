@@ -1,13 +1,13 @@
-# 工作整理与后续事项
+# Project status and next steps
 
-整理日期：2026-11-12。
+Prepared November 12, 2026.
 
-开发脉络：早期管路测距与 DMU 全装配检查 → 空间框与规则/报告产品基线 → 原生清点、原位派生装配及 DMU/GSD/SPA 案例流程 → 独立只读模型理解开发入口。
+Development began with tubing clearance measurements and full-assembly DMU checks. It progressed to a baseline for bounding-box checks, rules, and reporting, then to case workflows for native inventory, in-place derived assemblies, and DMU/GSD/SPA inspection. The most recent development entry point is the standalone read-only model understanding module.
 
-当前推荐从独立理解模块和其离线测试入手；需要空间框检查时研究 inspection。两条能力链尚未统一成实机验收的一键产品。
+Start with the standalone module and its offline tests. For bounding-box inspection, explore `inspection/`. Acceptance of the two workflows as a unified one-click product on a live installation remains pending.
 
-后续优先事项：真实小型装配验证实例坐标与引用、原生拓扑与稳定对象引用、案例工作流参数化、R30 内网现场验收、依赖安装与发布流程重建。
+Priorities include verifying instance coordinates and references on a small real assembly, supporting native topology and stable object references, parameterizing case workflows, completing R30 intranet acceptance, and rebuilding dependency installation and release procedures.
 
-整理时排除了原模型、派生模型、案例报告截图、历史压缩包、视频、第三方运行时、缓存和实机日志。配置保留可审查示例，并移除实际路线配置与公司部署标识。没有重新授予项目许可证，也没有执行真实模型修改。
+The curated snapshot excludes original and derived models, case reports and screenshots, historical archives, videos, third-party runtimes, caches, and live test logs. It retains reviewable configuration examples with actual route settings and corporate deployment identifiers removed. The curation granted no new project license and involved no live model changes.
 
-历史 CHANGELOG/SPEC/REPORT_FORMAT 是来源资料，规范冲突时以根目录 AGENTS.md 与当前技能为准。
+The historical `CHANGELOG`, specification, and `REPORT_FORMAT` are source references. Where requirements conflict, follow the root `AGENTS.md` and current skills.

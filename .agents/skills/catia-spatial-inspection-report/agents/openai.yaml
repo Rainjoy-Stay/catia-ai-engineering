@@ -1,4 +1,4 @@
 interface:
-  display_name: "CATIA 空间框检查与报告"
-  short_description: "重跑实体及面壳检查，核对实时 UI、双视图报告和 AI 建议"
-  default_prompt: "使用 $catia-spatial-inspection-report 按当前模型执行空间框检查，交付可追溯结果、UI 和双视图报告。"
+  display_name: "CATIA bounding-box inspection"
+  short_description: "Rerun spatial inspection on existing solids and surface shells. Deliver live progress, paired-view interference reports, and AI review of unevaluated items."
+  default_prompt: "Use $catia-spatial-inspection-report to complete this request. Rerun the bounding-box inspection on the current model and deliver traceable results, live progress, and a paired-view report."

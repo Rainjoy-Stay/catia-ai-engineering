@@ -1,4 +1,4 @@
 interface:
-  display_name: "来源识别与接收链溯源"
-  short_description: "整理模型文件、元数据和接收凭证，明确可证明的来源与链路缺口。"
-  default_prompt: "使用 $catia-model-provenance 按本次指定模型和范围完成来源识别与接收链溯源，保留证据并明确未评价项。"
+  display_name: "Model provenance and receipt chain"
+  short_description: "Collect CATIA files, references, metadata, and authorized receipt records. Distinguish observed facts from inferences and identify gaps in the receipt chain."
+  default_prompt: "Use $catia-model-provenance to complete this request. Document provenance for the specified model and scope, with evidence and unresolved receipt-chain links."

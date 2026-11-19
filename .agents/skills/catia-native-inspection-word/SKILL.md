@@ -1,34 +1,34 @@
 ---
 name: catia-native-inspection-word
-description: 从已打开的 STP/CATPart 清点几何并原位重建检查装配，执行原生 DMU/GSD/SPA 干涉复核，制作定位与透明双视图，交付竖版 A4 Word 报告。用于本项目从源模型到报告的完整流程；不用于几何修复或泛用文档排版。
+description: Inventory open STEP or CATPart geometry, reconstruct an in-place inspection assembly, verify interference using native DMU, GSD, and SPA, capture paired locator and transparent detail views, and deliver a portrait A4 Word report.
 ---
 
-# CATIA 从 STP 重建到原生检查与 Word 报告
+# Native CATIA inspection from STEP to Word
 
-面向用户已打开的 STP/CATPart 或已有原位重建装配，按本轮要求确定检查范围。历史报告、阈值、编号和截图仅可作为流程参考，不能作为新模型的检查结果。开始前确认活动文档、来源、装配层级、保存状态及本轮实际可用的 CATIA 能力。模型识别与安全操作遵循可用的 `catia-model-understanding`；几何判定遵循本项目 `../catia-spatial-inspection-report/SKILL.md`；截图遵循 `../catia-native-dual-view/SKILL.md`。本技能负责从重建到交付的贯通和阶段验收。
+Work from a STEP or CATPart already open in CATIA, or an existing in-place inspection assembly. Use the scope of the current request. Treat historical reports, thresholds, IDs, and captures as workflow references. Confirm the active document, provenance, assembly hierarchy, save state, and current CATIA capabilities. Use the available `catia-model-understanding` skill for model identification and safe operations, `../catia-spatial-inspection-report/SKILL.md` for geometry verdicts, and `../catia-native-dual-view/SKILL.md` for screenshots. This skill coordinates reconstruction, inspection, and delivery, including acceptance at each stage.
 
-## 源几何清点与原位重建
+## Inventory and in-place reconstruction
 
-1. 记录活动源文档的清单与保存状态，区分真实 CATProduct 装配与单一 CATPart 内的多个 Body/几何图形集。读取所有可识别实体、有限面壳及其他曲面/曲线，记录唯一源路径、原名、类型、面积或体积、重心、边界框和单位；源哈希可取得时一并记录。零体积不能成为漏掉有限面壳的理由。
-2. 若源已是可逐组件检查的装配，核对每个引用及组件身份后继续。若源是单 CATPart 中的独立几何，建立**另存的检查派生 CATProduct**：每个可唯一映射的实体或有限面壳复制到独立 CATPart，在原始坐标位置插入为装配实例。不要把源 Body 数称为原生装配零件数；重建不代表恢复原供应商装配约束、零件名、设计意图或特征历史。源模型不因检查被拆改或覆盖。
-3. 为每个派生实例保留稳定 ID → 源完整路径 → 几何类型 → 派生 CATPart/实例名的映射。复制后逐项回读 SPA 面积/体积、重心、边界框与位置，核对单位和装配变换；不能只靠实例数量宣称重建成功。失败、退化、无法取得有限面积或无法唯一映射的对象进入覆盖缺口，不以编号顺序猜测。
-4. 阶段验收要能对账：源登记数＝已验证派生实例数＋未纳入或待复核数，并列明实体与面壳各自数量。先在少量对象上验证复制/坐标/测量，再批量建立；批量过程写进度和可恢复记录。检查副本的保存仅限用户授权的派生产物，源文档的 Saved 状态前后回读。
+1. Record the active source inventory and save state. Distinguish a real CATProduct assembly from a single CATPart containing multiple Bodies or geometrical sets. Inventory all identifiable solids, bounded surface shells, other surfaces, and curves. Record unique source paths, original names, types, areas or volumes, centroids, bounding boxes, units, and hashes when available. Include bounded surface shells with zero volume.
+2. For an assembly that supports component-level inspection, verify component identities and references. For independent geometry in a single CATPart, build a **separately saved derived inspection CATProduct**. Copy each uniquely mapped solid or bounded shell to its own CATPart and insert it at the original coordinates. Record source Body count separately from native assembly part count. The derived assembly preserves placement. Original supplier constraints, names, design intent, and feature history remain unknown. Leave the source model intact.
+3. Map each derived instance's stable ID to its full source path, geometry type, and derived CATPart and instance names. After copying, read back SPA area or volume, centroid, bounding box, and placement. Verify units and assembly transforms. Record failures, degeneracy, unavailable finite area, and nonunique mappings as coverage gaps. Use verified evidence for mapping.
+4. Reconcile total source entries with verified derived instances plus excluded or pending entries. List solids and shells separately. Verify copying, transforms, and measurements on a small sample before batching. Log progress and maintain recovery records. Save only authorized derived artifacts and read the source document's `Saved` state before and after.
 
-## 检查与筛选
+## Inspection and screening
 
-1. 在已验收的原位检查装配上建立本轮独立记录。检查已存在的原生 DMU 结果时保留其来源和参数；用户要求重跑时从当前模型重新计算，不将旧数据称为本轮测量。
-2. 在原生 DMU 中运行适合本轮范围的装配干涉检查（如 Between All），保留检查设置、原始结果、是否截断及无序对象对数量。按无序对象对去重，以原生结果作候选筛查和定位。筛查阈值及其来源写入方法；筛查值本身不是精确公共体积、曲面穿透证明或工程允许值。仅把用户要求的明显实体干涉和曲面穿透放入主问题清单；接触、小间隙和证据不足项另列范围/未评价审计。
-3. 对实体候选以精确几何公共体积及适用的 SPA/原生测量复核，记录数值、单位、容差、成功与失败状态。对面壳候选用 GSD 交线及双侧材料进入等独立证据区分真实穿透、边界接触和共面；交线单独不足以定性穿透。判定名称应与证据强度一致，不把显示画面或 DMU 深度当作唯一几何结论。
-4. 每条确认问题固定到 A/B 唯一对象、原生候选编号、测量结果、截图队列项和报告编号。未完成复核或无法唯一映射的候选保持未评价，记录原因与下一步；不可按顺序猜测对象对应关系。
+1. Start a new run record against the accepted inspection assembly. If reviewing existing native DMU results, record their source and settings. If the user requests a rerun, calculate from the current model.
+2. Run the native DMU interference check appropriate to the scope, such as Between All. Preserve settings, raw results, any truncation, and the count of unique unordered object pairs. Deduplicate by unordered pair and use native results for candidate screening and location. Record thresholds and their sources. Screening values alone establish neither exact common volume, surface penetration, nor allowed interference. Include only the requested clear solid interferences and surface penetrations in the main issue list. Track contacts, small clearances, and insufficient evidence in the scope and unevaluated audit.
+3. Verify solid candidates with exact common volume and applicable SPA or native measurements. Record values, units, tolerances, and success or failure. For surface shell candidates, use GSD intersection curves and independent evidence such as material entering both sides to distinguish penetration, edge contact, and coplanarity. An intersection curve alone does not establish penetration. Match verdicts to the evidence available.
+4. Link each confirmed issue to unique A/B objects, the native candidate ID, measurement evidence, screenshot queue entry, and report ID. Keep unresolved or ambiguously mapped candidates as unevaluated. Record the limitation and next action.
 
-## 原生截图
+## Native screenshots
 
-先按 `catia-native-dual-view` 用少量真实问题样图验收，再批量截图。每条问题保留原生整体图与局部图及相机/显示记录：**两图画布及报告嵌入尺寸相等；整体显示完整装配后全部适应；局部只显示干涉 A/B 后对两者全部适应；默认同方向。** A 橙、B 青。红框分别定位对象，不能称为精确干涉轮廓。
+Accept a small set of real captures with `catia-native-dual-view` before batching. Preserve the native overview and detail images and their camera and display records for every issue. **Use the same canvas and embedded sizes. Show the complete assembly and run Fit All In in the overview. Isolate A/B and run Fit All In on the pair in the detail. Use the same orientation by default.** Color A orange and B cyan. Use red boxes to locate the objects.
 
-局部图若一方遮住另一方，主动降低遮挡方透明度，让被遮挡对象及两者关系可见；保留颜色和轮廓，并在该问题页注明实际透明度。先目视确认透明显示真正改善可读性；必要时调整视角或补真实视图。不要用后期绘制虚构不可见几何。截图前记录显示/相机/活动文档状态，结束后恢复并回读；中断时按状态台账恢复。
+If one part obscures the other, adjust the occluding part's transparency so the other part and their relationship are visible. Preserve color and outline and record the actual setting on the issue page. Inspect the capture before acceptance. Adjust the angle or add a native view if needed. Record the display, camera, and active document before capture. Restore and verify afterward, using recorded state after an interruption.
 
-## 竖版 A4 Word 交付
+## Portrait A4 Word delivery
 
-默认交付可编辑 `.docx`，A4 竖版。封面说明本轮范围、确认数量和筛选条件；方法页说明 DMU 候选与几何确认的区别；问题总览可追溯到每页。每个确认问题单独成页，包含 A/B 身份、证据与单位、必要的限制说明、等大的整体定位图和局部细节图。局部透明或改换方向时逐项标注。红框图注写明“仅定位对象，不表示精确干涉边界”。若用户另指定版式或交付格式，以本轮要求为准。
+Default to an editable portrait A4 `.docx`. State scope, confirmed counts, and screening criteria on the cover. Explain the difference between DMU candidates and confirmed geometry in the method section. Link the issue overview to its individual pages. Use one page per confirmed issue with A/B identities, evidence and units, relevant limitations, and equal-size overview and detail images. Label changes to detail transparency or orientation on the affected page. Use a caption such as “Red boxes locate the objects. The exact interference boundary is not shown.” Follow any format or layout requested for the current run.
 
-生成后实际渲染 Word，核对 A4 竖版、页数、每项图文归属、两图等大、模型/目标完整、红框对象正确、透明处可辨、文字不截断；修正后再交付。保留原图、标注图、测量/映射索引和显示恢复记录，报告只声称实际完成的检查。现有 `tools/build_word_report.py` 是 2026-10-13 本轮数据的排版参考，含固定路径和数量；复用前必须改为当前运行数据，不能直接执行后当成新报告。
+Render the Word document. Check portrait A4 page size and page count, image-to-issue alignment, equal image sizes, complete model and targets, correct locator boxes, readable transparent views, and text clipping. Correct issues before delivery. Preserve raw and annotated images, measurement and mapping indexes, and display restoration records. Report only completed checks. The existing `tools/build_word_report.py` is a layout reference for the October 13, 2026 run and contains hard-coded paths and counts. Adapt it to current run data before reuse.

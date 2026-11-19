@@ -1,4 +1,4 @@
 interface:
-  display_name: "尺寸质量与间距汇总"
-  short_description: "汇总体积面积重心质量与明确对象间距，记录单位坐标系和测量失败。"
-  default_prompt: "使用 $catia-measurement-summary 按本次指定模型和范围完成尺寸质量与间距汇总，保留证据并明确未评价项。"
+  display_name: "CATIA measurement summaries"
+  short_description: "Summarize CATIA volume, surface area, mass, bounding boxes, centers of gravity, and specified distances. Use precise geometry checks for interference verdicts."
+  default_prompt: "Use $catia-measurement-summary to complete this request. Summarize measurements for the specified objects. Record units, coordinate frames, and any failed or unevaluated measurements."

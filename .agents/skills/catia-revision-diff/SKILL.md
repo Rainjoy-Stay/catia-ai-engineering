@@ -1,28 +1,28 @@
 ---
 name: catia-revision-diff
-description: 比较两版 CATIA 数模的结构、属性、位姿和经验证的几何差异，输出新增、删除、修改及未匹配清单；不以快照编号、重排或几何签名直接证明跨版本身份。
+description: Compare two CATIA revisions for structural, metadata, pose, and verified geometry changes. Report additions, removals, modifications, and unmatched objects.
 ---
 
-# 版本差异清单
+# CATIA revision comparison
 
-先读 [日常操作约定](../../../docs/CATIA_DAILY_OPERATIONS.md) 的“共同执行约定”，再执行本技能。优先发现当前已注册的结构化 CATIA 工具；工具源码存在不等于已注册。模型操作遵循当前可用的 catia-model-understanding；缺少该技能时使用共同约定中的最小只读流程。只在用户要求图片时读取现行双视图技能。
+Read the shared operating rules in [Everyday CATIA operations](../../../docs/CATIA_DAILY_OPERATIONS.md). Discover the structured CATIA tools registered in the current session and verify their contracts. Follow the available `catia-model-understanding` skill for model operations, or use the documented minimum read-only workflow if it is unavailable. Consult the current paired-view skill when the user requests images.
 
-## 自然语言入口
+## Natural Language Entry
 
-- “对比 A 版和 B 版，给我增删改清单，单独列出安装位置变化。”
-- “这个部件改版后，哪些件改了尺寸，哪些只是换位置？”
-- “按批准的件号映射对比两个供应商装配，重复件不要乱配。”
+- "Comparison versions A and B, add or delete to the list and list separately the changes in the location of the installation."
+- "When this part is resized, which pieces have been resized and which are simply repositioned?"
+- “As opposed to the two supplier assembly according to the approved part number mapping, do not mix the duplicates.”
 
-## 执行
+## Implementation
 
-1. 绑定明确的 before/after 文档或快照，记录采集范围、根坐标系、单位、模型版本与读取覆盖。两文件名称相同仍分别记录完整来源。不覆盖已有未保存文档；若打开第二版会产生同名标识冲突，使用独立 CATIA 会话或分次采集，不改名/重存源文件来绕过。
-2. 优先按已验证 PLM 稳定标识或批准的实例映射匹配；其次生成“父级匹配+件号+实例属性”等候选并保留依据。同名、重排后的索引、快照 OCC ID 和体积签名均不能独立构成跨版本匹配。多对多冲突列 AMBIGUOUS，不强配。文件字节哈希相同只证明文件相同。
-3. 对已匹配对象分别比较 ATTRIBUTE_CHANGED、PLACEMENT_CHANGED、GEOMETRY_CHANGED、RENAMED、REPARENTED。位姿按一致坐标系比较；根对齐未知则不报告世界坐标移动，允许报告可比父系的局部变换。平移和旋转容差分别记录。
-4. 几何变化须来自同范围原生几何、参数/特征证据或已验证几何比较。特征树变化可不改变结果形状；形状相似也不代表参数历史相同。体积、面积不变不能证明几何未改；未测量输出 GEOMETRY_NOT_EVALUATED。
-5. 仅在对应另一版范围完整且匹配策略足以支持时，将未匹配对象记为 ADDED/REMOVED；读取缺失、截断、重复件歧义时保留 UNMATCHED/UNKNOWN。版本不同可改变匹配键，不按“件号+版本必须相同”直接制造增删。
+1. Ties a clear prefore/after document or snapshot to record the range of collection, root coordinate, unit, model version and read-over. The same name of the two files still records the full source separately. Do not overwrite existing unsaved documents; opening the second edition would create a conflict with the same name, using an independent CATIA session or split collection, without changing/restoring the source file.
+2. Priority is given to matching the PLM stabilization mark or the approved case map; it is followed by generating candidates such as " Parent matching + part number + instance properties" and retaining the basis. The same name, reordered index, snapshot OCC ID and volume signature do not independently constitute cross-version matching. Multiple pairs of multi-conflict columns AMBIGUOUS do not fit strongly. The byte hash documents are the same.
+3. Compared ATTRIBUTE_CHANGED, PLACEMENT_CHANGED, GEOMETRY_CHANGED, RENAMED, RERARENTED.pose compares by a consistent coordinate system; the movement of the world coordinates is not reported when the root is unknown, allowing reporting of local variations comparable to those of the patrilineal family. The horizontal and rotational differences are recorded separately.
+4. Geometric changes must come from primary geometry of the same range, argument/characteristic evidence or validated geometry. Characteristic tree changes do not change the shape of the result; shapes are similar or do not represent the history of the parameters. Size and area change cannot prove geometry; no output GEOMETRY_NOT_EVALUATED is measured.
+5. Keep UNMATCHED/UNKNOWN only when the matching policy is sufficiently supported for another version. Different versions can change the matching key, and not "part number + version must be the same " directly to make additions or deletions.
 
-## 验收与交付
+## Acceptance and delivery
 
-输出 differences.csv、matching.json、comparison-summary.json。每条含前后路径/证据、匹配依据、变化字段、旧新值、方法、容差及状态；同件可有多个变化标签。汇总匹配/歧义/未评价比例。
+Deliver `differences.csv`, `matching.json`, and `comparison-summary.json`. Include before and after paths and evidence, the match basis, changed fields, old and new values, method, tolerance, and status. Allow multiple change labels per object. Summarize matched, ambiguous, and unevaluated proportions.
 
-当前 snapshot.compare_snapshots 只报告捕获结构是否相同及证据是否失效，没有跨版本映射和几何差异检测。不得把它的 CHANGED_REQUIRES_REBINDING 包装为增删改清单已实现。若缺少匹配或比较工具，交付可确认的部分和缺口，不编造结果。
+The current snapshot. compare_snapshots only reports whether the capture structure is identical and whether the evidence is invalid, and there is no cross-version mapping and geometric discrepancy detection. It is not possible to package its CHANGED_REQUIRES_REBINDING as an addition or deletion list. If there is no matching or comparison tool, deliver the identifiable parts and gaps and do not make up the result.

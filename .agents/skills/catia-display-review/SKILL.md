@@ -1,25 +1,25 @@
 ---
 name: catia-display-review
-description: 在 CATIA 根据明确对象临时选择、隔离、隐藏和透明显示并恢复原状态，用于日常模型定位；报告截图交由现行原生双视图技能。
+description: Select, isolate, hide, or adjust transparency temporarily, then restore and verify the original display state.
 ---
 
-# 查找定位与显示恢复
+# Locate and isolate CATIA objects
 
-先读 [日常操作约定](../../../docs/CATIA_DAILY_OPERATIONS.md) 的“共同执行约定”，再执行本技能。优先发现当前已注册的结构化 CATIA 工具；工具源码存在不等于已注册。模型操作遵循当前可用的 catia-model-understanding；缺少该技能时使用共同约定中的最小只读流程。只在用户要求图片时读取现行双视图技能。
+Read the shared operating rules in [Everyday CATIA operations](../../../docs/CATIA_DAILY_OPERATIONS.md). Discover the structured CATIA tools registered in the current session and verify their contracts. Follow the available `catia-model-understanding` skill for model operations, or use the documented minimum read-only workflow if it is unavailable. Consult the current paired-view skill when the user requests images.
 
-## 自然语言入口
+## Natural Language Entry
 
-- “定位结构树里的这个件，临时只显示它。”
-- “把机匣透明，让我看看里面这根管子，结束后恢复显示。”
-- “把这些搜索结果逐个定位，列出同名对象供我区分。”
+- "This part of the positioning structure tree is shown only temporarily."
+- "Let me see this tube in the box, and then restore it."
+- “Leave these results individually and list the same subjects for me to distinguish.”
 
-## 执行
+## Implementation
 
-1. 解析唯一文档、实例路径和目标，确认选择/显示变化即可满足需求；定位不等于激活零件编辑。记录当前活动文档、选择、目标可见性/颜色/透明度、受影响背景对象及相机。
-2. 用已注册的选择和显示工具实施最小临时变化；隔离须知道所有将隐藏对象的原状态。若无法读取原状态，不先批量修改再猜测恢复；交付选择定位，说明隔离恢复能力缺口。
-3. 显示变化在 finally 逻辑恢复，逐对象恢复原值，不将全体设为统一可见或统一颜色。用户明确要求保留展示状态时按其要求保留并记录，不保存模型来持久化显示。
-4. 用户需要报告配图时转 catia-native-dual-view：两图等大，整体完整模型全部适应，局部只保留目标对再全部适应，默认同方向。遮挡处看不见不代表对象不存在，截图不能证明几何结论。
+1. Parsing the only document, example path and objective, confirming that the selection/show changes will satisfy the need; positioning does not activate the parts editing. Recording the current active document, selection, target visibility/colour/transparency, affected background objects and cameras.
+2. The minimum temporary change is performed using the registered selection and display tool; isolation is required to know the original state of all objects that will be hidden.
+3. Displays the logical restoration of the change to the original value by object, without setting the whole as a single visible or uniform colour. The user expressly requests that the display be kept and recorded as required, without saving the model to sustain the display.
+4. The user needs to report the graph to the catia-native-dual-view: the whole model Fit All In, which is large and large, keeps only the target for the second Fit All In, and defaults in the same direction. The mask does not see the object that does not represent it, and the screenshot does not support geometry.
 
-## 验收与交付
+## Acceptance and delivery
 
-核对实际选中的实例路径和目标数量，说明哪些状态已恢复、哪些未能恢复。若原操作失败仍完成可安全执行的恢复。无需图片时仅返回对象定位及状态，不额外创建报告。
+Checks the number of paths and targets actually selected, indicating which states have been restored and which have not been restored. If the original operation fails, the safely executed recovery is completed.

@@ -1,22 +1,22 @@
-# 运行与验收
+# Setup and acceptance testing
 
-## 只读理解模块
+## Read-only model understanding
 
-Python 3.12；核心合成测试仅依赖标准库。真实读取需要 Windows/pywin32，MCP 服务需要 mcp。安装 requirements-understanding.txt 后从仓库根目录调用 tools 中入口。
+Use Python 3.12. Core synthetic tests use only the standard library. Live reads require Windows and `pywin32`. The MCP service requires `mcp`. Install `requirements-understanding.txt` and run the entry points under `tools/` from the repository root.
 
-## 检查基线
+## Inspection baseline
 
-inspection 保留原包的相对目录。原离线包包含定制运行时、依赖与 .pth 设置，本仓库没有这些二进制文件，因此不能承诺原 cmd 启动器直接运行。
+`inspection/` preserves the original package's relative layout. The repository excludes the original offline package's custom runtime, dependencies, and `.pth` setup. Running the original `.cmd` launchers directly is unverified.
 
-开发环境需将 inspection/project、inspection/scripts 与 inspection/vendor/catia-v5-mcp-server 加入 PYTHONPATH。完整第三方依赖版本参考 dependency-versions.source.json；它是来源环境清单，并非已经在全新环境验证的可移植锁文件。需要根据实际入口安装 OCCT、NumPy、报告及 UI 依赖，并重新验收。
+For development, add `inspection/project`, `inspection/scripts`, and `inspection/vendor/catia-v5-mcp-server` to `PYTHONPATH`. See `dependency-versions.source.json` for the source environment's dependency versions. Portability on a clean environment remains unverified. Install OCCT, NumPy, reporting, and UI dependencies as required by the intended entry point, then repeat acceptance testing.
 
-不要直接执行 workflows 中案例脚本：先参数化固定路径、对象编号和输出位置，核对当前文档及模型修改范围。部分工具包含建模、保存和删除能力；这些能力的存在不构成执行授权。
+Before running scripts under `workflows/`, parameterize hard-coded paths, object IDs, and output locations. Verify the active document and permitted model changes. Obtain authorization before using tools that build, save, or delete geometry.
 
-## 验证层级
+## Validation levels
 
-1. 标准库合成测试：快照、对象身份、位姿和模拟 COM。
-2. MCP 协议测试：注册与错误行为，不连接 CATIA。
-3. Windows CATIA 实机：引用归属、坐标变换、几何与原生接口。
-4. R30 内网：许可、依赖、性能、数据边界及报告全链路验收。
+1. Standard-library synthetic tests for snapshots, object identity, poses, and mock COM.
+2. Offline MCP protocol tests for tool registration and error behavior.
+3. Live Windows CATIA tests for reference ownership, coordinate transforms, geometry, and native interfaces.
+4. End-to-end R30 intranet acceptance for licensing, dependencies, performance, data boundaries, and reporting.
 
-前两项不能替代后两项。此次整理不进行真实模型操作。
+Live CATIA and intranet acceptance require their own validation. The repository curation involved no live model operations.

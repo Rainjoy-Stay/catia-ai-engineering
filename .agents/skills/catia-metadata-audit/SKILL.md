@@ -1,26 +1,26 @@
 ---
 name: catia-metadata-audit
-description: 检查 CATIA 件号、版本、描述、命名、材料、引用和结构清单的一致性，形成交付缺项及更改建议；批量写回仅限已授权且可验证字段。
+description: Check part numbers, revisions, descriptions, names, materials, references, and assembly records. Report gaps and propose verifiable, authorized edits.
 ---
 
-# 属性一致性与交付预检
+# Metadata and delivery preflight
 
-先读 [日常操作约定](../../../docs/CATIA_DAILY_OPERATIONS.md) 的“共同执行约定”，再执行本技能。优先发现当前已注册的结构化 CATIA 工具；工具源码存在不等于已注册。模型操作遵循当前可用的 catia-model-understanding；缺少该技能时使用共同约定中的最小只读流程。只在用户要求图片时读取现行双视图技能。
+Read the shared operating rules in [Everyday CATIA operations](../../../docs/CATIA_DAILY_OPERATIONS.md). Discover the structured CATIA tools registered in the current session and verify their contracts. Follow the available `catia-model-understanding` skill for model operations, or use the documented minimum read-only workflow if it is unavailable. Consult the current paired-view skill when the user requests images.
 
-## 自然语言入口
+## Natural Language Entry
 
-- “检查件号、文件名和描述有没有空值或不一致，先别改。”
-- “对照这份批准 BOM 找漏件、重复件号和版本不一致。”
-- “按这张映射表改参数，先列出具体对象和旧新值。”
+- "Check whether part number, file name and description are empty or inconsistent, and do not change it."
+- "Figure, repeat part number and version inconsistent against this approval BOM."
+- "Change parameters to this map table to list specific objects and old new values. ".
 
-## 执行
+## Implementation
 
-1. 先定义规则来源和读取范围；没有命名标准时仅报缺失、碰撞和明显不一致，不编造企业规则。用树清单区分定义与实例，版本/描述/材料未读就报 NOT_READ，不以空值判不符合。
-2. 对比获授权的 BOM/映射表，保留原始字段与规范化值；件号前导零、大小写、全半角和空格是否等价由规则决定，不擅自改写。区分重复安装、同件号不同版本和同件号不同定义。
-3. 交付审查默认只读；更新状态、引用可解析性、材料和参数单位的检查不调用 Update、链接修复或 Save。读取受缓存/轻量表示限制时记录，不自动加载全部大型装配。
-4. 用户已授权更改时，先生成精确对象、字段、旧值、新值、预期类型/单位和依赖影响表；执行前复读旧值，变化则跳过为 STALE_INPUT。只使用实际支持的类型化写入工具，修改后读回；不因可写普通参数就假定可写 PartNumber/Revision/Description。
-5. 不将“只读检查”的请求扩成批量修正。写参数需考虑公式驱动、单位和下游依赖，失败保留逐项结果及可行恢复；不宣称多项 COM 写入原子化。保存由用户任务中的明确授权决定。
+1. Defines the source of the rule and the scope of the readout first; only missing, colliding and manifestly inconsistent business rules are reported when no naming criteria exist, and no business rules are created. A tree list is used to distinguish definitions from examples, and a version/description/material is reported without reading NOT_READ, which is not judged to be non-compliant by empty value.
+2. Retains the original field and regularized values compared to the authorized BOM/map; Part number zero, case, full half and spaces are price equivalents determined by the rules and are not rewrited. Distinguishing between duplicate installation, different versions of part number and definitions of part number.
+3. Default read-only for the delivery review; no Update, link fixation or Save is called for check in state updates, references to solvency, materials and parameter units. Record when reading a cache/light expression limit without automatically loading all large packages.
+4. When changes are authorized by the user, the gentleman becomes the precise object, the field, the old value, the new value, the expected type/unit and the relying impact table; the old value is read again before execution, the change skips to STALE_INPUT. Only the type-writing tool that is actually supported is used to modify and read back; PartNumber/Revision/Description is not assumed to be written because normal parameters can be written.
+5. Do not expand the "read-only inspection" request to a batch correction. Writing parameters need to consider the formula driver, unit and downstream dependence, fail to preserve the result-by-product and recoverable; do not claim that multiple COMs are written to atomization. Preservation is determined by the explicit authorization in the user task.
 
-## 验收与交付
+## Acceptance and delivery
 
-输出 metadata-findings.csv；若有授权修改，另交 change-plan.csv、writeback-results.json。含规则来源、对象证据、状态、旧新值和未处理原因。修改候选不等于已执行，更新成功不等于工程合格。
+Output metadata-findings.csv; change-plan.csv, writeback-results.json, if authorized. Contains rule source, object evidence, state, old new values and unprocessed reasons. The change is not equal to implemented candidate, and the update is not equal to satisfactory project.

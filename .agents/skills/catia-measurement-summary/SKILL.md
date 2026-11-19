@@ -1,25 +1,25 @@
 ---
 name: catia-measurement-summary
-description: 批量汇总 CATIA 零件体积、面积、质量、包围盒、重心及明确对象间距，用于日常测量和统计；不以包围盒或零距离替代精确干涉判定。
+description: Summarize CATIA volume, surface area, mass, bounding boxes, centers of gravity, and specified distances. Use precise geometry checks for interference verdicts.
 ---
 
-# 尺寸质量与间距汇总
+# CATIA measurement summaries
 
-先读 [日常操作约定](../../../docs/CATIA_DAILY_OPERATIONS.md) 的“共同执行约定”，再执行本技能。优先发现当前已注册的结构化 CATIA 工具；工具源码存在不等于已注册。模型操作遵循当前可用的 catia-model-understanding；缺少该技能时使用共同约定中的最小只读流程。只在用户要求图片时读取现行双视图技能。
+Read the shared operating rules in [Everyday CATIA operations](../../../docs/CATIA_DAILY_OPERATIONS.md). Discover the structured CATIA tools registered in the current session and verify their contracts. Follow the available `catia-model-understanding` skill for model operations, or use the documented minimum read-only workflow if it is unavailable. Consult the current paired-view skill when the user requests images.
 
-## 自然语言入口
+## Natural Language Entry
 
-- “列出这批零件的体积、表面积和重心，按体积排序。”
-- “统计这个部件总质量，没材料的零件单独列出来。”
-- “量一下这两件的最小间距，给出可复核的对象引用。”
+- “The size, surface area and centre of gravity of the spare parts are listed and sorted by volume.”
+- "The total mass of this component is measured, and parts without materials are listed separately."
+- “to measure the minimum spacing of these two items and to give a reversible reference.”
 
-## 执行
+## Implementation
 
-1. 解析对象和统计口径，区分定义测量与实例汇总。确认零件/Body/壳的范围，避免多 Body 整件与单 Body 混算。用已注册原生惯性、几何清点、测距工具逐对象测量，先核对工具返回单位，不按数值大小猜单位。
-2. 记录体积、面积、质量、密度来源、重心及坐标系。无批准密度/材料时质量 UNKNOWN；CATIA 默认密度产生的值标明 ASSUMED_DENSITY，不混入批准质量。组件实例重心须沿完整位姿链变换到根坐标，未知位姿传播 UNKNOWN。
-3. 汇总只计预期范围内的叶级实物实例，不同时加父装配和子件。总重心按有效质量加权，列出排除质量与覆盖率；开壳无体积不能当零质量。装配材料重叠可造成实体体积累加与并集不同，说明口径。
-4. 最小距离明确两个实例及精确引用；AABB 距离只作粗筛。距离 0 可能是接触或穿透，不能直接给干涉结论；需要时转现有几何检查技能。测量失败不填 0，不自动更新或修复源模型来获得数值。
+1. Parsing objects and statistical calibrations, distinguishing between definition measurements and examples. Confirms the range of parts/Body/shells and avoids mixing multiple Body whole parts with single Body. Using registered raw inertia, geometric counts, ranging tools and object-by-object measurements, check the tool back to the unit and not guess the unit by numerical size.
+2. Records volume, area, mass, density source, gravity and coordinates. UNKNOWN Mass when no authorized density/material; CATIA default density values are marked ASSUMED_DENSITY and are not commingled in the approved quality. The focus of the component example must be changed to root coordinates along the complete pose chain and unknown pose dissemination UNKNOWN.
+3. Summarizes only the physical cases of the leaf class within the expected range, with the addition of both the father's assembly and the sub-components. The total weight is weighted by the effective mass, with the exclusion mass and coverage; the shell size is not equal to zero mass.
+4. Minimum distance is clear for two examples and precise references; AABB distance is only sifted roughly. Distance 0 may be contact or penetrating, and cannot directly draw conclusions from intervention; geometrical skills are available when needed. The measurement fails without filling in 0, and the source model is not automatically updated or repaired to obtain values.
 
-## 验收与交付
+## Acceptance and delivery
 
-输出 measurements.csv 和测量方法、单位、坐标系、有效/失败对象数量。抽样核对一个可解析对象；未知单位/密度/位姿单列。报告实测值，不在没有批准间距标准时下合格结论。
+Output measurements.csv and the number of measurement methods, units, coordinates, valid/failable objects. Sampling checks a decipherable object; unknown unit/density/pose separate columns. Reporting the measured values does not qualify for the absence of approved spacing criteria.

@@ -1,17 +1,17 @@
-# 项目截图与报告
+# Project screenshots and reports
 
-涉及 CATIA 截图、干涉双视图或报告配图时，使用 `.agents/skills/catia-native-dual-view/SKILL.md`。
+Use `.agents/skills/catia-native-dual-view/SKILL.md` for CATIA screenshots, paired interference views, and report illustrations.
 
-统一要求：两图等大；整体图显示完整模型后全部适应；局部图隐藏干涉对以外的对象后对干涉对全部适应。默认同方向。该用户确认要求优先于旧资料中的邻域整体图、大局部小整体和强制不同方向要求。
+Make both images the same size. Show the complete model and fit it in the overview. In the detail view, hide every object outside the interference pair and fit the pair. Keep the same orientation by default. These user-approved requirements take precedence over older guidance that called for neighborhood overviews, unequal image sizes, or different orientations.
 
-几何检查继续使用 catia-spatial-inspection-report，模型操作使用可用的 catia-model-understanding。截图技能不改变几何判定，不扩大模型修改或保存授权。
+Use `catia-spatial-inspection-report` for geometry inspection and the available `catia-model-understanding` skill for model operations. Geometry verdicts and authorization to modify or save models remain governed by their respective workflows.
 
-需要从已打开 STP/CATPart 清点并重建原位检查装配，继而完成原生 DMU/GSD/SPA 检查、双视图截图到竖版 A4 Word 报告的整套流程时，使用 `.agents/skills/catia-native-inspection-word/SKILL.md`；它统筹上述技能，不替代各自的判定与操作约束。
+Use `.agents/skills/catia-native-inspection-word/SKILL.md` for the end-to-end workflow from inventorying open STEP or CATPart documents and reconstructing an in-place inspection assembly through native DMU/GSD/SPA checks, paired screenshots, and a portrait A4 Word report. That skill coordinates the individual workflows and preserves their verdict criteria and operating constraints.
 
-# CATIA 日常自然语言操作
+# Everyday CATIA operations in natural language
 
-结构树/BOM 导出、版本差异、模型来源、特征/相同件搜索、测量汇总、临时定位显示、批量格式导出和属性预检，按 `docs/CATIA_DAILY_OPERATIONS.md` 路由到对应 `.agents/skills/catia-*/SKILL.md`。这些是代理流程技能，不表示完整跨版本匹配、来源接收链或精确同形算法已实现；执行前核对实际工具与覆盖范围。
+Follow `docs/CATIA_DAILY_OPERATIONS.md` to select the relevant `.agents/skills/catia-*/SKILL.md` for product tree and BOM export, revision comparison, model provenance, feature and duplicate-part search, measurement summaries, temporary display isolation, batch export, and metadata preflight. Check the available tools and their coverage before running a workflow. Complete cross-revision matching, provenance through the receipt chain, and exact shape equivalence require dedicated evidence or tooling.
 
-# GitHub 自动同步
+# Automatic GitHub synchronization
 
-本项目用户已要求：完成代码、技能或文档修改并通过相应验证后，自动同步到私有仓库 `https://github.com/Rainjoy-Stay/catia-ai-engineering`，无需重复确认。上传前排除模型、接收记录、真实案例数据、运行时、缓存和密钥；保留第三方许可与未验收边界。不能推送时明确报告阻塞，不宣称已上传。
+After completing and verifying code, skill, or documentation changes, automatically synchronize them to the private repository at `https://github.com/Rainjoy-Stay/catia-ai-engineering`. The user has authorized this without further confirmation. Exclude models, receipt records, actual case data, runtimes, caches, and secrets before uploading. Preserve third-party license notices and the documented validation limits. If a push is blocked, report the blocker and the actual upload status.
